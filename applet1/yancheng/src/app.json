@@ -1,10 +1,12 @@
 {
   "pages": [
+    "pages/my/main",
     "pages/home/main",
+    "pages/emotion/main",
     "pages/community/main",
     "pages/release/main",
-    "pages/discover/main",
-    "pages/my/main"
+    "pages/discover/main"
+    
   ],
   "window": {
     "backgroundTextStyle": "light",

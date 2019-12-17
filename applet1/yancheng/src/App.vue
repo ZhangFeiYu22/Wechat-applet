@@ -72,6 +72,9 @@ export default {
   padding: 200rpx 0;
   box-sizing: border-box;
 }
+div, view{
+  box-sizing: border-box;
+}
 /* this rule will be remove */
 * {
   transition: width 2s;
@@ -79,8 +82,8 @@ export default {
   -webkit-transition: width 2s;
   -o-transition: width 2s;
 }
-.w95{
-  width: 95%;
+.w94{
+  width: 94%;
   margin: 0 auto;
 }
 </style>

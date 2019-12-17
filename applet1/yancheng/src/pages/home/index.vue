@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <!-- 轮播 -->
-    <div class="carrousel w95">
+    <div class="carrousel w94">
       <swiper
         :indicator-dots="indicatorDots"
         :autoplay="autoplay"
@@ -26,44 +26,20 @@
       </view>
     </div>
     <!-- 小菜单 -->
-    <div class="navBox w95">
-      <div class="navItem">
+    <div class="navBox w94">
+      <div class="navItem" v-for="(item,index) in navItemList" :key="index" @click="navJump(index)">
         <div class="navIcon">
-          <img src="../../../static/images/guanzhu.png" mode="aspectFill" />
+          <img :src="item.imgUrl" mode="aspectFill" />
         </div>
-        <div class="navTitle">关注</div>
-      </div>
-      <div class="navItem">
-        <div class="navIcon">
-          <img src="../../../static/images/qingxu.png" mode="aspectFill" />
-        </div>
-        <div class="navTitle">情绪</div>
-      </div>
-      <div class="navItem">
-        <div class="navIcon">
-          <img src="../../../static/images/shejiao.png" mode="aspectFill" />
-        </div>
-        <div class="navTitle">社交</div>
-      </div>
-      <div class="navItem">
-        <div class="navIcon">
-          <img src="../../../static/images/aihao.png" mode="aspectFill" />
-        </div>
-        <div class="navTitle">爱好</div>
-      </div>
-      <div class="navItem">
-        <div class="navIcon">
-          <img src="../../../static/images/shenghuo.png" mode="aspectFill" />
-        </div>
-        <div class="navTitle">生活</div>
+        <div class="navTitle">{{item.title}}</div>
       </div>
     </div>
     <!-- 广告 -->
-    <div class="ad w95">
+    <div class="ad w94">
       <img src="../../../static/images/ad1.png" mode="aspectFill" />
     </div>
     <!-- 内容列表 -->
-    <div class="contentList w95">
+    <div class="contentList w94">
       <div class="contentItem">
         <div class="headName">
           <img src="../../../static/images/head1.jpg" mode="aspectFill" />
@@ -132,6 +108,13 @@ export default {
       interval: 3000,
       duration: 1000,
       current: 0,
+      navItemList: [
+        { imgUrl: require("../../../static/images/guanzhu.png"),title: '关注' },
+        { imgUrl: require("../../../static/images/qingxu.png"),title: '情绪' },
+        { imgUrl: require("../../../static/images/shejiao.png"),title: '社交' },
+        { imgUrl: require("../../../static/images/aihao.png"),title: '爱好' },
+        { imgUrl: require("../../../static/images/shenghuo.png"),title: '生活' }
+      ],
       isToggle: false, //是否超过2行？true--超过，false--没有超过
       requireAll: false //展开/收起全部问题描述true--展开，false--收起
     };
@@ -149,6 +132,13 @@ export default {
         this.isToggle = true;
         this.requireAll = true;
       }
+    },
+    navJump(num){
+      if(num == 1){
+        wx.navigateTo({
+          url: '/pages/emotion/main'
+        })
+      }
     }
   },
   onShow() {
@@ -158,8 +148,6 @@ export default {
     query.select("#contentInfo").boundingClientRect();
     console.log(query);
     query.exec(function(res) {
-      console.log("2----", res);
-      console.log("3----", res[0].height);
       if (res[0].height > 100) {
         that.isToggle = true;
         that.requireAll = true;
@@ -284,12 +272,12 @@ export default {
       .toggleBox {
         font-size: 16px;
         color: #6f6d6d;
-        margin-bottom: 10px;
       }
       .imgsList {
         display: flex;
         justify-content: space-between;
         flex-wrap: wrap;
+        margin-top: 10px;
         .imgsItem {
           width: 32%;
           height: 115px;
