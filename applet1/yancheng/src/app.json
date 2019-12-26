@@ -1,13 +1,17 @@
 {
   "pages": [
-    "pages/attention/main",
-    "pages/myInfo/main",
-    "pages/my/main",
     "pages/home/main",
+    "pages/my/main",
+    "pages/myInfo/main",
+    "pages/message/main",
+    "pages/messageDetails/main",
+    "pages/attention/main",
     "pages/emotion/main",
     "pages/community/main",
     "pages/release/main",
-    "pages/discover/main"
+    "pages/discover/main",
+    "pages/topicDetails/main",
+    "pages/personal/main"
     
   ],
   "window": {

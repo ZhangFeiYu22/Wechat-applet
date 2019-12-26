@@ -11,7 +11,7 @@
         <div class="leftBack"></div>
         <div class="title" :style="{ height: headAreaHeight + 'px'}">
           <p>乘幂</p>
-          <img src="../assets/images/titlebg.png" mode="aspectFit" alt />
+          <img src="../../static/images/titlebg.png" mode="aspectFit" alt />
         </div>
       </section>
     </header>

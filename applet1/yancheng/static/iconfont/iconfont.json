@@ -27,6 +27,13 @@
       "unicode_decimal": 59146
     },
     {
+      "icon_id": "1166550",
+      "name": "加号",
+      "font_class": "jiahao",
+      "unicode": "e635",
+      "unicode_decimal": 58933
+    },
+    {
       "icon_id": "1359396",
       "name": "栏目",
       "font_class": "lanmu",
@@ -130,13 +137,6 @@
       "font_class": "fenxiang",
       "unicode": "e642",
       "unicode_decimal": 58946
-    },
-    {
-      "icon_id": "11957191",
-      "name": "星途学堂-留言/发言",
-      "font_class": "liuyan",
-      "unicode": "e607",
-      "unicode_decimal": 58887
     }
   ]
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="myInfo">
     <div class="headImg">
-      <img src="../../assets/images/logoName.png" mode="aspectFill">
+      <img src="../../../static/images/head1.jpg" mode="aspectFill">
     </div>
     <div class="infoList">
       <div class="infoItem">

@@ -4,10 +4,9 @@
       <div class="headImg">
         <img src="../../../static/images/head1.jpg" mode="aspectFill" />
       </div>
-      <div class="rightIcon">
-        <i class="iconfont icon-pinglun" @click="goMessage"></i>
-        <i class="iconfont icon-aixin" @click="goAttention"></i>
-        <i class="iconfont icon-shezhi"></i>
+      <div class="rightIcon" @click="isAttenToggle">
+        <p class="attention attentioned" v-if="isAttention">已关注</p>
+        <p class="attention" v-else><i class="iconfont icon-jiahao"></i><span>关注</span></p>
       </div>
     </div>
     <div class="baseInfo">
@@ -23,24 +22,66 @@
         <p class="follower">15人关注</p>
       </div>
       <div class="editInfoBtn" @click="goMyInfo">
-        编辑资料
+        <i class="iconfont icon-sixin"></i><span>私信</span>
       </div>
     </div>
     <div class="line"></div>
     <div class="navBox">  
-      <div class="navItem" :class="itemActive == '0' ? 'active' : ''" @click="itemToggle('0')"> 
-         <!-- <img src="../../../static/images/head1.jpg" mode="aspectFill"> -->
+      <div class="navItem" :class="itemActive == '0' ? 'active' : ''" @click="itemToggle('0')">
          <i class="iconfont icon-huati"></i>
          <p>话题</p>
       </div>
-      <div class="navItem" :class="itemActive == '1' ? 'active' : ''" @click="itemToggle('1')"> 
-         <!-- <img src="../../../static/images/head1.jpg" mode="aspectFill"> -->
+      <div class="navItem" :class="itemActive == '1' ? 'active' : ''" @click="itemToggle('1')">
          <i class="iconfont icon-xiangji"></i>
          <p>状态</p>
       </div>
     </div>
     <!-- 内容列表 -->
     <div class="contentList w94">
+      <div class="contentItem">
+        <!-- <div class="headName">
+          <img src="../../../static/images/head1.jpg" mode="aspectFill" />
+          <span>张小凡</span>
+        </div> -->
+        <div
+          class="content"
+          id="contentInfo"
+          :class="isToggle ?'ellip': ''"
+        >细雨秀江南，江南多雨，尤其是江南春天的烟雨，就像那吴侬软语一般，纷飞的细雨沾湿了一袭素裙，润透了江南女子的心。两袖的花香，轻舞出江南的独特风韵</div>
+        <div v-if="isToggle" class="toggleBox">
+          <div class="more_txt" @click="requireTxt">
+            <span>{{requireAll ? '展开' : '收起'}}</span>
+          </div>
+        </div>
+        <div class="imgsList">
+          <div class="imgsItem">
+            <img src="../../../static/images/c1.png" mode="aspectFill" />
+          </div>
+          <div class="imgsItem">
+            <img src="../../../static/images/c6.png" mode="aspectFill" />
+          </div>
+          <div class="imgsItem">
+            <img src="../../../static/images/c1.png" mode="aspectFill" />
+          </div>
+          <div class="imgsItem">
+            <img src="../../../static/images/c6.png" mode="aspectFill" />
+          </div>
+          <div class="imgsItem">
+            <img src="../../../static/images/c1.png" mode="aspectFill" />
+          </div>
+          <div class="imgsItem">
+            <img src="../../../static/images/c6.png" mode="aspectFill" />
+          </div>
+        </div>
+        <div class="timeHandle">
+          <div class="time">10分钟前</div>
+          <div class="handle">
+            <i class="iconfont icon-aixin"></i>
+            <i class="iconfont icon-pinglun"></i>
+            <i class="iconfont icon-xingtuxuetang-liuyan-"></i>
+          </div>
+        </div>
+      </div>
       <div class="contentItem">
         <!-- <div class="headName">
           <img src="../../../static/images/head1.jpg" mode="aspectFill" />
@@ -93,10 +134,14 @@
 export default {
   data() {
     return {
+      isAttention: false,
       itemActive: 0
     };
   },
   methods: {
+    isAttenToggle(){
+      this.isAttention = ! this.isAttention;
+    },
     itemToggle(num){
       this.itemActive = num
     },
@@ -139,9 +184,30 @@ export default {
     .rightIcon {
       display: flex;
       justify-content: space-around;
-      .iconfont {
-        font-size: 20px;
-        margin-right: 10px;
+      .attention{
+        background-color: #b1a1a3;
+        width: 65px;
+        text-align: center;
+        line-height: 25px;
+        border-radius: 25px;
+        color: #fff;
+        .iconfont {
+          font-size: 20px;
+          margin-right: 2px;
+          color: #fff;
+          display: inline-block;
+          vertical-align: middle;
+        }
+        span{
+          font-size: 12px;
+          vertical-align: middle;
+        }
+        &.attentioned{
+          color: #cbcbcb;
+          background: transparent;
+          font-size: 12px;
+          border: 1px solid #cbcbcb;
+        }
       }
     }
   }
@@ -187,15 +253,22 @@ export default {
     }
     .editInfoBtn{
       font-size: 12px;
-      color: #525151;
-      background-color: #eee;
-      border: 1px solid #707070;
       position: absolute;
-      top: 50%;
+      top: 20%;
       right: 0;
       padding: 4px 15px;
       border-radius: 5px;
       transform: translateY(-50%);
+      line-height: 25px;
+      i{
+        display: inline-block;
+        margin-right: 5px;
+        font-size: 20px;
+        color: #707070;
+      }
+      span{
+        color: #f00;
+      }
     }
   }
   .line{

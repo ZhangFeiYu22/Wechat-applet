@@ -21,16 +21,16 @@
             <img src="../../../static/images/c1.png" mode="aspectFill" />
           </div>
           <div class="imgsItem">
-            <img src="../../../static/images/c2.png" mode="aspectFill" />
+            <img src="../../../static/images/c6.png" mode="aspectFill" />
           </div>
           <div class="imgsItem">
-            <img src="../../../static/images/c3.png" mode="aspectFill" />
+            <img src="../../../static/images/c1.png" mode="aspectFill" />
           </div>
           <div class="imgsItem">
-            <img src="../../../static/images/c4.png" mode="aspectFill" />
+            <img src="../../../static/images/c6.png" mode="aspectFill" />
           </div>
           <div class="imgsItem">
-            <img src="../../../static/images/c5.png" mode="aspectFill" />
+            <img src="../../../static/images/c1.png" mode="aspectFill" />
           </div>
           <div class="imgsItem">
             <img src="../../../static/images/c6.png" mode="aspectFill" />
@@ -67,16 +67,16 @@
             <img src="../../../static/images/c1.png" mode="aspectFill" />
           </div>
           <div class="imgsItem">
-            <img src="../../../static/images/c2.png" mode="aspectFill" />
+            <img src="../../../static/images/c6.png" mode="aspectFill" />
           </div>
           <div class="imgsItem">
-            <img src="../../../static/images/c3.png" mode="aspectFill" />
+            <img src="../../../static/images/c1.png" mode="aspectFill" />
           </div>
           <div class="imgsItem">
-            <img src="../../../static/images/c4.png" mode="aspectFill" />
+            <img src="../../../static/images/c6.png" mode="aspectFill" />
           </div>
           <div class="imgsItem">
-            <img src="../../../static/images/c5.png" mode="aspectFill" />
+            <img src="../../../static/images/c1.png" mode="aspectFill" />
           </div>
           <div class="imgsItem">
             <img src="../../../static/images/c6.png" mode="aspectFill" />
