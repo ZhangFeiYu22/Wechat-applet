@@ -1,7 +1,7 @@
 <template>
   <div class="myInfo">
     <div class="headImg">
-      <img src="../../../static/images/head1.jpg" mode="aspectFill">
+      <img src="../../../static/images/aaa1.png" mode="aspectFill">
     </div>
     <div class="infoList">
       <div class="infoItem">
@@ -47,10 +47,11 @@ export default {
 .myInfo{
   .headImg{
     text-align: center;
-    padding: 10px 0 20px;
+    padding: 10px 0 20px; 
     img{
       width: 70px;
       height: 70px;
+      border-radius: 100%;
     }
   }
   .infoList{

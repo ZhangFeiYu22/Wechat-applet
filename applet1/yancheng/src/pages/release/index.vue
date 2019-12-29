@@ -8,7 +8,12 @@ export default {
     return {};
   },
   methods: {},
-  moubted() {}
+  onShow() {
+    console.log(1)
+    wx.reLaunch({
+      url: "/pages/releaseRealy/main"
+    });
+  }
 };
 </script>
 

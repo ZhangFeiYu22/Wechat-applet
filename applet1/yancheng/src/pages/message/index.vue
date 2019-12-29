@@ -3,7 +3,7 @@
     <div class="friendsList">
       <div class="friendsItem" @click="goMessageDetail">
         <div class="imgBox">
-          <img src="../../../static/images/head1.jpg" mode="aspectFill" />
+          <img src="../../../static/images/aaa1.png" mode="aspectFill" />
         </div>
         <div class="wordBox">
           <p class="name">
@@ -18,7 +18,7 @@
       </div>
       <div class="friendsItem" @click="goMessageDetail">
         <div class="imgBox">
-          <img src="../../../static/images/head1.jpg" mode="aspectFill" />
+          <img src="../../../static/images/aaa1.png" mode="aspectFill" />
         </div>
         <div class="wordBox">
           <p class="name">
@@ -69,6 +69,8 @@ export default {
         width: 46px;
         height: 46px;
         margin-right: 15px;
+        border-radius: 100%;
+        overflow: hidden;
         img {
           width: 100%;
           height: 100%;

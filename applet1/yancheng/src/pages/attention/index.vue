@@ -7,7 +7,7 @@
     <div class="friendsList list" v-if="itemActive == 0">
       <div class="friendsItem item">
         <div class="imgBox">
-          <img src="../../../static/images/head1.jpg" mode="aspectFill">
+          <img src="../../../static/images/aaa1.png" mode="aspectFill">
         </div>
         <div class="wordBox">
           <p class="name"><span>张小凡</span><i class="iconfont icon-nan"></i></p>
@@ -16,7 +16,7 @@
       </div>
       <div class="friendsItem item">
         <div class="imgBox">
-          <img src="../../../static/images/head1.jpg" mode="aspectFill">
+          <img src="../../../static/images/aaa1.png" mode="aspectFill">
         </div>
         <div class="wordBox">
           <p class="name"><span>张小凡</span><i class="iconfont icon-nan"></i></p>
@@ -27,7 +27,7 @@
     <div class="activityList list" v-else>
       <div class="activityItem item">
         <div class="imgBox">
-          <img src="../../../static/images/head1.jpg" mode="aspectFill" />
+          <img src="../../../static/images/aaa1.png" mode="aspectFill" />
         </div>
         <div class="wordBox">
           <p class="title">安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和</p>
@@ -37,7 +37,7 @@
       </div>
       <div class="activityItem item">
         <div class="imgBox">
-          <img src="../../../static/images/head1.jpg" mode="aspectFill" />
+          <img src="../../../static/images/aaa1.png" mode="aspectFill" />
         </div>
         <div class="wordBox">
           <p class="title">安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和</p>
@@ -114,6 +114,8 @@ export default {
         width: 46px;
         height: 46px;
         margin-right: 15px;
+        border-radius: 100%;
+        overflow: hidden;
         img{
           width: 100%;
           height: 100%;

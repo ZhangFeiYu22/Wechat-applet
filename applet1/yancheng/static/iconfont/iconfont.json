@@ -20,11 +20,32 @@
       "unicode_decimal": 58937
     },
     {
+      "icon_id": "571728",
+      "name": "添加",
+      "font_class": "tianjia",
+      "unicode": "e631",
+      "unicode_decimal": 58929
+    },
+    {
+      "icon_id": "736502",
+      "name": "礼物",
+      "font_class": "liwu",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
       "icon_id": "849760",
       "name": "手机",
       "font_class": "shouji",
       "unicode": "e70a",
       "unicode_decimal": 59146
+    },
+    {
+      "icon_id": "1063587",
+      "name": "减少",
+      "font_class": "iconless",
+      "unicode": "e637",
+      "unicode_decimal": 58935
     },
     {
       "icon_id": "1166550",
@@ -41,6 +62,20 @@
       "unicode_decimal": 58894
     },
     {
+      "icon_id": "1506313",
+      "name": "right",
+      "font_class": "right",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    },
+    {
+      "icon_id": "1991486",
+      "name": "骰子",
+      "font_class": "touzi",
+      "unicode": "e76d",
+      "unicode_decimal": 59245
+    },
+    {
       "icon_id": "2638103",
       "name": "发布",
       "font_class": "fabu",
@@ -53,6 +88,13 @@
       "font_class": "huati",
       "unicode": "e659",
       "unicode_decimal": 58969
+    },
+    {
+      "icon_id": "3703056",
+      "name": "投票",
+      "font_class": "navicon-tp",
+      "unicode": "e66d",
+      "unicode_decimal": 58989
     },
     {
       "icon_id": "3992744",
@@ -76,6 +118,13 @@
       "unicode_decimal": 58881
     },
     {
+      "icon_id": "6762247",
+      "name": "发现",
+      "font_class": "faxian",
+      "unicode": "e6b8",
+      "unicode_decimal": 59064
+    },
+    {
       "icon_id": "7117053",
       "name": "客服",
       "font_class": "kefu",
@@ -97,6 +146,13 @@
       "unicode_decimal": 58941
     },
     {
+      "icon_id": "8763649",
+      "name": "皇冠",
+      "font_class": "huangguan",
+      "unicode": "e6c9",
+      "unicode_decimal": 59081
+    },
+    {
       "icon_id": "9413852",
       "name": "定位 位置",
       "font_class": "dingwei",
@@ -109,6 +165,13 @@
       "font_class": "xiangji",
       "unicode": "e64c",
       "unicode_decimal": 58956
+    },
+    {
+      "icon_id": "10043872",
+      "name": "Left",
+      "font_class": "Left",
+      "unicode": "e628",
+      "unicode_decimal": 58920
     },
     {
       "icon_id": "10213153",

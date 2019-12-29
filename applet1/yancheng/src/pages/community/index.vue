@@ -3,7 +3,7 @@
     <div class="contentList w94">
       <div class="contentItem">
         <div class="headName">
-          <img src="../../../static/images/head1.jpg" mode="aspectFill" />
+          <img src="../../../static/images/aaa1.png" mode="aspectFill" />
           <span>张小凡</span>
         </div>
         <div
@@ -49,7 +49,7 @@
     <div class="contentList w94">
       <div class="contentItem">
         <div class="headName">
-          <img src="../../../static/images/head1.jpg" mode="aspectFill" />
+          <img src="../../../static/images/aaa1.png" mode="aspectFill" />
           <span>张小凡</span>
         </div>
         <div
@@ -146,6 +146,7 @@ export default {
           height: 28px;
           vertical-align: middle;
           margin-right: 5px;
+          border-radius: 100%;
         }
         span {
           font-size: 18px;

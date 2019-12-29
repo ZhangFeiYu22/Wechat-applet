@@ -2,7 +2,7 @@
   <div class="my">
     <div class="head">
       <div class="headImg">
-        <img src="../../../static/images/head1.jpg" mode="aspectFill" />
+        <img src="../../../static/images/aaa1.png" mode="aspectFill" />
       </div>
       <div class="rightIcon">
         <i class="iconfont icon-pinglun" @click="goMessage"></i>
@@ -29,12 +29,12 @@
     <div class="line"></div>
     <div class="navBox">  
       <div class="navItem" :class="itemActive == '0' ? 'active' : ''" @click="itemToggle('0')"> 
-         <!-- <img src="../../../static/images/head1.jpg" mode="aspectFill"> -->
+         <!-- <img src="../../../static/images/aaa1.png" mode="aspectFill"> -->
          <i class="iconfont icon-huati"></i>
          <p>话题</p>
       </div>
       <div class="navItem" :class="itemActive == '1' ? 'active' : ''" @click="itemToggle('1')"> 
-         <!-- <img src="../../../static/images/head1.jpg" mode="aspectFill"> -->
+         <!-- <img src="../../../static/images/aaa1.png" mode="aspectFill"> -->
          <i class="iconfont icon-xiangji"></i>
          <p>状态</p>
       </div>
@@ -43,7 +43,7 @@
     <div class="contentList w94">
       <div class="contentItem">
         <!-- <div class="headName">
-          <img src="../../../static/images/head1.jpg" mode="aspectFill" />
+          <img src="../../../static/images/aaa1.png" mode="aspectFill" />
           <span>张小凡</span>
         </div> -->
         <div
@@ -131,6 +131,8 @@ export default {
     .headImg {
       width: 70px;
       height: 70px;
+      border-radius: 100%;
+      overflow: hidden;
       img {
         width: 100%;
         height: 100%;

@@ -14,7 +14,7 @@
     <div class="contentList w94">
       <div class="contentItem" @click.stop="goTopic">
         <div class="headName" @click="goPersonal">
-          <img src="../../../static/images/head1.jpg" mode="aspectFill" />
+          <img src="../../../static/images/aaa1.png" mode="aspectFill" />
           <span>张小凡</span>
         </div>
         <div
@@ -58,7 +58,7 @@
       </div>
       <div class="contentItem" @click.stop="goTopic">
         <div class="headName" @click="goPersonal">
-          <img src="../../../static/images/head1.jpg" mode="aspectFill" />
+          <img src="../../../static/images/aaa1.png" mode="aspectFill" />
           <span>张小凡</span>
         </div>
         <div

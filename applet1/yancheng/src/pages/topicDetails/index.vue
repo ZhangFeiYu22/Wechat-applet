@@ -4,7 +4,7 @@
     <div class="contentItem w94">
       <div class="headName" @click="goPersonal">
         <div class="headImg">
-          <img src="../../../static/images/head1.jpg" mode="aspectFill" />
+          <img src="../../../static/images/aaa1.png" mode="aspectFill" />
         </div>
         <div class="nameTime">
           <p class="name">张小凡</p>
@@ -56,7 +56,7 @@
     <div class="reviceList w94">
       <div class="reviceItem">
         <div class="leftHead">
-          <img src="../../../static/images/head1.jpg" mode="aspectFill" />
+          <img src="../../../static/images/aaa1.png" mode="aspectFill" />
         </div>
         <div class="rightCont">
           <h5 class="name">张小凡</h5>
@@ -74,7 +74,7 @@
       </div>
       <div class="reviceItem">
         <div class="leftHead" @click="goPersonal">
-          <img src="../../../static/images/head1.jpg" mode="aspectFill" />
+          <img src="../../../static/images/aaa1.png" mode="aspectFill" />
         </div>
         <div class="rightCont">
           <h5 class="name">张小凡</h5>
@@ -114,7 +114,7 @@
     <div class="mask" @click.stop="closeMask" v-if="maskVal">
       <div class="maskCont">
         <div class="title">
-          <img src="../../../static/images/head1.jpg" mode="aspectFill" />
+          <img src="../../../static/images/aaa1.png" mode="aspectFill" />
           <span>张小凡</span>
         </div>
         <div class="cont">
@@ -186,6 +186,8 @@ export default {
         width: 46px;
         height: 46px;
         margin-right: 10px;
+        border-radius: 100%;
+        overflow: hidden;
         img {
           width: 100%;
           height: 100%;
@@ -269,6 +271,8 @@ export default {
       .leftHead {
         width: 28px;
         height: 28px;
+        border-radius: 100%;
+        overflow: hidden;
         img {
           width: 100%;
           height: 100%;

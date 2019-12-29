@@ -2,7 +2,7 @@
   <div class="my">
     <div class="head">
       <div class="headImg">
-        <img src="../../../static/images/head1.jpg" mode="aspectFill" />
+        <img src="../../../static/images/aaa1.png" mode="aspectFill" />
       </div>
       <div class="rightIcon" @click="isAttenToggle">
         <p class="attention attentioned" v-if="isAttention">已关注</p>
@@ -40,7 +40,7 @@
     <div class="contentList w94">
       <div class="contentItem">
         <!-- <div class="headName">
-          <img src="../../../static/images/head1.jpg" mode="aspectFill" />
+          <img src="../../../static/images/aaa1.png" mode="aspectFill" />
           <span>张小凡</span>
         </div> -->
         <div
@@ -84,7 +84,7 @@
       </div>
       <div class="contentItem">
         <!-- <div class="headName">
-          <img src="../../../static/images/head1.jpg" mode="aspectFill" />
+          <img src="../../../static/images/aaa1.png" mode="aspectFill" />
           <span>张小凡</span>
         </div> -->
         <div
@@ -176,6 +176,8 @@ export default {
     .headImg {
       width: 70px;
       height: 70px;
+      border-radius: 100%;
+      overflow: hidden;
       img {
         width: 100%;
         height: 100%;
