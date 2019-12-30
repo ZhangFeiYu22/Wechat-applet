@@ -1,0 +1,170 @@
+<template>
+  <div class="voteAdd">
+    <!-- 内容列表 -->
+    <div class="content w94">
+      <textarea
+        class="edit-text"
+        placeholder="请输入投票内容简述..."
+        placeholder-style="color:#dcdcdc"
+        @input="getInputValue"
+      ></textarea>
+      <div class="optionList" v-for="(item,index) in options" :key="index">
+        <i class="iconfont icon-iconless" @click.stop="optionDel(index)"></i>
+        <input
+          type="text"
+          placeholder="输入投票选项"
+          :value="item.name"
+          placeholder-style="color:#c4c4c4"
+        />
+      </div>
+      <div class="optionList optionAdd" @click="optionAdd">
+        <i class="iconfont icon-tianjia"></i>
+        <p>添加投票选项</p>
+      </div>
+
+      <div class="edit-img">
+        <div v-for="(item,index) in imgArr" :key="index">
+          <image :src="item" mode="aspectFill" />
+        </div>
+        <div class="iconfont icon-jiahao" @click.stop="chooseImage"></div>
+      </div>
+    </div>
+
+    <div class="createBtn" @click="publishFun">发布</div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      imgArr: null,
+      options: [{ name: "1" }, { name: "2" }, { name: "3" }]
+    };
+  },
+  methods: {
+    selectOne(num) {
+      this.itemsNum = num;
+    },
+    optionDel(num) {
+      let self = this;
+      wx.showModal({
+        title: "确定删除该选项吗",
+        success(res) {
+          if (res.confirm) {
+            self.options.splice(num, 1);
+          }
+        }
+      });
+    },
+    optionAdd() {
+      if (this.options.length < 6) {
+        this.options.push("");
+      } else {
+        wx.showToast({
+          title: "最多可添加六个选项",
+          icon: "none",
+          duration: 1500
+        });
+      }
+    },
+    chooseImage() {
+      let self = this;
+      wx.chooseImage({
+        count: 9,
+        sizeType: "compressed",
+        sourceType: ["album", "camera"],
+        success(res) {
+          // tempFilePath可以作为img标签的src属性显示图片
+          self.imgArr = res.tempFilePaths;
+        }
+      });
+    },
+    publishFun() {
+      console.log("发布");
+    }
+  }
+};
+</script>
+
+<style lang="less" scoped>
+.voteAdd {
+  width: 96%;
+  height: 96%;
+  left: 2%;
+  top: 2%;
+  box-shadow: 0 0 2px 2px #eee;
+  padding: 15px 0;
+  border-radius: 5px;
+  position: fixed;
+  .content {
+    .edit-text {
+      height: 60px;
+      overflow-y: scroll;
+      font-size: 14px;
+      line-height: 20px;
+      color: #353535;
+    }
+    .optionList {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      line-height: 20px;
+      margin-bottom: 20px;
+      i {
+        width: 30px;
+        color: #ff1010;
+      }
+      input {
+        flex: 1;
+        color: #333;
+        font-size: 12px;
+      }
+    }
+    .optionAdd {
+      i {
+        color: #1097ff;
+      }
+      p {
+        flex: 1;
+        font-size: 12px;
+        color: #1097ff;
+      }
+    }
+    .edit-img {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-content: space-between;
+      image {
+        width: 90px;
+        height: 90px;
+        margin: 0 15px 5px 0;
+      }
+      .icon-jiahao {
+        width: 90px;
+        height: 90px;
+        border: 1px solid #707070;
+        font-size: 30px;
+        color: #888;
+        line-height: 90px;
+        text-align: center;
+      }
+    }
+  }
+
+  .createBtn {
+    background-color: #b1a1a3;
+    color: #fff;
+    font-size: 14px;
+    height: 30px;
+    line-height: 30px;
+    width: 30%;
+    text-align: center;
+    border-radius: 30px;
+    position: fixed;
+    bottom: 5%;
+    left: 35%;
+  }
+}
+</style>

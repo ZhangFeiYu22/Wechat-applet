@@ -1,7 +1,7 @@
 {
   "pages": [
-    "pages/vote/main",
-    "pages/game/main",
+    
+    "pages/activityAdd/main",
     "pages/home/main",
     "pages/my/main",
     "pages/myInfo/main",
@@ -16,8 +16,10 @@
     "pages/topicDetails/main",
     "pages/personal/main",
     "pages/activityDetails/main",
-    "pages/activity/main"
-    
+    "pages/activity/main",
+    "pages/game/main",
+    "pages/vote/main",
+    "pages/voteAdd/main"  
   ],
   "window": {
     "backgroundTextStyle": "light",
