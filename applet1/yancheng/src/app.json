@@ -1,5 +1,7 @@
 {
   "pages": [
+    "pages/vote/main",
+    "pages/game/main",
     "pages/home/main",
     "pages/my/main",
     "pages/myInfo/main",
@@ -12,7 +14,9 @@
     "pages/releaseRealy/main",
     "pages/discover/main",
     "pages/topicDetails/main",
-    "pages/personal/main"
+    "pages/personal/main",
+    "pages/activityDetails/main",
+    "pages/activity/main"
     
   ],
   "window": {

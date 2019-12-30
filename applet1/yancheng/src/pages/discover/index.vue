@@ -1,17 +1,17 @@
 <template>
   <div class="discover">
     <p class="info">这里有发现哦</p>
-    <div class="gameList yellow">
+    <div class="gameList yellow" @click="goActivity">
       <i class="iconfont icon-liwu leftI"></i>
       <p>发现更多活动</p>
       <i class="iconfont icon-right rightI"></i>
     </div>
-    <div class="gameList blue">
+    <div class="gameList blue" @click="goVote">
       <i class="iconfont icon-navicon-tp leftI"></i>
       <p>发现投票专区</p>
       <i class="iconfont icon-right rightI"></i>
     </div>
-    <div class="gameList red">
+    <div class="gameList red" @click="goGame">
       <i class="iconfont icon-touzi  leftI"></i>
       <p>发现骰子出没</p>
       <i class="iconfont icon-right rightI"></i>
@@ -24,7 +24,23 @@ export default {
   data() {
     return {};
   },
-  methods: {},
+  methods: {
+    goActivity() {
+      wx.navigateTo({
+        url: "/pages/activity/main"
+      });
+    },
+    goVote() {
+      wx.navigateTo({
+        url: "/pages/vote/main"
+      });
+    },
+    goGame() {
+      wx.navigateTo({
+        url: "/pages/game/main"
+      });
+    }
+  },
   moubted() {}
 };
 </script>

@@ -25,7 +25,7 @@
       </div>
     </div>
     <div class="activityList list" v-else>
-      <div class="activityItem item">
+      <div class="activityItem item" @click="goActivityDetails">
         <div class="imgBox">
           <img src="../../../static/images/aaa1.png" mode="aspectFill" />
         </div>
@@ -35,7 +35,7 @@
           <p class="time"><i class="iconfont icon-shijian"></i><span>2019.09.09-12.21</span></p>
         </div>
       </div>
-      <div class="activityItem item">
+      <div class="activityItem item" @click="goActivityDetails">
         <div class="imgBox">
           <img src="../../../static/images/aaa1.png" mode="aspectFill" />
         </div>
@@ -59,6 +59,11 @@ export default {
   methods: {
     itemToggle(num){
       this.itemActive = num
+    },
+    goActivityDetails() {
+      wx.navigateTo({
+        url: "/pages/activityDetails/main"
+      });
     }
   }
 };
