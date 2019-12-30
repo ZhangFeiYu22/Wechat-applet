@@ -55,22 +55,22 @@
         </div>
         <div class="imgsList">
           <div class="imgsItem">
-            <img src="../../../static/images/c1.png" mode="aspectFill" />
+            <img src="../../../static/images/aaa1.png" mode="aspectFill" />
           </div>
           <div class="imgsItem">
-            <img src="../../../static/images/c6.png" mode="aspectFill" />
+            <img src="../../../static/images/aaa1.png" mode="aspectFill" />
           </div>
           <div class="imgsItem">
-            <img src="../../../static/images/c1.png" mode="aspectFill" />
+            <img src="../../../static/images/aaa1.png" mode="aspectFill" />
           </div>
           <div class="imgsItem">
-            <img src="../../../static/images/c6.png" mode="aspectFill" />
+            <img src="../../../static/images/aaa1.png" mode="aspectFill" />
           </div>
           <div class="imgsItem">
-            <img src="../../../static/images/c1.png" mode="aspectFill" />
+            <img src="../../../static/images/aaa1.png" mode="aspectFill" />
           </div>
           <div class="imgsItem">
-            <img src="../../../static/images/c6.png" mode="aspectFill" />
+            <img src="../../../static/images/aaa1.png" mode="aspectFill" />
           </div>
         </div>
         <div class="timeHandle">
@@ -99,22 +99,22 @@
         </div>
         <div class="imgsList">
           <div class="imgsItem">
-            <img src="../../../static/images/c1.png" mode="aspectFill" />
+            <img src="../../../static/images/aaa1.png" mode="aspectFill" />
           </div>
           <div class="imgsItem">
-            <img src="../../../static/images/c6.png" mode="aspectFill" />
+            <img src="../../../static/images/aaa1.png" mode="aspectFill" />
           </div>
           <div class="imgsItem">
-            <img src="../../../static/images/c1.png" mode="aspectFill" />
+            <img src="../../../static/images/aaa1.png" mode="aspectFill" />
           </div>
           <div class="imgsItem">
-            <img src="../../../static/images/c6.png" mode="aspectFill" />
+            <img src="../../../static/images/aaa1.png" mode="aspectFill" />
           </div>
           <div class="imgsItem">
-            <img src="../../../static/images/c1.png" mode="aspectFill" />
+            <img src="../../../static/images/aaa1.png" mode="aspectFill" />
           </div>
           <div class="imgsItem">
-            <img src="../../../static/images/c6.png" mode="aspectFill" />
+            <img src="../../../static/images/aaa1.png" mode="aspectFill" />
           </div>
         </div>
         <div class="timeHandle">

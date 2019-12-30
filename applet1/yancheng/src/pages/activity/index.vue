@@ -36,7 +36,7 @@
         <div class="priceBtn">￥20.0</div>
       </div>
     </div>
-    <text class="btn">我要发起</text>
+    <text class="btn" @click="goPublishActivity">我要发起</text>
   </div>
 </template>
 
@@ -49,6 +49,11 @@ export default {
     goActivityDetails() {
       wx.navigateTo({
         url: "/pages/activityDetails/main"
+      });
+    },
+    goPublishActivity(){
+      wx.navigateTo({
+        url: "/pages/activityAdd/main"
       });
     }
   }
