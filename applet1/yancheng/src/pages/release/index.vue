@@ -1,5 +1,5 @@
 <template>
-  <div>发布</div>
+  <div>加载中......</div>
 </template>
 
 <script>

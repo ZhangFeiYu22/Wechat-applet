@@ -48,6 +48,13 @@
       "unicode_decimal": 58935
     },
     {
+      "icon_id": "1071050",
+      "name": "评论1",
+      "font_class": "pinglun1",
+      "unicode": "e66c",
+      "unicode_decimal": 58988
+    },
+    {
       "icon_id": "1166550",
       "name": "加号",
       "font_class": "jiahao",
@@ -118,6 +125,13 @@
       "unicode_decimal": 58881
     },
     {
+      "icon_id": "6548541",
+      "name": "评论",
+      "font_class": "pinglun2",
+      "unicode": "e658",
+      "unicode_decimal": 58968
+    },
+    {
       "icon_id": "6762247",
       "name": "发现",
       "font_class": "faxian",
@@ -183,14 +197,14 @@
     {
       "icon_id": "10461425",
       "name": "收 藏1",
-      "font_class": "guanzhu",
+      "font_class": "aixin0",
       "unicode": "e616",
       "unicode_decimal": 58902
     },
     {
       "icon_id": "10523048",
       "name": "收 藏2",
-      "font_class": "guanzhu1",
+      "font_class": "aixin1",
       "unicode": "e68a",
       "unicode_decimal": 59018
     },
@@ -200,6 +214,13 @@
       "font_class": "fenxiang",
       "unicode": "e642",
       "unicode_decimal": 58946
+    },
+    {
+      "icon_id": "11594378",
+      "name": "点赞",
+      "font_class": "dianzan",
+      "unicode": "e6ac",
+      "unicode_decimal": 59052
     }
   ]
 }
