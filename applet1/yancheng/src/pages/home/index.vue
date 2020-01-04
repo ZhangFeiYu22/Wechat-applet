@@ -40,7 +40,7 @@
     </div>
     <!-- 内容列表 -->
     <div class="contentList w94">
-      <div class="contentItem" v-for="(item,index) in ItemList" :key="index" @click.stop="goTopic">
+      <div class="contentItem" v-for="(item,index) in ItemList" :key="index">
         <div class="headName" @click.stop="goPersonal">
           <img src="../../../static/images/aaa1.png" mode="aspectFill" />
           <span>张小凡</span>
@@ -223,6 +223,7 @@ export default {
       height: 175px;
       border-radius: 8px;
       overflow: hidden;
+      transform: translateY(0);
       .slide-image {
         width: 100%;
         height: 100%;
@@ -328,6 +329,11 @@ export default {
       .toggleBox {
         font-size: 16px;
         color: #6f6d6d;
+        .more_txt{
+          span{
+            border-bottom: 1px solid #6f6d6d;
+          }
+        }
       }
       .imgsList {
         display: flex;

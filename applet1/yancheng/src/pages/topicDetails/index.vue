@@ -1,5 +1,5 @@
 <template>
-  <div class="topicDetails" @click.stop="hideZanAndPinglun">
+  <div class="topicDetails" @click.stop="hideInputFun" @touchmove="hideInputFun">
     <!-- 内容列表 -->
     <div class="contentItem w94">
       <div class="headName" @click="goPersonal">
@@ -105,7 +105,14 @@
         <span>张小凡</span>
       </div>
       <div class="textaCont">
-          <textarea class="textA" auto-focus placeholder="请留下你想说的话，将发送到对方的消息中心" :value="sixinValue" @input="getSixin" placeholder-style="color:#b8b8b8"></textarea>
+        <textarea
+          class="textA"
+          auto-focus
+          placeholder="请留下你想说的话，将发送到对方的消息中心"
+          :value="sixinValue"
+          @input="getSixin"
+          placeholder-style="color:#b8b8b8"
+        ></textarea>
       </div>
     </div>
 
@@ -134,10 +141,10 @@ export default {
       maskVal: false,
       isToggle: false, //是否超过2行？true--超过，false--没有超过
       likeAct: false,
-      sixinValue: '',   //私信内容
-      commentValue: "",  //评论内容
-      showPinLun: false,   //是否显示评论
-      placeholderPL: "评论",   //评论默认显示的字
+      sixinValue: "", //私信内容
+      commentValue: "", //评论内容
+      showPinLun: false, //是否显示评论
+      placeholderPL: "评论", //评论默认显示的字
       details: {
         showEllip: false,
         content:
@@ -205,11 +212,11 @@ export default {
       this.showZanAndPinglunNum = null;
       (this.placeholderPL = "留言: " + "飞鱼"), (this.showPinLun = true);
     },
-    getSixin(e){
+    getSixin(e) {
       this.sixinValue = e.target.value;
     },
     //点选和评论的隐藏通过事件委托到全页面(暂时只实现当条朋友所在区域,全页面和滚动时也隐藏在考虑实现)
-    hideZanAndPinglun() {
+    hideInputFun() {
       this.showPinLun = false;
     },
     getcomment(e) {
@@ -357,6 +364,11 @@ export default {
     .toggleBox {
       font-size: 16px;
       color: #6f6d6d;
+      .more_txt {
+        span {
+          border-bottom: 1px solid #6f6d6d;
+        }
+      }
     }
     .imgsList {
       display: flex;
@@ -531,7 +543,7 @@ export default {
       background-color: #e8e8e8;
       height: 60%;
       padding: 10px;
-      .textA{
+      .textA {
         font-size: 14px;
         width: 100%;
         height: 100%;

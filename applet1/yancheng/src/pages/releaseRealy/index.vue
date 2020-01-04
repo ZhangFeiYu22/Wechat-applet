@@ -1,117 +1,137 @@
 <template>
-  <div class="release">
-    <!-- <text bindtap="saveEditOrNot">取消</text> -->
-    <div class="edit-main">
-      <textarea
-        class="edit-text"
-        placeholder="写下此刻的心声吧..."
-        placeholder-style="color:#dcdcdc"
-        @input="getInputValue"
-      ></textarea>
-      <div class="edit-img">
-        <div v-for="(item,index) in imgArr" :key="index">
-          <image :src="item" mode="aspectFill" />
+  <scroll-view class="scrollView" scroll-y="true" :style="{'height': ktxScreentHeight}">
+    <div class="release">
+      <!-- <text bindtap="saveEditOrNot">取消</text> -->
+      <div class="edit-main">
+        <textarea
+          class="edit-text"
+          placeholder="写下此刻的心声吧..."
+          placeholder-style="color:#dcdcdc"
+          @input="getInputValue"
+        ></textarea>
+        <div class="edit-img">
+          <div v-for="(item,index) in imgArr" :key="index">
+            <image :src="item" mode="aspectFill" />
+          </div>
+          <div class="iconfont icon-jiahao" @click.stop="chooseImage"></div>
         </div>
-        <div class="iconfont icon-jiahao" @click.stop="chooseImage"></div>
       </div>
-    </div>
-    <div class="edit-footer">
-      <div class="footer-row" @click="selectHC">
-        <p class="rowI left">
-          <i class="iconfont icon-fabu"></i>
-          <span>发布栏目</span>
-        </p>
-        <p class="rowI right">
-          <span>{{hcName}}</span>
-          <i class="iconfont icon-right"></i>
-        </p>
-      </div>
-      <div class="footer-row" @click="selectC" v-if="communityShow">
-        <p class="rowI left">
-          <i class="iconfont icon-lanmu"></i>
-          <span>频道与话题</span>
-        </p>
-        <p class="rowI right">
-          <span>{{cName}}</span>
-          <i class="iconfont icon-right"></i>
-        </p>
-      </div>
-      <div class="footer-row" v-else>
-        <p class="rowI left no">
-          <i class="iconfont icon-lanmu no"></i>
-          <span class="no">频道与话题</span>
-        </p>
-        <p class="rowI right no">
-          <i class="iconfont icon-right no"></i>
-        </p>
-      </div>
-    </div>
-    <text class="publishBtn" @click="postData">发布</text>
-    <div class="mask" v-if="maskShow">
-      <h5>选择栏目</h5>
-      <div class="hc home" @click="selectHome">
-        <i class="iconfont icon-huangguan"></i>
-        <p>首页话题栏目</p>
-      </div>
-      <div class="hc community" @click="selectCommunity">
-        <i class="iconfont icon-faxian"></i>
-        <p>社区状态栏目</p>
-      </div>
-    </div>
-    <!-- communityMaskShow -->
-    <div class="communityMask" v-if="communityMaskShow">
-      <p class="info">选择主题频道与话题，你就是城谜里最靓的仔</p>
-      <div class="kinds" v-for="(item,index) in kinds" :key="index">
-        <p class="kindName">{{item.kindName}}</p>
-        <ul>
-          <li v-for="(lis,num) in item.kindList" :key="num" @click="selectKindName(lis.name)">{{lis.name}}</li>
-        </ul>
+      <div class="edit-footer">
+        <div class="footer-row" @click="selectHC">
+          <p class="rowI left">
+            <i class="iconfont icon-fabu"></i>
+            <span>发布栏目</span>
+          </p>
+          <p class="rowI right">
+            <span>{{hcName}}</span>
+            <i class="iconfont icon-right"></i>
+          </p>
+        </div>
+        <div class="footer-row" @click="selectC" v-if="communityShow">
+          <p class="rowI left">
+            <i class="iconfont icon-lanmu"></i>
+            <span>频道与话题</span>
+          </p>
+          <p class="rowI right">
+            <span>{{cName}}</span>
+            <i class="iconfont icon-right"></i>
+          </p>
+        </div>
+        <div class="footer-row" v-else>
+          <p class="rowI left no">
+            <i class="iconfont icon-lanmu no"></i>
+            <span class="no">频道与话题</span>
+          </p>
+          <p class="rowI right no">
+            <i class="iconfont icon-right no"></i>
+          </p>
+        </div>
       </div>
 
+      <cover-view  class="publishBtn" @click="postData">发布</cover-view >
+
+      <div class="mask" v-if="maskShow">
+        <h5>选择栏目</h5>
+        <div class="hc home" @click="selectHome">
+          <i class="iconfont icon-huangguan"></i>
+          <p>首页话题栏目</p>
+        </div>
+        <div class="hc community" @click="selectCommunity">
+          <i class="iconfont icon-faxian"></i>
+          <p>社区状态栏目</p>
+        </div>
+      </div>
+      <!-- communityMaskShow -->
+      <div class="communityMask" v-if="communityMaskShow">
+        <p class="info">选择主题频道与话题，你就是城谜里最靓的仔</p>
+        <div class="kinds" v-for="(item,index) in kinds" :key="index">
+          <p class="kindName">{{item.kindName}}</p>
+          <ul>
+            <li
+              v-for="(lis,num) in item.kindList"
+              :key="num"
+              @click="selectKindName(lis.name)"
+            >{{lis.name}}</li>
+          </ul>
+        </div>
+      </div>
     </div>
-  </div>
+  </scroll-view>
 </template>
 
 <script>
 export default {
   data() {
     return {
+      ktxScreentHeight: '',
       textareaTxt: null,
       imgArr: null,
       location: null,
       maskShow: false,
-      communityMaskShow:false,
-      hcName: "",  //选择是首页还是社区
-      cName: '',  //选择社区的时候  选择什么栏目
+      communityMaskShow: false,
+      hcName: "", //选择是首页还是社区
+      cName: "", //选择社区的时候  选择什么栏目
       kinds: [
-        {kindName: '情绪',kindList:[
-          {name: '恋爱'},
-          {name: '吐槽'},
-          {name: '秘密'},
-          {name: '开心'},
-          {name: '兴奋'}
-        ]},
-        {kindName: '社交',kindList:[
-          {name: '恋爱'},
-          {name: '吐槽'},
-          {name: '秘密'},
-          {name: '开心'},
-          {name: '兴奋'}
-        ]},
-        {kindName: '爱好',kindList:[
-          {name: '恋爱'},
-          {name: '吐槽'},
-          {name: '秘密'},
-          {name: '开心'},
-          {name: '兴奋'}
-        ]},
-        {kindName: '生活',kindList:[
-          {name: '恋爱'},
-          {name: '吐槽'},
-          {name: '秘密'},
-          {name: '开心'},
-          {name: '兴奋'}
-        ]}
+        {
+          kindName: "情绪",
+          kindList: [
+            { name: "恋爱" },
+            { name: "吐槽" },
+            { name: "秘密" },
+            { name: "开心" },
+            { name: "兴奋" }
+          ]
+        },
+        {
+          kindName: "社交",
+          kindList: [
+            { name: "恋爱" },
+            { name: "吐槽" },
+            { name: "秘密" },
+            { name: "开心" },
+            { name: "兴奋" }
+          ]
+        },
+        {
+          kindName: "爱好",
+          kindList: [
+            { name: "恋爱" },
+            { name: "吐槽" },
+            { name: "秘密" },
+            { name: "开心" },
+            { name: "兴奋" }
+          ]
+        },
+        {
+          kindName: "生活",
+          kindList: [
+            { name: "恋爱" },
+            { name: "吐槽" },
+            { name: "秘密" },
+            { name: "开心" },
+            { name: "兴奋" }
+          ]
+        }
       ]
     };
   },
@@ -119,12 +139,16 @@ export default {
     communityShow() {
       if (this.hcName == "首页") {
         return false;
-      } else if(this.hcName == "社区"){
+      } else if (this.hcName == "社区") {
         return true;
-      }else{
+      } else {
         return false;
       }
     }
+  },
+  mounted () {
+    let systemInfo = wx.getSystemInfoSync();
+    this.ktxScreentHeight = systemInfo.windowHeight * 0.98 + 'px';
   },
   methods: {
     // saveEditOrNot() {
@@ -158,9 +182,9 @@ export default {
     selectC() {
       this.communityMaskShow = true;
     },
-    selectKindName(val){
+    selectKindName(val) {
       this.communityMaskShow = false;
-      this.cName = val
+      this.cName = val;
     },
     getInputValue(e) {
       this.textareaTxt = e.detail.value;
@@ -196,24 +220,28 @@ export default {
       //   }
       // });
     }
-  },
-  moubted() {}
+  }
 };
 </script>
 
 <style lang="less" scoped>
+.scrollView {
+  overflow: hidden;
+}
 .release {
-  position: fixed;
+  // position: fixed;
   width: 94%;
-  height: 96%;
-  top: 2%;
-  left: 3%;
+  height: 94%;
+  // top: 2%;
+  // left: 3%;
+  margin: 3%;
   border-radius: 5px;
   box-shadow: 0 0 2px 2px #eee;
   padding: 15px;
   .edit-main {
     .edit-text {
-      height: 100px;
+      height: 104px;
+      padding: 2px 0;
       overflow-y: scroll;
       font-size: 14px;
       line-height: 20px;
@@ -287,7 +315,7 @@ export default {
   }
   .publishBtn {
     position: absolute;
-    bottom: 20px;
+    bottom: 10%;
     left: 50%;
     width: 120px;
     text-align: center;
@@ -342,7 +370,7 @@ export default {
       }
     }
   }
-  .communityMask{
+  .communityMask {
     background-color: #fff;
     position: fixed;
     z-index: 2;
@@ -350,16 +378,16 @@ export default {
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 10px 15px; 
-    .info{
+    padding: 10px 15px;
+    .info {
       font-size: 14px;
       color: #a6a6a6;
       line-height: 20px;
       margin-bottom: 15px;
     }
-    .kinds{
+    .kinds {
       margin-bottom: 20px;
-      .kindName{
+      .kindName {
         font-size: 16px;
         color: #000;
         font-weight: 600;
@@ -367,9 +395,9 @@ export default {
         border-left: 2px solid #b1a1a3;
         padding-left: 10px;
       }
-      ul{
+      ul {
         padding: 10px 12px;
-        li{
+        li {
           display: inline-block;
           margin: 0 25px 10px 0;
           font-size: 14px;

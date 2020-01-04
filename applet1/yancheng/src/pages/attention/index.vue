@@ -5,7 +5,7 @@
       <div class="navI" :class="itemActive == '1' ? 'active' : ''" @click="itemToggle('1')">活动</div>
     </div>
     <div class="friendsList list" v-if="itemActive == 0">
-      <div class="friendsItem item">
+      <div class="friendsItem item" @click="goPersonal">
         <div class="imgBox">
           <img src="../../../static/images/aaa1.png" mode="aspectFill">
         </div>
@@ -14,7 +14,7 @@
           <p class="info">要成为世界第一的梦珂宝训练大师大师大师要成为世界第一的梦珂宝训练大师大师大师</p>
         </div>
       </div>
-      <div class="friendsItem item">
+      <div class="friendsItem item" @click="goPersonal">
         <div class="imgBox">
           <img src="../../../static/images/aaa1.png" mode="aspectFill">
         </div>
@@ -59,6 +59,11 @@ export default {
   methods: {
     itemToggle(num){
       this.itemActive = num
+    },
+    goPersonal() {
+      wx.navigateTo({
+        url: "/pages/personal/main"
+      });
     },
     goActivityDetails() {
       wx.navigateTo({

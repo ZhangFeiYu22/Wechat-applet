@@ -371,6 +371,11 @@ export default {
       .toggleBox {
         font-size: 16px;
         color: #6f6d6d;
+        .more_txt{
+          span{
+            border-bottom: 1px solid #6f6d6d;
+          }
+        }
       }
       .imgsList {
         display: flex;

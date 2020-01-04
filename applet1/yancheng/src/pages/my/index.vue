@@ -41,7 +41,7 @@
     </div>
     <!-- 内容列表 -->
     <div class="contentList w94">
-      <div class="contentItem" v-for="(item,index) in ItemList" :key="index" @click.stop="goTopic">
+      <div class="contentItem" v-for="(item,index) in ItemList" :key="index">
         <!-- <div class="headName" @click.stop="goPersonal">
           <img src="../../../static/images/aaa1.png" mode="aspectFill" />
           <span>张小凡</span>

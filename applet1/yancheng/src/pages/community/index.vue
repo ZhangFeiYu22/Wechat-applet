@@ -3,7 +3,7 @@
     <div class="contentList w94">
       <div class="contentItem" v-for="(item,index) in ItemList" :key="item.id">
         <!-- 头像 -->
-        <div class="headName">
+        <div class="headName" @click.stop="goPersonal">
           <img src="../../../static/images/aaa1.png" mode="aspectFill" />
           <span>张小凡</span>
         </div>
@@ -145,6 +145,11 @@ export default {
         this.isToggle = true;
         this.requireAll = true;
       }
+    },
+    goPersonal() {
+      wx.navigateTo({
+        url: "/pages/personal/main"
+      });
     },
     zanHandle() {
       this.showZanAndPinglunNum = null;
@@ -303,6 +308,11 @@ export default {
       .toggleBox {
         font-size: 16px;
         color: #6f6d6d;
+        .more_txt{
+          span{
+            border-bottom: 1px solid #6f6d6d;
+          }
+        }
       }
       .imgsList {
         display: flex;

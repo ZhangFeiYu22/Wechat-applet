@@ -1,94 +1,105 @@
 <template>
-  <div class="voteAdd">
-    <!-- 内容列表 -->
-    <div class="content w94">
-      <textarea
-        class="edit-text"
-        placeholder="标题"
-        placeholder-style="color:#dcdcdc"
-        @input="getInputValueTitle"
-      ></textarea>
-      <div class="edit-img">
-        <div v-for="(item,index) in imgArr1" :key="index">
-          <image :src="item" mode="aspectFill" />
-        </div>
-        <div class="iconfont icon-jiahao" @click.stop="chooseImageOne"></div>
-      </div>
-      <div class="line">
-        <div class="left">是否收费：</div>
-        <div class="right isno">
-          <span class="bg" :class="bga?'bg_a':''" @click="toggleBag('1')">是</span>
-          <span class="bg" :class="bga?'':'bg_a'" @click="toggleBag('0')">否</span>
-        </div>
-      </div>
-      <div class="line">
-        <div class="left">费用：</div>
-        <div class="right cost">
-          <input type="text" />
-          <span>元</span>
-        </div>
-      </div>
-      <div class="line">
-        <div class="left">时间：</div>
-        <div class="right">
-          <input type="text" placeholder="2019.12.01-12.02" placeholder-style="color:#D1CFCF" />
-        </div>
-      </div>
-      <div class="line">
-        <div class="left">地点：</div>
-        <div class="right">
-          <input type="text" placeholder="江苏省 南京市 栖霞区" placeholder-style="color:#D1CFCF" />
-        </div>
-      </div>
-      <div class="line detail">
-        <div class="left">详细：</div>
-        <div class="right">
-          <input type="text" placeholder="街道\路名\门牌号" placeholder-style="color:#D1CFCF" />
-        </div>
-      </div>
-      <div class="linebg"></div>
-      <div class="bb">
-        <p class="tt">活动详情</p>
+  <scroll-view class="scrollView" scroll-y="true" :style="{'width': ktxScreentWidth,'height': ktxScreentHeight}">
+    <div class="voteAdd">
+      <!-- 内容列表 -->
+      <div class="content w94">
         <textarea
           class="edit-text"
-          placeholder="文字描述"
-          placeholder-style="color:#dcdcdc"
-          @input="getInputValueDetail"
+          placeholder="标题"
+          placeholder-style="color:#dcdcdc;font-size:15px;"
+          @input="getInputValueTitle"
         ></textarea>
         <div class="edit-img">
-        <div v-for="(item,index) in imgArr2" :key="index">
-          <image :src="item" mode="aspectFill" />
+          <div v-for="(item,index) in imgArr1" :key="index">
+            <image :src="item" mode="aspectFill" />
+          </div>
+          <div class="iconfont icon-jiahao" @click.stop="chooseImageOne"></div>
         </div>
-        <div class="iconfont icon-jiahao" @click.stop="chooseImageTwo"></div>
+        <div class="line">
+          <div class="left">是否收费：</div>
+          <div class="right isno">
+            <span class="bg" :class="bga?'bg_a':''" @click="toggleBag('1')">是</span>
+            <span class="bg" :class="bga?'':'bg_a'" @click="toggleBag('0')">否</span>
+          </div>
+        </div>
+        <div class="line">
+          <div class="left">费用：</div>
+          <div class="right cost">
+            <input type="text" />
+            <span>元</span>
+          </div>
+        </div>
+        <div class="line">
+          <div class="left">时间：</div>
+          <div class="right">
+            <input type="text" placeholder="2019.12.01-12.02" placeholder-style="color:#D1CFCF" />
+          </div>
+        </div>
+        <div class="line">
+          <div class="left">地点：</div>
+          <div class="right">
+            <input type="text" placeholder="江苏省 南京市 栖霞区" placeholder-style="color:#D1CFCF" />
+          </div>
+        </div>
+        <div class="line detail">
+          <div class="left">详细：</div>
+          <div class="right">
+            <input type="text" placeholder="街道\路名\门牌号" placeholder-style="color:#D1CFCF" />
+          </div>
+        </div>
+        <div class="linebg"></div>
+        <div class="bb">
+          <p class="tt">活动详情</p>
+          <textarea
+            class="edit-text"
+            placeholder="文字描述"
+            placeholder-style="color:#dcdcdc"
+            @input="getInputValueDetail"
+          ></textarea>
+          <div class="edit-img">
+            <div v-for="(item,index) in imgArr2" :key="index">
+              <image :src="item" mode="aspectFill" />
+            </div>
+            <div class="iconfont icon-jiahao" @click.stop="chooseImageTwo"></div>
+          </div>
+        </div>
+        <div class="bb">
+          <p class="tt">活动须知</p>
+          <textarea
+            class="edit-text"
+            placeholder="文字描述"
+            placeholder-style="color:#dcdcdc"
+            @input="getInputValueNotice"
+          ></textarea>
+        </div>
       </div>
-      </div>
-      <div class="bb">
-        <p class="tt">活动须知</p>
-        <textarea
-          class="edit-text"
-          placeholder="文字描述"
-          placeholder-style="color:#dcdcdc"
-          @input="getInputValueNotice"
-        ></textarea>
-      </div>
-    </div>
 
-    <div class="createBtn" @click="publishFun">发布</div>
-  </div>
+      <cover-view class="createBtn" @click="publishFun">发布</cover-view>
+    </div>
+  </scroll-view>
 </template>
 
 <script>
 export default {
   data() {
     return {
-      txtTitle: '', 
-      txtDetail: '',  
-      txtNotice: '',
+      ktxScreentWidth: '',
+      ktxScreentHeight: '',
+      txtTitle: "",
+      txtDetail: "",
+      txtNotice: "",
       imgArr1: null,
       imgArr2: null,
       options: [{ name: "1" }, { name: "2" }, { name: "3" }],
       bga: true
     };
+  },
+  mounted() {
+    let systemInfo = wx.getSystemInfoSync();
+    console.log('0---',systemInfo)
+    // 屏幕的高度
+    this.ktxScreentWidth = systemInfo.windowWidth * 0.94 + 'px';
+    this.ktxScreentHeight = systemInfo.windowHeight * 0.96 + 'px';
   },
   methods: {
     selectOne(num) {
@@ -142,18 +153,26 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.voteAdd {
-  width: 96%;
-  height: 96%;
-  left: 2%;
-  top: 2%;
+.scrollView {
+  margin: 3% auto 0;
   box-shadow: 0 0 2px 2px #eee;
-  padding: 15px 0;
   border-radius: 5px;
-  position: fixed;
-  overflow-y: scroll;
+}
+.voteAdd {
+  // width: 94%;
+  // height: 94%;
+  // left: 2%;
+  // top: 2%;
+  // box-shadow: 0 0 2px 2px #eee;
+  padding: 15px 0;
+  // border-radius: 5px;
+  // position: fixed;
+  // overflow-y: scroll;
+  // margin: 3%;
   .edit-text {
-    height: 60px;
+    height: 64px;
+    padding: 2px 0;
+    width: 100%;
     overflow-y: scroll;
     font-size: 12px;
     line-height: 20px;

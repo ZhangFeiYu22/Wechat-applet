@@ -32,14 +32,18 @@
 
     <div class="footerBox">
       <div class="other">
-        <p class="share">
-          <i class="iconfont icon-aixin"></i>
-          <span>关注</span>
+        <p @click.stop="likeFun">
+          <i class="iconfont icon-aixin" :class="likeAct?'icon-aixin1':'icon-aixin0'"></i>
+          <span>喜欢</span>
         </p>
-        <p>
+        <!-- <p>
           <i class="iconfont icon-fenxiang"></i>
           <span>分享</span>
-        </p>
+        </p>-->
+        <button class="share" open-type="share">
+          <i class="iconfont icon-fenxiang"></i>
+          <span>分享</span>
+        </button>
         <p>
           <i class="iconfont icon-kefu"></i>
           <span>客服</span>
@@ -79,7 +83,8 @@
 export default {
   data() {
     return {
-      joinMaskShow: false,
+      likeAct: false,
+      joinMaskShow: false
     };
   },
   methods: {
@@ -88,9 +93,33 @@ export default {
         url: "/pages/personal/main"
       });
     },
-    joinMaskToggle(){
-      this.joinMaskShow = !this.joinMaskShow
+    joinMaskToggle() {
+      this.joinMaskShow = !this.joinMaskShow;
+    },
+    likeFun() {
+      this.likeAct = !this.likeAct;
+      if (this.likeAct) {
+        wx.showToast({
+          title: "收藏成功",
+          icon: "none",
+          duration: 1500
+        });
+      } else {
+        wx.showToast({
+          title: "取消收藏",
+          icon: "none",
+          duration: 1500
+        });
+      }
     }
+  },
+  onShareAppMessage: function(res) {
+    return {
+      title: "分享标题",
+      // path: `/pages/topicDetails/main?topic_id=${id}`,
+      path: `/pages/topicDetails/main?topic_id=6`,
+      imageUrl: "https://www.vue-js.com//public/images/vue.png"
+    };
   }
 };
 </script>
@@ -198,6 +227,20 @@ export default {
           color: #393939;
         }
       }
+      .share {
+        vertical-align: middle;
+        line-height: 30px;
+        background-color: transparent;
+        border-radius: 0;
+        padding: 0;
+        margin: 0;
+        &::after {
+          border: none;
+        }
+        span {
+          font-size: 14px;
+        }
+      }
     }
   }
 
@@ -236,12 +279,12 @@ export default {
       width: 90%;
       margin: 0 auto;
       padding: 10px;
-      .ppp{
+      .ppp {
         color: #393939;
         font-size: 14px;
         margin-bottom: 10px;
       }
-      .btn{
+      .btn {
         background-color: #b1a1a3;
         color: #fff;
         font-size: 14px;
