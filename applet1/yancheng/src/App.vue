@@ -8,7 +8,6 @@ export default {
   onLaunch() {
     wx.getSystemInfo({
       success: res => {
-        console.log(res)
         // let statusBarHeight = res.statusBarHeight,
         //   navTop = menuButtonObject.top, //胶囊按钮与顶部的距离
         //   navHeight =
@@ -52,7 +51,7 @@ export default {
     // wx.hideTabBar()
     // 获取系统信息，适配iphoneX
 
-    console.log(store);
+    // console.log(store);
     store.dispatch("getSystemInfo");
   },
   log() {

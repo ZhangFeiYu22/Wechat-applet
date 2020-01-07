@@ -15,7 +15,7 @@ export default new Vuex.Store({
     actions: {
         getSystemInfo({commit, state}){
             return new Promise((resolve, reject) => {
-                console.log(state)
+                // console.log(state)
                 if (state.systemInfo) {
                     resolve(state.systemInfo)
                 } else {
