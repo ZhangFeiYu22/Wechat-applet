@@ -1,23 +1,38 @@
 <template>
-  <div>加载中......</div>
+  <div></div>
 </template>
 
 <script>
 export default {
   data() {
-    return {};
+    return {
+      num: 0
+    };
   },
   methods: {},
   onShow() {
-    console.log(1)
-    wx.reLaunch({
-      url: "/pages/releaseRealy/main"
-    });
+    this.num++;
+    if (wx.getStorageSync("tabItemClick")) {
+      if (this.num % 2 == 0) {
+        let backUrl = "/" + wx.getStorageSync("tabItemClick");
+        console.log("返回两层", backUrl);
+        wx.switchTab({
+          url: backUrl
+        });
+      } else {
+        wx.navigateTo({
+          url: "/pages/releaseRealy/main"
+        });
+      }
+    } else {
+      wx.navigateTo({
+        url: "/pages/releaseRealy/main"
+      });
+      wx.setStorageSync("tabItemClick", "pages/home/main");
+    }
   }
 };
 </script>
 
 <style scoped>
-
-
 </style>

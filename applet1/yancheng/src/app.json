@@ -1,5 +1,7 @@
 {
   "pages": [
+    "pages/discover/main",
+    "pages/firstHome/main",
     "pages/home/main",
     "pages/my/main",
     "pages/myInfo/main",
@@ -10,7 +12,7 @@
     "pages/community/main",
     "pages/release/main",
     "pages/releaseRealy/main",
-    "pages/discover/main",
+    
     "pages/topicDetails/main",
     "pages/personal/main",
     "pages/activity/main",
@@ -32,7 +34,6 @@
     "backgroundColor": "#fafafa",
     "selectedColor": "#333",
     "borderStyle": "white",
-
     "list": [{
       "pagePath": "pages/home/main",
       "iconPath": "static/tabbar/home.png",

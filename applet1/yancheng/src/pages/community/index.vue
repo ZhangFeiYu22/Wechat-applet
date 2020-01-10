@@ -266,7 +266,9 @@ export default {
       // })
     }
   },
-  moubted() {}
+  onTabItemTap(item) {
+    wx.setStorageSync('tabItemClick', item.pagePath)
+  },
 };
 </script>
 
