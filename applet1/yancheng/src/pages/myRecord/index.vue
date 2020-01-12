@@ -1,8 +1,45 @@
 <template>
-  <div class="vote">
-    <!-- 内容列表 -->
-    <div class="contentList">
-      <div class="contentItem w94" v-for="(item,index) in ItemList" :key="index">
+  <div class="attention">
+    <div class="navToggle">
+      <div class="navI" :class="itemActive == '1' ? 'active' : ''" @click="itemToggle('1')">活动</div>
+      <div class="navI" :class="itemActive == '0' ? 'active' : ''" @click="itemToggle('0')">投票</div>
+    </div>
+    <div class="activityList list" v-if="itemActive == 1">
+      <div class="activityItem item" @click="goActivityDetails">
+        <div class="imgBox">
+          <img src="../../../static/images/aaa1.png" mode="aspectFill" />
+        </div>
+        <div class="wordBox">
+          <p class="title">安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和</p>
+          <p class="address">
+            <i class="iconfont icon-dingwei"></i>
+            <span>江苏省南京市大行宫</span>
+          </p>
+          <p class="time">
+            <i class="iconfont icon-shijian"></i>
+            <span>2019.09.09-12.21</span>
+          </p>
+        </div>
+      </div>
+      <div class="activityItem item" @click="goActivityDetails">
+        <div class="imgBox">
+          <img src="../../../static/images/aaa1.png" mode="aspectFill" />
+        </div>
+        <div class="wordBox">
+          <p class="title">安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和</p>
+          <p class="address">
+            <i class="iconfont icon-dingwei"></i>
+            <span>江苏省南京市大行宫</span>
+          </p>
+          <p class="time">
+            <i class="iconfont icon-shijian"></i>
+            <span>2019.09.09-12.21</span>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="voteList list" v-else>
+      <div class="contentItem" v-for="(item,index) in ItemList" :key="index">
         <div class="headName" @click="goPersonal">
           <div class="headImg">
             <img src="../../../static/images/aaa1.png" mode="aspectFill" />
@@ -43,7 +80,6 @@
             :key="lindex"
             color="#1097FF"
             :class="itemsNum == lindex ? 'active' : ''"
-            @click="selectOne(lindex)"
           >
             <i class="sel"></i>
             <p class="miaosu">{{litem.value}}</p>
@@ -59,8 +95,6 @@
         </div>
       </div>
     </div>
-
-    <div class="createBtn" @click="goCreateVote">创建投票</div>
   </div>
 </template>
 
@@ -68,8 +102,7 @@
 export default {
   data() {
     return {
-      maskVal: false,
-      itemsNum: "",
+      itemActive: 1,
       listItems: [
         { name: "USA", value: "美国" },
         { name: "CHN", value: "中国" },
@@ -101,36 +134,17 @@ export default {
     };
   },
   methods: {
-    requireTxt(index) {
-      let val = this.ItemList[index].showEllip;
-      if (val) {
-        this.ItemList[index].showEllip = false;
-      } else {
-        this.ItemList[index].showEllip = true;
-      }
+    itemToggle(num) {
+      this.itemActive = num;
     },
     goPersonal() {
       wx.navigateTo({
         url: "/pages/personal/main"
       });
     },
-    //点击朋友圈图片,弹出框预览大图
-    showImg(index, imgIndex) {
-      let outIdx = index;
-      let inIdx = imgIndex;
-      let imgArr = this.ItemList[outIdx].picList;
-      console.log(imgArr);
-      wx.previewImage({
-        current: imgArr[inIdx], // 当前显示图片的http链接
-        urls: imgArr // 需要预览的图片http链接列表
-      });
-    },
-    selectOne(num) {
-      this.itemsNum = num;
-    },
-    goCreateVote() {
+    goActivityDetails() {
       wx.navigateTo({
-        url: "/pages/voteAdd/main"
+        url: "/pages/activityDetails/main"
       });
     }
   }
@@ -138,18 +152,57 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.vote {
-  padding-bottom: 30px;
-  .contentList {
-    width: 95%;
+.attention {
+  .navToggle {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 15px;
+    .navI {
+      text-align: center;
+      padding: 10px 0 20px;
+      font-size: 18px;
+      color: #424242;
+      &.active {
+        color: #333;
+        font-weight: 600;
+        position: relative;
+        &::after {
+          display: block;
+          content: "";
+          position: absolute;
+          width: 30px;
+          height: 5px;
+          background-color: #b1a1a3;
+          bottom: 10px;
+          left: 50%;
+          margin-left: -15px;
+          border-radius: 10px;
+        }
+      }
+    }
+  }
+  .list {
+    width: 94%;
+    margin: 0 auto;
+    .item {
+      font-size: 13px;
+      display: flex;
+      color: #525151;
+      box-shadow: 0 4px 10px 1px #ddd;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+  }
+  // 投票
+  .voteList {
+    width: 94%;
     margin: 10px auto;
-    box-shadow: 0 0 2px 2px #eee;
-    padding-top: 15px;
-    border-radius: 5px;
     // 内容列表
     .contentItem {
-      border-bottom: 1px solid #f1f1f1;
-      padding-bottom: 20px;
+      box-shadow: 0 0 2px 2px #eee;
+      border-radius: 10px;
+      padding:25px 10px;
       margin-bottom: 20px;
       .headName {
         display: flex;
@@ -287,18 +340,54 @@ export default {
       }
     }
   }
-  .createBtn {
-    background-color: #b1a1a3;
-    color: #fff;
-    font-size: 14px;
-    height: 30px;
-    line-height: 30px;
-    width: 30%;
-    text-align: center;
-    border-radius: 30px;
-    position: fixed;
-    bottom: 5%;
-    left: 35%;
+  // 活动
+  .activityList {
+    .activityItem {
+      .imgBox {
+        width: 135px;
+        height: 95px;
+        margin-right: 5px;
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+      .wordBox {
+        flex: 1;
+        .title {
+          line-height: 20px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box; //作为弹性伸缩盒子模型显示。
+          -webkit-box-orient: vertical; //设置伸缩盒子的子元素排列方式--从上到下垂直排列
+          -webkit-line-clamp: 2; //显示的行
+          line-clamp: 2; //显示的行
+          font-size: 16px;
+        }
+        .address {
+          font-size: 12px;
+          color: #8e8e8e;
+          line-height: 20px;
+          margin-top: 5px;
+        }
+        .time {
+          font-size: 12px;
+          color: #8e8e8e;
+          line-height: 20px;
+        }
+        i {
+          display: inline-block;
+          margin-right: 5px;
+          vertical-align: middle;
+          font-size: 14px;
+          color: #8e8e8e;
+        }
+        span {
+          vertical-align: middle;
+          color: #8e8e8e;
+        }
+      }
+    }
   }
 }
 </style>

@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "14733",
+      "name": "向上",
+      "font_class": "xiangshang",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
       "icon_id": "188161",
       "name": "私信",
       "font_class": "sixin",
@@ -25,6 +32,13 @@
       "font_class": "tianjia",
       "unicode": "e631",
       "unicode_decimal": 58929
+    },
+    {
+      "icon_id": "651238",
+      "name": "向下",
+      "font_class": "xiangxia",
+      "unicode": "e665",
+      "unicode_decimal": 58981
     },
     {
       "icon_id": "736502",
@@ -55,6 +69,13 @@
       "unicode_decimal": 58988
     },
     {
+      "icon_id": "1152495",
+      "name": "xingxing",
+      "font_class": "guanzhu",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
       "icon_id": "1166550",
       "name": "加号",
       "font_class": "jiahao",
@@ -76,11 +97,39 @@
       "unicode_decimal": 58908
     },
     {
+      "icon_id": "1977900",
+      "name": "认证",
+      "font_class": "renzheng",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
       "icon_id": "1991486",
       "name": "骰子",
       "font_class": "touzi",
       "unicode": "e76d",
       "unicode_decimal": 59245
+    },
+    {
+      "icon_id": "2119409",
+      "name": "文件夹",
+      "font_class": "folder_icon",
+      "unicode": "e666",
+      "unicode_decimal": 58982
+    },
+    {
+      "icon_id": "2380617",
+      "name": "笔记本",
+      "font_class": "jilu",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "2407532",
+      "name": "勋章",
+      "font_class": "xunzhang",
+      "unicode": "e78a",
+      "unicode_decimal": 59274
     },
     {
       "icon_id": "2638103",
@@ -118,11 +167,25 @@
       "unicode_decimal": 58880
     },
     {
+      "icon_id": "5450775",
+      "name": "注意",
+      "font_class": "zhuyi",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
       "icon_id": "6039836",
       "name": "设置 (2)",
       "font_class": "shezhi",
       "unicode": "e601",
       "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "6333671",
+      "name": "相机",
+      "font_class": "xiangji1",
+      "unicode": "e614",
+      "unicode_decimal": 58900
     },
     {
       "icon_id": "6548541",
@@ -181,6 +244,13 @@
       "unicode_decimal": 58956
     },
     {
+      "icon_id": "10043617",
+      "name": "客服",
+      "font_class": "xinbaniconshangchuan-",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
       "icon_id": "10043872",
       "name": "Left",
       "font_class": "Left",
@@ -221,6 +291,13 @@
       "font_class": "dianzan",
       "unicode": "e6ac",
       "unicode_decimal": 59052
+    },
+    {
+      "icon_id": "12685489",
+      "name": "我们",
+      "font_class": "women",
+      "unicode": "e63a",
+      "unicode_decimal": 58938
     }
   ]
 }

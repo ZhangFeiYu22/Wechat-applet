@@ -3,17 +3,22 @@
     <div class="head">
       <div class="headImg">
         <img src="../../../static/images/aaa1.png" mode="aspectFill" />
+        <div class="hierarchy">
+          <img src="../../../static/images/hierarchy.png" mode="aspectFill" />
+          <p>LV1</p>
+        </div>
       </div>
       <div class="rightIcon">
         <i class="iconfont icon-pinglun" @click="goMessage"></i>
-        <i class="iconfont icon-aixin" @click="goAttention"></i>
-        <i class="iconfont icon-shezhi"></i>
+        <i class="iconfont icon-shezhi" @click="goMyInfo"></i>
       </div>
     </div>
     <div class="baseInfo">
       <div class="nameSexPhone">
         <p class="name">张小凡</p>
-        <p class="sex"><i class="iconfont icon-nan"></i></p>
+        <p class="sex">
+          <i class="iconfont icon-nan"></i>
+        </p>
         <p class="phone">182****1234</p>
       </div>
       <div class="inaword">要成为世界第一的梦珂宝训练大师</div>
@@ -21,22 +26,67 @@
         <p class="constellation">金牛座</p>
         <p class="address">南京市</p>
         <p class="follower">15人关注</p>
+        <p class="autonym">已实名</p>
       </div>
-      <div class="editInfoBtn" @click="goMyInfo">
-        编辑资料
+      <!-- <div class="editInfoBtn" @click="goMyInfo">编辑资料</div> -->
+    </div>
+    <div class="wallet">
+      <div class="gold">
+        <p class="p1">我的金币</p>
+        <p class="p2">100.00</p>
+      </div>
+      <div class="balance">
+        <p class="p1">我的余额</p>
+        <p class="p2">0.00</p>
+      </div>
+      <div class="recharge" @click="goRecharge">
+        <p class="p1 p1r">充值</p>
+      </div>
+    </div>
+    <div class="otherList">
+      <div class="otherItem" @click="goAttention">
+        <i class="iconfont icon-guanzhu iconLeft"></i>
+        <span>我的关注</span>
+        <i class="iconfont icon-right iconRight"></i>
+      </div>
+      <div class="otherItem" @click="goRecord">
+        <i class="iconfont icon-jilu iconLeft"></i>
+        <span>我的记录</span>
+        <i class="iconfont icon-right iconRight"></i>
+      </div>
+      <div class="otherItem" @click="goAttestation">
+        <i class="iconfont icon-renzheng iconLeft"></i>
+        <span>我的认证</span>
+        <i class="iconfont icon-right iconRight"></i>
+      </div>
+      <div class="otherItem" @click="goMedal">
+        <i class="iconfont icon-xunzhang iconLeft"></i>
+        <span>我的勋章</span>
+        <i class="iconfont icon-right iconRight"></i>
       </div>
     </div>
     <div class="line"></div>
-    <div class="navBox">  
-      <div class="navItem" :class="itemActive == '0' ? 'active' : ''" @click="itemToggle('0')"> 
-         <!-- <img src="../../../static/images/aaa1.png" mode="aspectFill"> -->
-         <i class="iconfont icon-huati"></i>
-         <p>话题</p>
+    <div class="otherList">
+      <div class="otherItem" @click="goAboutUs">
+        <i class="iconfont icon-guanzhu iconLeft"></i>
+        <span>关于我们</span>
+        <i class="iconfont icon-right iconRight"></i>
       </div>
-      <div class="navItem" :class="itemActive == '1' ? 'active' : ''" @click="itemToggle('1')"> 
-         <!-- <img src="../../../static/images/aaa1.png" mode="aspectFill"> -->
-         <i class="iconfont icon-xiangji"></i>
-         <p>状态</p>
+    </div>
+    <div class="logo">
+      <img src="../../../static/images/logo.png" mode="aspectFill" />
+    </div>
+
+    <div class="navBox">
+      <div class="navItem" :class="itemActive == '0' ? 'active' : ''" @click="itemToggle('0')">
+        <!-- <img src="../../../static/images/aaa1.png" mode="aspectFill"> -->
+        <i class="iconfont icon-huati"></i>
+        <p>话题</p>
+      </div>
+      <div class="navItem" :class="itemActive == '1' ? 'active' : ''" @click="itemToggle('1')">
+        <!-- <img src="../../../static/images/aaa1.png" mode="aspectFill"> -->
+        <i class="iconfont icon-xiangji"></i>
+        <p>状态</p>
       </div>
     </div>
     <!-- 内容列表 -->
@@ -45,7 +95,7 @@
         <!-- <div class="headName" @click.stop="goPersonal">
           <img src="../../../static/images/aaa1.png" mode="aspectFill" />
           <span>张小凡</span>
-        </div> -->
+        </div>-->
         <div
           class="content"
           id="contentInfo"
@@ -117,8 +167,8 @@ export default {
     };
   },
   methods: {
-    itemToggle(num){
-      this.itemActive = num
+    itemToggle(num) {
+      this.itemActive = num;
     },
     goMessage() {
       wx.navigateTo({
@@ -127,7 +177,12 @@ export default {
     },
     goAttention() {
       wx.navigateTo({
-        url: "/pages/attention/main"
+        url: "/pages/myAttention/main"
+      });
+    },
+    goRecord() {
+      wx.navigateTo({
+        url: "/pages/myRecord/main"
       });
     },
     goMyInfo() {
@@ -138,6 +193,26 @@ export default {
     goTopic() {
       wx.navigateTo({
         url: "/pages/topicDetails/main"
+      });
+    },
+    goRecharge() {
+      wx.navigateTo({
+        url: "/pages/recharge/main"
+      });
+    },
+    goAttestation(){
+      wx.navigateTo({
+        url: "/pages/myAttestation/main"
+      });
+    },
+    goMedal(){
+      wx.navigateTo({
+        url: "/pages/myMedal/main"
+      });
+    },
+    goAboutUs(){
+      wx.navigateTo({
+        url: "/pages/aboutUs/main"
       });
     },
     requireTxt(index) {
@@ -177,8 +252,8 @@ export default {
     }
   },
   onTabItemTap(item) {
-    wx.setStorageSync('tabItemClick', item.pagePath)
-  },
+    wx.setStorageSync("tabItemClick", item.pagePath);
+  }
 };
 </script>
 
@@ -191,20 +266,34 @@ export default {
     justify-content: space-between;
     align-items: center;
     .headImg {
-      width: 70px;
-      height: 70px;
-      border-radius: 100%;
-      overflow: hidden;
       img {
-        width: 100%;
-        height: 100%;
+        width: 70px;
+        height: 70px;
+        border-radius: 100%;
+        overflow: hidden;
+        display: inline-block;
+        vertical-align: middle;
+      }
+      .hierarchy {
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: 20px;
+        text-align: center;
+        img {
+          width: 30px;
+          height: 35px;
+        }
+        p {
+          color: #e1c582;
+          font-size: 13px;
+        }
       }
     }
     .rightIcon {
       display: flex;
       justify-content: space-around;
       .iconfont {
-        font-size: 20px;
+        font-size: 25px;
         margin-right: 10px;
       }
     }
@@ -240,7 +329,7 @@ export default {
     .other {
       display: flex;
       justify-content: left;
-      p{
+      p {
         padding: 2px 10px;
         margin-right: 10px;
         background-color: #eee;
@@ -249,7 +338,7 @@ export default {
         border-radius: 5px;
       }
     }
-    .editInfoBtn{
+    .editInfoBtn {
       font-size: 12px;
       color: #525151;
       background-color: #eee;
@@ -262,34 +351,101 @@ export default {
       transform: translateY(-50%);
     }
   }
-  .line{
+  .wallet {
+    height: 100px;
+    width: 94%;
+    margin: 15px auto 10px;
+    border-radius: 5px;
+    background: linear-gradient(to right, #fd5139, #fe9386);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    color: #fff;
+    > div {
+      width: 33%;
+      text-align: center;
+    }
+    .p1 {
+      font-size: 16px;
+      &.p1r {
+        position: relative;
+        &::after {
+          position: absolute;
+          top: 6px;
+          right: 20%;
+          content: "";
+          width: 10px;
+          height: 10px;
+          border-right: 1px solid #fff;
+          border-bottom: 1px solid #fff;
+          transform: rotate(-45deg);
+        }
+      }
+    }
+    .p2 {
+      font-size: 20px;
+      line-height: 30px;
+    }
+    .balance {
+      border-right: 1px solid #fff;
+    }
+  }
+  .otherList {
+    width: 90%;
+    margin: 0 auto;
+    .otherItem {
+      line-height: 46px;
+      i {
+        display: inline-block;
+        &.iconLeft {
+          margin-right: 20px;
+          font-size: 22px;
+        }
+        &.iconRight {
+          float: right;
+        }
+      }
+      span {
+        font-size: 18px;
+        color: #2a2a2a;
+      }
+    }
+  }
+  .logo {
+    img {
+      width: 45px;
+      height: 28px;
+      display: block;
+      margin: 20px auto 0;
+    }
+  }
+  .line {
     width: 100%;
     height: 8px;
     background-color: #eee;
-    margin-top: 20px;
   }
-  .navBox{
+  .navBox {
     display: flex;
     justify-content: space-around;
     align-items: center;
     text-align: center;
     padding: 15px 0 0px;
-    .navItem{
-      i{
+    .navItem {
+      i {
         display: inline-block;
         vertical-align: middle;
         margin-right: 5px;
         font-size: 22px;
         color: #707070;
       }
-      p{
+      p {
         display: inline-block;
         font-size: 12px;
         vertical-align: middle;
-        color: #E83E3E;
+        color: #e83e3e;
       }
-      &.active{
-        i{
+      &.active {
+        i {
           color: #333;
           font-weight: 600;
         }
@@ -333,8 +489,8 @@ export default {
       .toggleBox {
         font-size: 16px;
         color: #6f6d6d;
-        .more_txt{
-          span{
+        .more_txt {
+          span {
             border-bottom: 1px solid #6f6d6d;
           }
         }

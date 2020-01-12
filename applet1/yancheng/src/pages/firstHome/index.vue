@@ -1,441 +1,195 @@
 <template>
-  <div class="firstHome">
-    <!-- <div
-    class="tagBall"
-    @touchstart="touchStart"
-    @touchend="touchEnd"
-    :style="{width: boxWidth,height:boxWidth}"
-    >-->
-    <div class="tagBall" :style="{width: boxWidth,height:boxWidth}">
-      <div
-        class="tag"
-        target="_blank"
-        href="http://keleyi.com"
-        v-for="(item,index) in tagEleList"
-        :style="{color: item.colorVal, opacity: item.opacityVal, fontSize: item.fontSizeVal, zIndex: item.zIndexVal, left: item.leftVal, top:item.topVal}"
-        :key="index"
-      >{{item.name}}</div>
+  <div class="discover">
+    <div class="container">
+      <div class="balloon">
+        <div class="gameBox game1" @click="goGame1">
+          <span>真心话</span>
+        </div>
+        <div class="gameBox game2" @click="goGame2">
+          <span>摇骰子</span>
+        </div>
+        <div class="gameBox game3">
+          <span>Game Center</span>
+        </div>
+        <div class="gameBox game4" @click="goVote">
+          <span>投票专区</span>
+        </div>
+        <div class="gameBox game5" @click="goActivity">
+          <span>活动中心</span>
+        </div>
+        <!-- <div class="gameBox game6">
+          <span>game6</span>
+        </div> -->
+      </div>
     </div>
     <button class="handleBtn" @click="btnClick">登录授权</button>
   </div>
 </template>
 
 <script>
-import Vue from "vue";
-import navBar from "@/components/navbar";
-import store from "@/store";
 export default {
-  components: {
-    navBar
-  },
   data() {
-    return {
-      tagEleList: [
-        {
-          name: "我喜欢你",
-          colorVal: "",
-          fontSizeVal: 12,
-          opacityVal: 1,
-          zIndexVal: "0",
-          topVal: "0",
-          leftVal: "0"
-        },
-        {
-          name: "我喜欢你",
-          colorVal: "",
-          fontSizeVal: 12,
-          opacityVal: 1,
-          zIndexVal: "0",
-          topVal: "0",
-          leftVal: "0"
-        },
-        {
-          name: "我喜欢你",
-          colorVal: "",
-          fontSizeVal: 12,
-          opacityVal: 1,
-          zIndexVal: "0",
-          topVal: "0",
-          leftVal: "0"
-        },
-        {
-          name: "我喜欢你",
-          colorVal: "",
-          fontSizeVal: 12,
-          opacityVal: 1,
-          zIndexVal: "0",
-          topVal: "0",
-          leftVal: "0"
-        },
-        {
-          name: "我喜欢你",
-          colorVal: "",
-          fontSizeVal: 12,
-          opacityVal: 1,
-          zIndexVal: "0",
-          topVal: "0",
-          leftVal: "0"
-        },
-        {
-          name: "我喜欢你",
-          colorVal: "",
-          fontSizeVal: 12,
-          opacityVal: 1,
-          zIndexVal: "0",
-          topVal: "0",
-          leftVal: "0"
-        },
-        {
-          name: "我喜欢你",
-          colorVal: "",
-          fontSizeVal: 12,
-          opacityVal: 1,
-          zIndexVal: "0",
-          topVal: "0",
-          leftVal: "0"
-        },
-        {
-          name: "我喜欢你",
-          colorVal: "",
-          fontSizeVal: 12,
-          opacityVal: 1,
-          zIndexVal: "0",
-          topVal: "0",
-          leftVal: "0"
-        },
-        {
-          name: "我喜欢你",
-          colorVal: "",
-          fontSizeVal: 12,
-          opacityVal: 1,
-          zIndexVal: "0",
-          topVal: "0",
-          leftVal: "0"
-        },
-        {
-          name: "我喜欢你",
-          colorVal: "",
-          fontSizeVal: 12,
-          opacityVal: 1,
-          zIndexVal: "0",
-          topVal: "0",
-          leftVal: "0"
-        },
-        {
-          name: "我喜欢你",
-          colorVal: "",
-          fontSizeVal: 12,
-          opacityVal: 1,
-          zIndexVal: "0",
-          topVal: "0",
-          leftVal: "0"
-        },
-        {
-          name: "我喜欢你",
-          colorVal: "",
-          fontSizeVal: 12,
-          opacityVal: 1,
-          zIndexVal: "0",
-          topVal: "0",
-          leftVal: "0"
-        },
-        {
-          name: "我喜欢你",
-          colorVal: "",
-          fontSizeVal: 12,
-          opacityVal: 1,
-          zIndexVal: "0",
-          topVal: "0",
-          leftVal: "0"
-        },
-        {
-          name: "我喜欢你",
-          colorVal: "",
-          fontSizeVal: 12,
-          opacityVal: 1,
-          zIndexVal: "0",
-          topVal: "0",
-          leftVal: "0"
-        },
-        {
-          name: "我喜欢你",
-          colorVal: "",
-          fontSizeVal: 12,
-          opacityVal: 1,
-          zIndexVal: "0",
-          topVal: "0",
-          leftVal: "0"
-        },
-        {
-          name: "我喜欢你",
-          colorVal: "",
-          fontSizeVal: 12,
-          opacityVal: 1,
-          zIndexVal: "0",
-          topVal: "0",
-          leftVal: "0"
-        },
-        {
-          name: "我喜欢你",
-          colorVal: "",
-          fontSizeVal: 12,
-          opacityVal: 1,
-          zIndexVal: "0",
-          topVal: "0",
-          leftVal: "0"
-        },
-        {
-          name: "我喜欢你",
-          colorVal: "",
-          fontSizeVal: 12,
-          opacityVal: 1,
-          zIndexVal: "0",
-          topVal: "0",
-          leftVal: "0"
-        },
-        {
-          name: "我喜欢你",
-          colorVal: "",
-          fontSizeVal: 12,
-          opacityVal: 1,
-          zIndexVal: "0",
-          topVal: "0",
-          leftVal: "0"
-        },
-        {
-          name: "我喜欢你",
-          colorVal: "",
-          fontSizeVal: 12,
-          opacityVal: 1,
-          zIndexVal: "0",
-          topVal: "0",
-          leftVal: "0"
-        },
-        {
-          name: "我喜欢你",
-          colorVal: "",
-          fontSizeVal: 12,
-          opacityVal: 1,
-          zIndexVal: "0",
-          topVal: "0",
-          leftVal: "0"
-        },
-        {
-          name: "我喜欢你",
-          colorVal: "",
-          fontSizeVal: 12,
-          opacityVal: 1,
-          zIndexVal: "0",
-          topVal: "0",
-          leftVal: "0"
-        },
-        {
-          name: "我喜欢你",
-          colorVal: "",
-          fontSizeVal: 12,
-          opacityVal: 1,
-          zIndexVal: "0",
-          topVal: "0",
-          leftVal: "0"
-        },
-        {
-          name: "我喜欢你",
-          colorVal: "",
-          fontSizeVal: 12,
-          opacityVal: 1,
-          zIndexVal: "0",
-          topVal: "0",
-          leftVal: "0"
-        },
-        {
-          name: "我喜欢你",
-          colorVal: "",
-          fontSizeVal: 12,
-          opacityVal: 1,
-          zIndexVal: "0",
-          topVal: "0",
-          leftVal: "0"
-        },
-        {
-          name: "我喜欢你",
-          colorVal: "",
-          fontSizeVal: 12,
-          opacityVal: 1,
-          zIndexVal: "0",
-          topVal: "0",
-          leftVal: "0"
-        }
-      ],
-      boxWidth: store.state.systemInfo.screenWidth + "px",
-      tag: "",
-      tagEle: "",
-      paper: "",
-      RADIUS: 160,
-      fallLength: 300,
-      tags: [],
-      angleX: Math.PI / 600,
-      angleY: Math.PI / 600,
-      CX: "",
-      CY: "",
-      EY: 50,
-      EX: 90,
-      a: "",
-      b: "",
-      k: "",
-      timerTask: ""
-    };
-  },
-  mounted() {
-    var _this = this;
-    wx
-      .createSelectorQuery()
-      .selectAll(".tag")
-      .boundingClientRect(function(rect) {
-        _this.tagEle = rect;
-      })
-      .exec();
-    wx
-      .createSelectorQuery()
-      .selectAll(".tagBall")
-      .boundingClientRect(function(rect) {
-        _this.paper = rect[0];
-        _this.CX = _this.paper.width / 2;
-        _this.CY = _this.paper.height / 2;
-      })
-      .exec();
-  },
-  onShow() {
-    setTimeout(() => {
-      this.innit();
-      this.animate();
-    }, 200);
+    return {};
   },
   methods: {
-    innit() {
-      var _this = this;
-      _this.tag = function(ele, x, y, z) {
-        this.ele = ele;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.move = function(sn) {
-          var scale = _this.fallLength / (_this.fallLength - this.z);
-          var alpha = (this.z + _this.RADIUS) / (2 * _this.RADIUS);
-          _this.tagEleList[sn].fontSizeVal = 15 * scale + "px";
-          _this.tagEleList[sn].opacityVal = alpha + 0.5;
-          _this.tagEleList[sn].zIndexVal = parseInt(scale * 100);
-          _this.tagEleList[sn].leftVal =
-            this.x + _this.CX - this.ele.width / 2 + "px";
-          _this.tagEleList[sn].topVal =
-            this.y + _this.CY - this.ele.height / 2 + "px";
-        };
-      };
-
-      for (var i = 0; i < _this.tagEle.length; i++) {
-        _this.k = (2 * (i + 1) - 1) / this.tagEle.length - 1;
-        _this.a = Math.acos(_this.k);
-        _this.b = _this.a * Math.sqrt(_this.tagEle.length * Math.PI);
-        var x = _this.RADIUS * Math.sin(_this.a) * Math.cos(_this.b);
-        var y = _this.RADIUS * Math.sin(_this.a) * Math.sin(_this.b);
-        var z = _this.RADIUS * Math.cos(_this.a);
-        var t = new _this.tag(_this.tagEle[i], x, y, z);
-        _this.tagEleList[i].colorVal =
-          "rgb(" +
-          parseInt(Math.random() * 255) +
-          "," +
-          parseInt(Math.random() * 255) +
-          "," +
-          parseInt(Math.random() * 255) +
-          ")";
-        _this.tags.push(t);
-        t.move(i);
-      }
-    },
-    animate() {
-      var _this = this;
-      _this.timerTask = setInterval(function() {
-        _this.rotateX();
-        _this.rotateY();
-        var list = _this.tagEleList;
-        // _this.tags.forEach(function(value, n) {});
-        for (var n = 0; n < _this.tagEle.length; n++) {
-          var scale = _this.fallLength / (_this.fallLength - _this.tags[n].z);
-          var alpha = (_this.tags[n].z + _this.RADIUS) / (2 * _this.RADIUS);
-          list[n].fontSizeVal = 10 * scale + "px";
-          list[n].opacityVal = alpha + 0.2;
-          list[n].zIndexVal = parseInt(scale * 100);
-          list[n].leftVal =
-            _this.tags[n].x + _this.CX - _this.tags[n].ele.width / 2 + "px";
-          list[n].topVal =
-            _this.tags[n].y + _this.CY - _this.tags[n].ele.height / 2 + "px";
-        }
-        _this.tagEleList = list;
-      }, 100);
-    },
-    rotateX() {
-      var _this = this;
-      var cos = Math.cos(_this.angleX);
-      var sin = Math.sin(_this.angleX);
-      _this.tags.forEach(function(XVal) {
-        var y1 = XVal.y * cos - XVal.z * sin;
-        var z1 = XVal.z * cos + XVal.y * sin;
-        XVal.y = y1;
-        XVal.z = z1;
+    goGame1(){
+      wx.navigateTo({
+        url: "/pages/game_truchOrDare/main"
       });
     },
-    rotateY() {
-      var _this = this;
-      var cos = Math.cos(_this.angleY);
-      var sin = Math.sin(_this.angleY);
-      _this.tags.forEach(function(YVal) {
-        var x1 = YVal.x * cos - YVal.z * sin;
-        var z1 = YVal.z * cos + YVal.x * sin;
-        YVal.x = x1;
-        YVal.z = z1;
+    goActivity() {
+      wx.navigateTo({
+        url: "/pages/activity/main"
       });
     },
-    // touchStart(event) {
-    //   var _this = this;
-    //   console.log(event);
-    //   var x = event.clientX - _this.EX - _this.CX;
-    //   var y = event.clientY - _this.EY - _this.CY;
-    //   _this.angleY = x * 0.0001;
-    //   _this.angleX = y * 0.0001;
-    // },
-    // touchEnd(event) {
-    //   var _this = this;
-    //   var x = event.clientX - _this.EX - _this.CX;
-    //   var y = event.clientY - _this.EY - _this.CY;
-    //   _this.angleY = x * 0.0001;
-    //   _this.angleX = y * 0.0001;
-    // }
+    goVote() {
+      wx.navigateTo({
+        url: "/pages/vote/main"
+      });
+    },
+    goGame2() {
+      wx.navigateTo({
+        url: "/pages/game_dice/main"
+      });
+    },
     btnClick() {
       wx.switchTab({
         url: "/pages/home/main"
       });
-      clearInterval(this.timerTask);
     }
   }
 };
 </script>
 
 <style lang="less" scoped>
-.firstHome {
-  .tagBall {
-    margin: 10px auto;
+.discover {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  text-align: center;
+  span {
+    text-transform: uppercase;
+  }
+
+  .container {
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    margin: 0 auto;
+    background: whitesmoke;
     position: relative;
-    .tag {
-      display: block;
-      position: absolute;
-      left: 0px;
-      top: 0px;
-      color: #000;
-      text-decoration: none;
-      font-size: 12px;
-      font-family: "微软雅黑";
-      font-weight: bold;
-      &:hover {
-        border: 1px solid #666;
+    .balloon {
+      width: 100%;
+      height: 100%;
+      margin: 0 auto;
+      padding-top: 30px;
+      position: relative;
+      .gameBox {
+        width: 70px;
+        height: 70px;
+        background: rgba(182, 15, 97, 0.9);
+        border-radius: 0;
+        border-radius: 80% 80% 80% 80%;
+        position: absolute;
+        padding: 10px;
+        box-shadow: inset 17px 7px 10px rgba(182, 15, 97, 0.9);
+        -webkit-transform-origin: bottom center;
+        // &::before{
+        //   display: block;
+        //   content: '';
+        //   position: absolute;
+        //   width: 40px;
+        //   height: 30px;
+        //   top: 6%;
+        //   left: 30%;
+        //   border-radius: 40px 50px;
+        //   background-color: rgba(255,255,255,0.2);
+        //   box-shadow: 0px 0px 6px 2px rgba(255,255,255 ,0.2);
+        // }
+        span {
+          font-size: 14px;
+          color: white;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        }
+      }
+      .game1 {
+        width: 90px;
+        height: 90px;
+        z-index: 1;
+        background: rgba(182, 15, 97, 0.9);
+        left: 5%;
+        top: 45%;
+        transform: translateY(-50%);
+        box-shadow: inset 0px -10px 10px rgba(135, 11, 72, 0.9);
+        -webkit-animation: balloon1 6s ease-in-out infinite;
+        animation: balloon1 6s ease-in-out infinite;
+      }
+      .game2 {
+        width: 100px;
+        height: 100px;
+        z-index: 1;
+        background: rgba(242, 112, 45, 0.9);
+        left: 22%;
+        top: 17%;
+        transform: translateY(-50%);
+        box-shadow: inset 0px -10px 10px rgba(222, 85, 14, 0.9);
+        -webkit-animation: balloon2 6s ease-in-out infinite;
+        animation: balloon2 6s ease-in-out infinite;
+      }
+      .game3 {
+        background: rgba(45, 181, 167, 0.9);
+        width: 150px;
+        height: 150px;
+        z-index: 9;
+        left: 50%;
+        top: 42%;
+        transform: translate(-50%, -50%);
+        box-shadow: inset 0px -10px 10px rgba(35, 140, 129, 0.9);
+        -webkit-animation: balloon4 6s ease-in-out infinite;
+        animation: balloon4 6s ease-in-out infinite;
+      }
+      .game4 {
+        width: 115px;
+        height: 115px;
+        z-index: 1;
+        background: rgba(190, 61, 244, 0.9);
+        left: 60%;
+        top: 12%;
+        transform: translateY(-50%);
+        box-shadow: inset 0px -10px 10px rgba(173, 14, 240, 0.9);
+        -webkit-animation: balloon1 5s ease-in-out infinite;
+        animation: balloon1 5s ease-in-out infinite;
+      }
+      .game5 {
+        width: 115px;
+        height: 115px;
+        z-index: 1;
+        background: rgba(180, 224, 67, 0.9);
+        left: 69%;
+        top: 54%;
+        transform: translateY(-50%);
+        box-shadow: inset 0px -10px 10px rgba(158, 206, 34, 0.9);
+        -webkit-animation: balloon3 5s ease-in-out infinite;
+        animation: balloon3 5s ease-in-out infinite;
+      }
+      .game6 {
+        width: 100px;
+        height: 100px;
+        background: rgba(242, 194, 58, 0.9);
+        left: 600px;
+        z-index: 1;
+        left: 30%;
+        top: 62%;
+        transform: translateY(-50%);
+        box-shadow: inset 0px -10px 10px rgba(234, 177, 15, 0.9);
+        -webkit-animation: balloon2 5s ease-in-out infinite;
+        animation: balloon2 5s ease-in-out infinite;
       }
     }
   }
@@ -447,6 +201,57 @@ export default {
     font-size: 14px;
     background-color: #1bad19;
     color: #fff;
+    position: absolute;
+    bottom: 15%;
+    left: 10%;
+  }
+  // CSS3动画
+  /*BALLOON 1 4*/
+  @-webkit-keyframes balloon1 {
+    0%,
+    100% {
+      -webkit-transform: translateY(0) rotate(-6deg) scale(1);
+    }
+
+    50% {
+      -webkit-transform: translateY(-20px) rotate(8deg) scale(0.95);
+    }
+  }
+
+  /* BAllOON 2 5*/
+  @-webkit-keyframes balloon2 {
+    0%,
+    100% {
+      -webkit-transform: translateY(0) rotate(6eg) scale(1);
+    }
+
+    50% {
+      -webkit-transform: translateY(-30px) rotate(-8deg) scale(0.95);
+    }
+  }
+
+  /* BAllOON 0*/
+  @-webkit-keyframes balloon3 {
+    0%,
+    100% {
+      -webkit-transform: translate(0, -50%) rotate(6eg) scale(1);
+    }
+
+    50% {
+      -webkit-transform: translate(-10px, -52%) rotate(-8deg) scale(0.95);
+    }
+  }
+
+  /* BAllOON 3*/
+  @-webkit-keyframes balloon4 {
+    0%,
+    100% {
+      -webkit-transform: translate(-46.5%, -46.5%) rotate(-5eg) scale(1);
+    }
+
+    50% {
+      -webkit-transform: translate(-52%, -52%) rotate(0deg) scale(0.95);
+    }
   }
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="discover">
-    <!-- <div class="container">
+    <div class="container">
       <div class="balloon">
         <div class="gameBox game1" @click="goGame1">
           <span>真心话</span>
@@ -21,7 +21,7 @@
           <span>game6</span>
         </div>
       </div>
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -30,32 +30,32 @@ export default {
   data() {
     return {};
   },
-  mounted() {
-    wx.redirectTo({
-      url: "/pages/firstHome/main"
-    });
-  },
+  // mounted() {
+  //   wx.redirectTo({
+  //     url: "/pages/firstHome/main"
+  //   });
+  // },
   methods: {
-    // goGame1(){
-    //   wx.navigateTo({
-    //     url: "/pages/game_truchOrDare/main"
-    //   });
-    // },
-    // goActivity() {
-    //   wx.navigateTo({
-    //     url: "/pages/activity/main"
-    //   });
-    // },
-    // goVote() {
-    //   wx.navigateTo({
-    //     url: "/pages/vote/main"
-    //   });
-    // },
-    // goGame2() {
-    //   wx.navigateTo({
-    //     url: "/pages/game_dice/main"
-    //   });
-    // }
+    goGame1(){
+      wx.navigateTo({
+        url: "/pages/game_truchOrDare/main"
+      });
+    },
+    goActivity() {
+      wx.navigateTo({
+        url: "/pages/activity/main"
+      });
+    },
+    goVote() {
+      wx.navigateTo({
+        url: "/pages/vote/main"
+      });
+    },
+    goGame2() {
+      wx.navigateTo({
+        url: "/pages/game_dice/main"
+      });
+    }
   }
 };
 </script>

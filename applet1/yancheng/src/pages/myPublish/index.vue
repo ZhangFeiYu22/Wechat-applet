@@ -1,50 +1,24 @@
 <template>
-  <div class="home">
-    <!-- 轮播 -->
-    <div class="carrousel w94">
-      <swiper
-        :indicator-dots="indicatorDots"
-        :autoplay="autoplay"
-        :interval="interval"
-        :duration="duration"
-        circular
-        class="swiper-box"
-        @change="swiperChange"
-        v-if="carrouseList.length != 0"
-      >
-        <block v-for="(item,index) in carrouseList" :key="index">
-          <swiper-item>
-            <image :src="item.imgUrl" class="slide-image" mode="aspectFill" />
-          </swiper-item>
-        </block>
-      </swiper>
-      <img v-else class="default-image" src="/static/images/default_ad.jpg" mode="aspectFill" />
-      <view class="dots">
-        <block v-for="(item,index) in carrouseList" :key="index">
-          <view :class="index == current ? ' active' : ''" class="dot"></view>
-        </block>
-      </view>
-    </div>
-    <!-- 小菜单 -->
-    <!-- <div class="navBox w94">
-      <div class="navItem" v-for="(item,index) in navItemList" :key="index" @click="navJump(index)">
-        <div class="navIcon">
-          <img :src="item.imgUrl" mode="aspectFill" />
-        </div>
-        <div class="navTitle">{{item.title}}</div>
+  <div class="myPublish">
+    <div class="navBox">
+      <div class="navItem" :class="itemActive == '0' ? 'active' : ''" @click="itemToggle('0')">
+        <!-- <img src="../../../static/images/aaa1.png" mode="aspectFill"> -->
+        <i class="iconfont icon-huati"></i>
+        <p>话题</p>
       </div>
-    </div> -->
-    <!-- 广告 -->
-    <!-- <div class="ad w94">
-      <img src="../../../static/images/aaa1.png" mode="aspectFill" />
-    </div> -->
+      <div class="navItem" :class="itemActive == '1' ? 'active' : ''" @click="itemToggle('1')">
+        <!-- <img src="../../../static/images/aaa1.png" mode="aspectFill"> -->
+        <i class="iconfont icon-xiangji"></i>
+        <p>状态</p>
+      </div>
+    </div>
     <!-- 内容列表 -->
     <div class="contentList w94">
       <div class="contentItem" v-for="(item,index) in ItemList" :key="index">
-        <div class="headName" @click.stop="goPersonal">
+        <!-- <div class="headName" @click.stop="goPersonal">
           <img src="../../../static/images/aaa1.png" mode="aspectFill" />
           <span>张小凡</span>
-        </div>
+        </div>-->
         <div
           class="content"
           id="contentInfo"
@@ -71,51 +45,20 @@
           <div class="handle">
             <i class="iconfont" :class="likeAct?'icon-aixin1':'icon-aixin0'" @click.stop="likeFun"></i>
             <i class="iconfont icon-pinglun" @click.stop="goTopic"></i>
-            <i class="iconfont icon-sixin"></i>
+            <!-- <i class="iconfont icon-sixin"></i> -->
           </div>
         </div>
       </div>
     </div>
-    <div style="height:80px"></div>
   </div>
 </template>
 
 <script>
-import navBar from "@/components/navbar";
 export default {
-  components: {
-    navBar
-  },
   data() {
     return {
       likeAct: false,
-      carrouseList: [
-        { imgUrl: require("../../../static/images/aaa1.png") },
-        { imgUrl: require("../../../static/images/aaa1.png") },
-        { imgUrl: require("../../../static/images/aaa1.png") },
-        { imgUrl: require("../../../static/images/aaa1.png") }
-      ],
-      indicatorDots: false,
-      autoplay: true,
-      interval: 3000,
-      duration: 1000,
-      current: 0,
-      // navItemList: [
-      //   {
-      //     imgUrl: require("../../../static/images/guanzhu.png"),
-      //     title: "关注"
-      //   },
-      //   { imgUrl: require("../../../static/images/qingxu.png"), title: "情绪" },
-      //   {
-      //     imgUrl: require("../../../static/images/shejiao.png"),
-      //     title: "社交"
-      //   },
-      //   { imgUrl: require("../../../static/images/aihao.png"), title: "爱好" },
-      //   {
-      //     imgUrl: require("../../../static/images/shenghuo.png"),
-      //     title: "生活"
-      //   }
-      // ],
+      itemActive: 0,
       ItemList: [
         {
           showEllip: false,
@@ -147,10 +90,20 @@ export default {
     };
   },
   methods: {
-    // 轮播切换时控制指示点切换
-    swiperChange: function(e) {
-      this.current = e.mp.detail.current;
+    itemToggle(num) {
+      this.itemActive = num;
     },
+    goMessage() {
+      wx.navigateTo({
+        url: "/pages/message/main"
+      });
+    },
+    goTopic() {
+      wx.navigateTo({
+        url: "/pages/topicDetails/main"
+      });
+    },
+
     requireTxt(index) {
       let val = this.ItemList[index].showEllip;
       if (val) {
@@ -158,27 +111,6 @@ export default {
       } else {
         this.ItemList[index].showEllip = true;
       }
-    },
-    navJump(num) {
-      if (num == 1) {
-        wx.navigateTo({
-          url: "/pages/emotion/main"
-        });
-      } else if (num == 0) {
-        wx.navigateTo({
-          url: "/pages/myAttention/main"
-        });
-      }
-    },
-    goPersonal() {
-      wx.navigateTo({
-        url: "/pages/personal/main"
-      });
-    },
-    goTopic() {
-      wx.navigateTo({
-        url: "/pages/topicDetails/main"
-      });
     },
     //点击朋友圈图片,弹出框预览大图
     showImg(index, imgIndex) {
@@ -208,90 +140,37 @@ export default {
       }
     }
   },
-  onTabItemTap(item) {
-    wx.setStorageSync('tabItemClick', item.pagePath)
-  }
 };
 </script>
 
 <style lang="less" scoped>
-.home {
-  // 轮播
-  .carrousel {
-    height: 185px;
-    position: relative;
-    .swiper-box {
-      width: 100%;
-      height: 175px;
-      border-radius: 8px;
-      overflow: hidden;
-      transform: translateY(0);
-      .slide-image {
-        width: 100%;
-        height: 100%;
-      }
-      .slide-video {
-        width: 100%;
-        height: 100%;
-      }
-    }
-    .default-image {
-      width: 100%;
-      height: 100%;
-    }
-    .dots {
-      position: absolute;
-      right: 0;
-      left: 0;
-      bottom: -5px;
-      display: flex;
-      justify-content: center;
-      .dot {
-        display: block;
-        margin: 0 4px;
-        width: 5px;
-        height: 5px;
-        background: #dedede;
-        border-radius: 5rpx;
-        transition: all linear 0.3s;
-        &.active {
-          width: 11px;
-          background: #b1a1a3;
-        }
-      }
-    }
-  }
-  // 小菜单
+.myPublish {
   .navBox {
     display: flex;
     justify-content: space-around;
+    align-items: center;
     text-align: center;
-    margin-top: 30px;
-    margin-bottom: 20px;
+    padding: 15px 0 0px;
     .navItem {
-      width: 25%;
-      .navIcon {
-        width: 32px;
-        height: 32px;
-        margin: 0 auto 8px;
-        img {
-          width: 100%;
-          height: 100%;
+      i {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 5px;
+        font-size: 22px;
+        color: #707070;
+      }
+      p {
+        display: inline-block;
+        font-size: 12px;
+        vertical-align: middle;
+        color: #e83e3e;
+      }
+      &.active {
+        i {
+          color: #333;
+          font-weight: 600;
         }
       }
-      .navTitle {
-        font-size: 16px;
-      }
-    }
-  }
-  // 广告
-  .ad {
-    height: 100px;
-    border-radius: 5px;
-    overflow: hidden;
-    img {
-      width: 100%;
-      height: 100%;
     }
   }
   // 内容列表
@@ -331,8 +210,8 @@ export default {
       .toggleBox {
         font-size: 16px;
         color: #6f6d6d;
-        .more_txt{
-          span{
+        .more_txt {
+          span {
             border-bottom: 1px solid #6f6d6d;
           }
         }
@@ -364,7 +243,7 @@ export default {
           color: #8b8b8b;
         }
         .handle {
-          width: 25%;
+          width: 16%;
           display: flex;
           justify-content: space-between;
           .iconfont {

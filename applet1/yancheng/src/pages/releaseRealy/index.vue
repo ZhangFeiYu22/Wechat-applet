@@ -27,7 +27,7 @@
             <i class="iconfont icon-right"></i>
           </p>
         </div>
-        <div class="footer-row" @click="selectC" v-if="communityShow">
+        <!-- <div class="footer-row" @click="selectC" v-if="communityShow">
           <p class="rowI left">
             <i class="iconfont icon-lanmu"></i>
             <span>频道与话题</span>
@@ -45,7 +45,7 @@
           <p class="rowI right no">
             <i class="iconfont icon-right no"></i>
           </p>
-        </div>
+        </div> -->
       </div>
 
       <cover-view  class="publishBtn" @click="postData">发布</cover-view >
@@ -61,20 +61,6 @@
           <p>社区状态栏目</p>
         </div>
       </div>
-      <!-- communityMaskShow -->
-      <div class="communityMask" v-if="communityMaskShow">
-        <p class="info">选择主题频道与话题，你就是城谜里最靓的仔</p>
-        <div class="kinds" v-for="(item,index) in kinds" :key="index">
-          <p class="kindName">{{item.kindName}}</p>
-          <ul>
-            <li
-              v-for="(lis,num) in item.kindList"
-              :key="num"
-              @click="selectKindName(lis.name)"
-            >{{lis.name}}</li>
-          </ul>
-        </div>
-      </div>
     </div>
   </scroll-view>
 </template>
@@ -87,8 +73,7 @@ export default {
       textareaTxt: null,
       imgArr: null,
       location: null,
-      maskShow: false,
-      communityMaskShow: false,
+      maskShow: true,
       hcName: "", //选择是首页还是社区
       cName: "", //选择社区的时候  选择什么栏目
       kinds: [
@@ -178,13 +163,6 @@ export default {
     selectCommunity() {
       this.hcName = "社区";
       this.maskShow = false;
-    },
-    selectC() {
-      this.communityMaskShow = true;
-    },
-    selectKindName(val) {
-      this.communityMaskShow = false;
-      this.cName = val;
     },
     getInputValue(e) {
       this.textareaTxt = e.detail.value;
@@ -333,7 +311,7 @@ export default {
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.65);
     text-align: center;
     h5 {
       top: 10%;
@@ -366,42 +344,6 @@ export default {
       &.community {
         i {
           background-color: #8ddffe;
-        }
-      }
-    }
-  }
-  .communityMask {
-    background-color: #fff;
-    position: fixed;
-    z-index: 2;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 10px 15px;
-    .info {
-      font-size: 14px;
-      color: #a6a6a6;
-      line-height: 20px;
-      margin-bottom: 15px;
-    }
-    .kinds {
-      margin-bottom: 20px;
-      .kindName {
-        font-size: 16px;
-        color: #000;
-        font-weight: 600;
-        line-height: 23px;
-        border-left: 2px solid #b1a1a3;
-        padding-left: 10px;
-      }
-      ul {
-        padding: 10px 12px;
-        li {
-          display: inline-block;
-          margin: 0 25px 10px 0;
-          font-size: 14px;
-          color: #171717;
         }
       }
     }
