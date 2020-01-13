@@ -2,8 +2,8 @@
 import store from "@/store";
 export default {
   getSysInfo() {
-    const res = wx.getSystemInfoSync()
-    return res
+    const res = wx.getSystemInfoSync();
+    return res;
   },
   onLaunch() {
     wx.getSystemInfo({
@@ -47,6 +47,12 @@ export default {
       mpvue.setStorageSync("logs", logs);
     }
 
+    this.globalData = {
+      userInfo: null,
+      serverimage: "https://minip.cndfmg.com:83/",
+      serverXiaoyao: "/image/"
+    };
+
     // tabBar配置
     // wx.hideTabBar()
     // 获取系统信息，适配iphoneX
@@ -71,7 +77,8 @@ export default {
   padding: 200rpx 0;
   box-sizing: border-box;
 }
-div, view{
+div,
+view {
   box-sizing: border-box;
 }
 /* this rule will be remove */
@@ -81,7 +88,7 @@ div, view{
   -webkit-transition: width 2s;
   -o-transition: width 2s;
 }
-.w94{
+.w94 {
   width: 94%;
   margin: 0 auto;
 }
