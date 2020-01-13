@@ -209,6 +209,13 @@
       "unicode_decimal": 58926
     },
     {
+      "icon_id": "7226227",
+      "name": "发布",
+      "font_class": "publish",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
       "icon_id": "7637952",
       "name": "aixin",
       "font_class": "aixin",

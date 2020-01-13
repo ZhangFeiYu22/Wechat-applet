@@ -195,13 +195,13 @@ export default {
       this.likeAct = !this.likeAct;
       if (this.likeAct) {
         wx.showToast({
-          title: "收藏成功",
+          title: "关注成功",
           icon: "none",
           duration: 1500
         });
       } else {
         wx.showToast({
-          title: "取消收藏",
+          title: "取消关注",
           icon: "none",
           duration: 1500
         });

@@ -45,9 +45,9 @@
 					"scene": null
 				},
 				{
-					"id": 1,
-					"name": "pages/myPublish/main",
-					"pathName": "pages/myPublish/main",
+					"id": -1,
+					"name": "真心话",
+					"pathName": "pages/game_truchOrDare/main",
 					"query": "",
 					"scene": null
 				}
