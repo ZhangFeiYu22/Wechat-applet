@@ -1,7 +1,7 @@
 <template>
   <div class="game">
     <div class="terminal_all" v-show="terminal">
-      <div class="terminal" :style="{background:'url('+invitebacka+')'}">
+      <div class="terminal">
         <img :src="deleate" @click.stop="xiaoshi" class="imageshow-deleate" mode="scaleToFill" />
 
         <div class="ter-viewa">游戏规则</div>
@@ -20,8 +20,8 @@
         </scroll-view>
       </div>
     </div>
-    <div class="container" :style="{background:'url('+inviteback+')'}">
-      <img @click.stop="closemusicFun"  :src="music?openmusic:closemusic" class="music" />
+    <div class="container">
+      <img @click.stop="closemusicFun" :src="music?openmusic:closemusic" class="music" />
       <div class="show-viewa">
         <div class="contain-right" @click.stop="showRole">
           <text>规</text>
@@ -48,20 +48,15 @@
           <image :src="plate" class="stagef-image" />
         </div>
 
-        <div class="stageaa" v-if="!openOrclose">
-          <image :src="pica" class="stage-image" mode="scaleToFill" />
-        </div>
-        <div class="stageab" v-if="!openOrclose">
-          <image :src="picb" class="stage-image" mode="scaleToFill" />
-        </div>
-        <div class="stageac" v-if="!openOrclose">
-          <image :src="picc" class="stage-image" mode="scaleToFill" />
-        </div>
-        <div class="stagead" v-if="!openOrclose">
-          <image :src="picd" class="stage-image" mode="scaleToFill" />
-        </div>
-        <div class="stageae" v-if="!openOrclose">
-          <image :src="pice" class="stage-image" mode="scaleToFill" />
+        <div class="diceBox">
+          <div
+            class="stagea"
+            v-if="!openOrclose && index < diceNum"
+            v-for="(item,index) in picArr"
+            :key="index"
+          >
+            <image :src="item" class="stage-image" mode="scaleToFill" />
+          </div>
         </div>
         <div class="stageb" v-show="orshow">
           <image
@@ -78,8 +73,15 @@
             mode="scaleToFill"
           />
         </div>
-        <button @click="yaoyiyao">摇一摇</button>
       </div>
+    </div>
+    <div class="otherBox">
+      <div class="numBox">
+        <i class="iconfont icon-iconless" @click="reduceFun"></i>
+        <p>{{diceNum}}</p>
+        <i class="iconfont icon-tianjia" @click="increaseFun"></i>
+      </div>
+      <button @click="yaoyiyao">摇一摇</button>
     </div>
   </div>
 </template>
@@ -89,13 +91,15 @@ var app = getApp();
 export default {
   data() {
     return {
+      diceNum: 5, //  骰子的个数
+      picArr: [], //显示骰子的数组
+      animationData: null,
       serverimage: "https://minip.cndfmg.com:83/",
       serverXiaoyao: "/image/",
       dShow: false,
       flag: false,
       music: true,
       isShow: true,
-      inviteback: "https://minip.cndfmg.com:83/" + "bac-dice.png",
       shadow: "https://minip.cndfmg.com:83/" + "shadow.png",
       roleUrl: "https://minip.cndfmg.com:83/" + "windownew.png",
       toy: "https://minip.cndfmg.com:83/" + "toy.png",
@@ -106,31 +110,30 @@ export default {
       closeing: "https://minip.cndfmg.com:83/" + "close-button.png",
       cover: "https://minip.cndfmg.com:83/" + "cover.png",
       plate: "https://minip.cndfmg.com:83/" + "plate.png",
-      invitebacka: "https://minip.cndfmg.com:83/" + "backbig.png",
-      // closemusic: this.serverXiaoyao + "closemusic@2x.png",
-      // openmusic: this.serverXiaoyao + "music@2x.png",
-      // ltImg: this.serverXiaoyao + "lt.png",
-      // rbImg: this.serverXiaoyao +"rb2x.png",
-      closemusic: "https://minip.cndfmg.com:83/" + "windownew.png",
-      openmusic: "https://minip.cndfmg.com:83/" + "windownew.png",
-      ltImg: "https://minip.cndfmg.com:83/" + "windownew.png",
-      rbImg: "https://minip.cndfmg.com:83/" + "windownew.png",
+      closemusic: require("../../../static/images/closemusic.png"),
+      openmusic: require("../../../static/images/music.png"),
+      ltImg: require("../../../static/images/lt.png"),
+      rbImg: require("../../../static/images/rb.png"),
       numtotal: 0,
-      width: 0,
-      height: 0,
       num: 0,
       SetInter: "", //定时器
-      numa: 0,
-      numb: 0,
+      num1: 0,
+      num2: 0,
+      num3: 0,
+      num4: 0,
+      num5: 0,
       timeNum: 0,
       last_update: 0,
       last_x: 0,
       last_y: 0,
       last_z: 0,
       determination: true,
-      terminal: true,
-      pica: "https://minip.cndfmg.com:83/" + "onea.png",
-      picb: "https://minip.cndfmg.com:83/" + "sixa.png",
+      terminal: false,
+      pic1: "",
+      pic2: "",
+      pic3: "",
+      pic4: "",
+      pic5: "",
       openOrclose: true,
       orshow: false,
       lists: [
@@ -173,26 +176,37 @@ export default {
     };
   },
   methods: {
-    selectNum() {
-      var self = this;
-      wx.showActionSheet({
-        itemList: ["1", "2", "3", "4", "5", "6"],
-        success(res) {
-          console.log(res.tapIndex);
-          self.num = res.tapIndex + 1;
-        },
-        fail(res) {
-          console.log(res.errMsg);
-        }
-      });
+    reduceFun() {
+      var that = this;
+      if (that.diceNum == 1) {
+        wx.showToast({
+          title: "至少选择一个骰子",
+          icon: "none",
+          duration: 2000
+        });
+      }else{
+        that.diceNum--
+      }
+    },
+    increaseFun() {
+      var that = this;
+      if (that.diceNum == 5) {
+        wx.showToast({
+          title: "至多选择五个骰子",
+          icon: "none",
+          duration: 2000
+        });
+      }else{
+        that.diceNum++
+      }
     },
     showRole: function(e) {
       var that = this;
-      that.terminal = false;
+      that.terminal = true;
     },
     xiaoshi: function(e) {
       var that = this;
-      that.terminal = true;
+      that.terminal = false;
     },
     playAuto: function() {
       var that = this;
@@ -202,18 +216,15 @@ export default {
       });
     },
     //关闭音乐
-
     closemusicFun() {
-      console.log('99')
       var that = this;
-      console.log(that.audioUrl);
       if (that.music) {
         that.music = false;
       } else {
         that.music = true;
       }
     },
-    snakeOne: function() {
+    snakeOne() {
       var that = this;
       if (that.music) {
         that.playAuto();
@@ -233,16 +244,16 @@ export default {
 
       that.SetInter = setInterval(function() {
         that.flag = true;
-        var numa = Math.round(Math.random() * (pics.length - 1));
-        var numb = Math.round(Math.random() * (pics.length - 1));
-        var numc = Math.round(Math.random() * (pics.length - 1));
-        var numd = Math.round(Math.random() * (pics.length - 1));
-        var nume = Math.round(Math.random() * (pics.length - 1));
-        var pica = pics[numa];
-        var picb = pics[numb];
-        var picc = pics[numc];
-        var picd = pics[numd];
-        var pice = pics[nume];
+        var num1 = Math.round(Math.random() * (pics.length - 1));
+        var num2 = Math.round(Math.random() * (pics.length - 1));
+        var num3 = Math.round(Math.random() * (pics.length - 1));
+        var num4 = Math.round(Math.random() * (pics.length - 1));
+        var num5 = Math.round(Math.random() * (pics.length - 1));
+        var pic1 = pics[num1];
+        var pic2 = pics[num2];
+        var pic3 = pics[num3];
+        var pic4 = pics[num4];
+        var pic5 = pics[num5];
         var numVal = that.num + 1;
         var timeNum = that.timeNum + 100;
         if (numVal % 2 == 1) {
@@ -254,6 +265,7 @@ export default {
             duration: 100
           });
         }
+        // 隐藏声音图标
         if (parseInt(numVal / 5) % 2 == 1) {
           that.dShow = true;
         } else {
@@ -263,30 +275,38 @@ export default {
         animation.rotate(0).step({
           duration: 100
         });
-        that.pica = pica;
-        that.picb = picb;
-        that.picc = picc;
-        that.picd = picd;
-        that.pice = pice;
+        that.pic1 = pic1;
+        that.pic2 = pic2;
+        that.pic3 = pic3;
+        that.pic4 = pic4;
+        that.pic5 = pic5;
         that.num = numVal;
-        that.numa = numa + 1;
-        that.numb = numb + 1;
+        that.num1 = num1 + 1;
+        that.num2 = num2 + 1;
+        that.num3 = num3 + 1;
+        that.num4 = num4 + 1;
+        that.num5 = num5 + 1;
         that.timeNum = timeNum;
         that.animationData = animation.export();
         if (timeNum == 2000) {
           clearInterval(that.SetInter);
-          var numtotal = numa + numb + 2;
+          var numtotal = 0;
+          for (let i = 1; i <= that.diceNum; i++) {
+            let aa = that["num" + i];
+            numtotal = numtotal + aa;
+          }
           that.flag = false;
           that.numtotal = numtotal;
           that.determination = true;
           that.num = 0;
           that.timeNum = 0;
-          console.log(that.numtotal)
-          console.log(that.pica)
-          console.log(that.picb)
-          console.log(that.picc)
-          console.log(that.picd)
-          console.log(that.pice)
+          console.log("2--", that.numtotal);
+          var newArr = [];
+          for (let i = 1; i <= that.diceNum; i++) {
+            let aa = that["pic" + i];
+            newArr.push(that["pic" + i]);
+          }
+          that.picArr = newArr;
           return;
         }
       }, 100);
@@ -310,19 +330,14 @@ export default {
     },
     yaoyiyao() {
       var that = this;
-      var curTime = new Date().getTime();
-      var determination = that.determination;
-      var openOrclose = that.openOrclose;
-      var last_update = that.last_update;
-      if (curTime - last_update > 100) {
-        var diffTime = curTime - last_update;
-        var speed = 80;
-        if (speed > 60 && determination && openOrclose && that.isShow) {
-          (that.determination = false),
-            console.log("开关处于什么状态==" + openOrclose);
-          that.snakeOne();
-        }
-        that.last_update = curTime;
+      if (that.openOrclose) {
+        that.snakeOne();
+      } else {
+        wx.showToast({
+          title: "请合上盅罩再继续",
+          icon: "none",
+          duration: 2000
+        });
       }
     }
   },
@@ -336,26 +351,21 @@ export default {
       "https://minip.cndfmg.com:83/" + "fivea.png",
       "https://minip.cndfmg.com:83/" + "sixa.png"
     ];
-    var numa = Math.round(Math.random() * (pics.length - 1));
-    var numb = Math.round(Math.random() * (pics.length - 1));
-    var numc = Math.round(Math.random() * (pics.length - 1));
-    var numd = Math.round(Math.random() * (pics.length - 1));
-    var nume = Math.round(Math.random() * (pics.length - 1));
-    var pica = pics[numa];
-    var picb = pics[numb];
-    var picc = pics[numc];
-    var picd = pics[numd];
-    var pice = pics[nume];
-    that.pica = pica;
-    that.picb = picb;
-    that.picc = picc;
-    that.picd = picd;
-    that.pice = pice;
-    wx.getSystemInfo({
-      success: function(res) {
-        (that.width = res.screenWidth), (that.height = res.screenHeight);
-      }
-    });
+    var num1 = Math.round(Math.random() * (pics.length - 1));
+    var num2 = Math.round(Math.random() * (pics.length - 1));
+    var num3 = Math.round(Math.random() * (pics.length - 1));
+    var num4 = Math.round(Math.random() * (pics.length - 1));
+    var num5 = Math.round(Math.random() * (pics.length - 1));
+    var pic1 = pics[num1];
+    var pic2 = pics[num2];
+    var pic3 = pics[num3];
+    var pic4 = pics[num4];
+    var pic5 = pics[num5];
+    that.pic1 = pic1;
+    that.pic2 = pic2;
+    that.pic3 = pic3;
+    that.pic4 = pic4;
+    that.pic5 = pic5;
   },
   onShow: function() {
     var that = this;
@@ -384,38 +394,6 @@ export default {
         that.last_z = res.z;
       }
     });
-
-    // shake();
-  },
-  onShow: function() {
-    var that = this;
-    that.isShow = true;
-    wx.onAccelerometerChange(function(res) {
-      var curTime = new Date().getTime();
-      var determination = that.determination;
-      var openOrclose = that.openOrclose;
-      var last_update = that.last_update;
-      if (curTime - last_update > 100) {
-        var diffTime = curTime - last_update;
-        var speed =
-          Math.abs(
-            res.x + res.y + res.z - that.last_x - that.last_y - that.last_z
-          ) /
-          diffTime *
-          10000;
-        if (speed > 60 && determination && openOrclose && that.isShow) {
-          (that.determination = false),
-            console.log("开关处于什么状态==" + openOrclose);
-          that.snakeOne();
-        }
-        that.last_update = curTime;
-        that.last_x = res.x;
-        that.last_y = res.y;
-        that.last_z = res.z;
-      }
-    });
-
-    // shake();
   },
   /**
    * 生命周期函数--监听页面隐藏
@@ -447,258 +425,284 @@ export default {
 
 <style lang="less" scoped>
 .game {
-  /* pages/dice/dice.wxss */
-page {
-  font-family: "PingFang-SC-Bold";
-  overflow: hidden;
-  /* background: gainsboro; */
-}
-.music{
-  position: absolute;
-  width: 50rpx;
-  height: 50rpx;
-  left: 20rpx;
-  top: 20rpx;
-}
-.terminal {
-  position: relative;
-  width: 650rpx;
-  height: 700rpx;
-  font-size: 32rpx;
-  font-family:PingFang-SC-Medium;
-  font-weight:500;
-  color:rgba(255,254,254,1);
-}
-.scroll-view{
-  height: 570rpx;
-}
-/* ::-webkit-scrollbar
-{
-width: 8rpx;
-height: 110rpx;
-border-radius: 10px;
-background-color: #ffffff;
-} */
-.ter-viewa{
-  display: flex;
-  margin-top: 44rpx;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-.ter-viewb{
-  padding: 30rpx;
-  line-height: 55rpx;
-}
-.ter-viewc{
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 10rpx 30rpx;
-  font-family:PingFang-SC-Medium;
-  font-weight:500;
-  color:rgba(255,254,254,1);
-}
-.ter-viewd{
-  display: flex;
-  line-height: 55rpx;
-  flex-direction: column;
-  align-items: flex-start; 
-}
-.container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-}
+  .music {
+    position: absolute;
+    width: 50rpx;
+    height: 50rpx;
+    left: 20rpx;
+    top: 20rpx;
+  }
+  .terminal {
+    position: absolute;
+    width: 650rpx;
+    height: 700rpx;
+    font-size: 32rpx;
+    font-weight: 500;
+    color: rgba(255, 254, 254, 1);
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    z-index: 9;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .scroll-view {
+    height: 570rpx;
+  }
+  .ter-viewa {
+    display: flex;
+    margin-top: 44rpx;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+  .ter-viewb {
+    padding: 30rpx;
+    line-height: 55rpx;
+  }
+  .ter-viewc {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10rpx 30rpx;
+    font-weight: 500;
+    color: rgba(255, 254, 254, 1);
+  }
+  .ter-viewd {
+    display: flex;
+    line-height: 55rpx;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(#e66465, #9198e5);
+  }
 
-.imageshow-han {
-  width: 650rpx;
-  height: 700rpx;
-}
+  .imageshow-han {
+    width: 650rpx;
+    height: 700rpx;
+  }
 
-.imageshow-deleate {
-  position: absolute;
-  right: 18rpx;
-  top: 18rpx;
-  width: 26rpx;
-  height: 26rpx;
-}
+  .imageshow-deleate {
+    position: absolute;
+    right: 18rpx;
+    top: 18rpx;
+    width: 26rpx;
+    height: 26rpx;
+  }
 
-.contain-right {
-  position: fixed;
-  right: 0;
-  z-index: 444;
-  top: 168rpx;
-  width: 46rpx;
-  height: 124rpx;
-  font-weight: 500;
-  font-size: 30rpx;
-  border-top-left-radius: 10rpx;
-  border-bottom-left-radius: 10rpx;
-  background: #FEC600;
-  color: #C5701D;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
+  .contain-right {
+    position: fixed;
+    right: 0;
+    z-index: 444;
+    top: 168rpx;
+    width: 46rpx;
+    height: 124rpx;
+    font-weight: 500;
+    font-size: 30rpx;
+    border-top-left-radius: 10rpx;
+    border-bottom-left-radius: 10rpx;
+    background: #fec600;
+    color: #c5701d;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
 
-.show-viewb {
-  font-family: "FZLXTJW--GB1-0";
-  text-align: center;
-  position: absolute;
-  width: 100%;
-  top: 112rpx;
-}
-.shadow-image{
-  width: 460rpx;
-  height: 140rpx;
-}
-.snake {
-  position: absolute;
-  width: 100%;
-  font-family: "PingFang-SC-Bold";
-  color: #ffe900;
-  top: 66%;
-  font-size: 50rpx;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}
-.bigBox{
-   position: absolute;
-  top: 356rpx;
-  left: 0;
-  right: 0;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  height: 572rpx;
-}
-.show-viewd{
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-.dShow{
-  width: 70rpx;
-  height: 70rpx;
-  position: absolute;
-  top: 100rpx;
-  left: 40rpx;
-}
-.dShow2{
-  width: 70rpx;
-  height: 70rpx;
-  position: absolute;
-  bottom: 40rpx;
-  right: 40rpx;
-}
-.state-imageall {
-  height: 572rpx;
-  width: 574rpx;
-}
-.show-viewe{
-  position: absolute;
-  top: 254rpx;
-  left: 0;
-  right: 0;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-.stagee-image{
-  width: 500rpx;
-  height: 346rpx;
-}
-.stage-image {
-  width: 91rpx;
-  height: 85rpx;
-}
-.show-viewf{
-  position: absolute;
-  top: 590rpx;
-  left: 0;
-  right: 0;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-.stagef-image {
-  width: 574rpx;
-  height: 320rpx;
-}
-.stageaa {
-  position: absolute;
-  top: 632rpx;
-  left: 260rpx;
-}
+  .show-viewb {
+    text-align: center;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    top: 112rpx;
+  }
+  .shadow-image {
+    width: 460rpx;
+    height: 140rpx;
+  }
+  .snake {
+    position: absolute;
+    width: 100%;
+    color: #ffe900;
+    top: 66%;
+    font-size: 50rpx;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+  .bigBox {
+    position: absolute;
+    top: 300rpx;
+    // top: 356rpx;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 572rpx;
+  }
+  .show-viewd {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
 
-.stageab {
-  position: absolute;
-  top: 632rpx;
-  left: 398rpx;
-}
-.stageac{
-  position: absolute;
-  top: 720rpx;
-  left: 196rpx;
-}
-.stagead{
-  position: absolute;
-  top: 720rpx;
-  left: 328rpx;
-}
-.stageae{
-  position: absolute;
-  top: 720rpx;
-  left: 464rpx;
-}
-.stageb {
-  position: absolute;
-  top: 1000rpx;
-  left: 0;
-  right: 0;
-  font-family: 'PingFang-SC-Medium';
-  display: flex;
-  font-size: 28rpx;
-  color: white;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-.stageb-image {
-  margin-right: 10rpx;
-  width: 112rpx;
-  height: 112rpx;
-}
-.show-viewc{
-  position: absolute;
-  top: 642rpx;
-  left: 0;
-  right: 0;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-.stagec-image {
-  width: 96rpx;
-  height: 96rpx;
-}
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+  .dShow {
+    width: 70rpx;
+    height: 70rpx;
+    position: absolute;
+    top: 100rpx;
+    left: 40rpx;
+  }
+  .dShow2 {
+    width: 70rpx;
+    height: 70rpx;
+    position: absolute;
+    bottom: 40rpx;
+    right: 40rpx;
+  }
+  .state-imageall {
+    height: 572rpx;
+    width: 574rpx;
+  }
+  .show-viewe {
+    position: absolute;
+    top: 254rpx;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+  .stagee-image {
+    width: 500rpx;
+    height: 346rpx;
+  }
+  .stage-image {
+    width: 91rpx;
+    height: 85rpx;
+  }
+  .show-viewf {
+    position: absolute;
+    top: 590rpx;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+  .stagef-image {
+    width: 574rpx;
+    height: 320rpx;
+  }
+  .diceBox {
+    .stagea {
+      position: absolute;
+      &:nth-child(1) {
+        top: 632rpx;
+        left: 260rpx;
+      }
+      &:nth-child(2) {
+        top: 632rpx;
+        left: 398rpx;
+      }
+      &:nth-child(3) {
+        top: 720rpx;
+        left: 196rpx;
+      }
+      &:nth-child(4) {
+        top: 720rpx;
+        left: 328rpx;
+      }
+      &:nth-child(5) {
+        top: 720rpx;
+        left: 464rpx;
+      }
+    }
+  }
 
-
+  .stageb {
+    position: absolute;
+    top: 920rpx;
+    left: 0;
+    right: 0;
+    display: flex;
+    font-size: 28rpx;
+    color: white;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+  .stageb-image {
+    margin-right: 10rpx;
+    width: 112rpx;
+    height: 112rpx;
+  }
+  .show-viewc {
+    position: absolute;
+    top: 570rpx;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+  .stagec-image {
+    width: 96rpx;
+    height: 96rpx;
+  }
+  .otherBox {
+    display: flex;
+    justify-content: space-around;
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    .numBox {
+      width: 120px;
+      text-align: center;
+      i {
+        display: inline-block;
+        height: 32x;
+        line-height: 32px;
+        color: #fff;
+        font-size: 22px;
+      }
+      p {
+        display: inline-block;
+        margin: 0 10px;
+        font-size: 22px;
+      }
+    }
+    button {
+      width: 120px;
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      border: 1px solid #f1f1f1;
+      height: 32x;
+      line-height: 32px;
+      font-size: 14px;
+      color: #f1f1f1;
+      &::after {
+        border: none;
+      }
+    }
+  }
 }
 </style>

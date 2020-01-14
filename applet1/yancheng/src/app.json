@@ -29,6 +29,7 @@
     "pages/game_dice/main",
     "pages/game_truchOrDare/main"
   ],
+  "requiredBackgroundModes": ["audio"],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
