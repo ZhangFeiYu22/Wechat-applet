@@ -1,13 +1,17 @@
 <template>
+  <!-- <div class="discover" :style="{backgroundImage:'url('+bgurl +')'}"> -->
   <div class="discover">
     <div class="container">
       <div class="balloon">
+        <!-- <div class="gameBox game1" @click="goGame1" :style="{backgroundImage:'url('+cir2 +')'}"> -->
         <div class="gameBox game1" @click="goGame1">
           <span>真心话</span>
         </div>
+        <!-- <div class="gameBox game2" @click="goGame2" :style="{backgroundImage:'url('+cir1 +')'}"> -->
         <div class="gameBox game2" @click="goGame2">
           <span>摇骰子</span>
         </div>
+        <!-- <div class="gameBox game3" :style="{backgroundImage:'url('+cir3 +')'}"> -->
         <div class="gameBox game3">
           <span>Game Center</span>
         </div>
@@ -19,20 +23,53 @@
         </div>
         <!-- <div class="gameBox game6">
           <span>game6</span>
-        </div> -->
+        </div>-->
       </div>
     </div>
-    <button class="handleBtn" @click="btnClick">登录授权</button>
+    <!-- <button class="handleBtn" @click="btnClick">登录授权</button> -->
+    <div class="navStyle">
+      <div class="navBottom" @click="doAnimation" :class="aniStyle ? 'aniStyle3' : ''">
+        <span :class="aniStyle ? 'aniStyle1' : ''"></span>
+        <span></span>
+        <span :class="aniStyle ? 'aniStyle2' : ''"></span>
+      </div>
+      <div class="navList">
+        <div class="create_ball" :animation="animation1" @click="navHome">
+          <i class="iconfont icon-zu1"></i>
+        </div>
+        <div class="create_ball" :animation="animation2" @click="navCommunity">
+          <i class="iconfont icon-zu3"></i>
+        </div>
+        <div class="create_ball" :animation="animation3" @click="navHome">
+          <i class="iconfont icon-zu"></i>
+        </div>
+        <div class="create_ball" :animation="animation4" @click="navMy">
+          <i class="iconfont icon-zu2"></i>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   data() {
-    return {};
+    return {
+      bgurl: require("../../../static/images/bg.jpeg"),
+      cir1: require("../../../static/images/cir1.png"),
+      cir2: require("../../../static/images/cir2.png"),
+      cir3: require("../../../static/images/cir3.png"),
+      animation1: {},
+      animation2: {},
+      animation3: {},
+      animation4: {},
+      aniStyle: false,
+      stretch: false, //判断是否展开，默认不展开
+      running: false //动画正在运行状态：控制动画运行完毕后才能再次运行
+    };
   },
   methods: {
-    goGame1(){
+    goGame1() {
       wx.navigateTo({
         url: "/pages/game_truchOrDare/main"
       });
@@ -56,6 +93,139 @@ export default {
       wx.switchTab({
         url: "/pages/home/main"
       });
+    },
+    navHome() {
+      wx.switchTab({
+        url: "/pages/home/main"
+      });
+    },
+    navCommunity() {
+      wx.switchTab({
+        url: "/pages/community/main"
+      });
+    },
+    navMy() {
+      wx.switchTab({
+        url: "/pages/my/main"
+      });
+    },
+    btnClick() {
+      wx.switchTab({
+        url: "/pages/home/main"
+      });
+    },
+    doAnimation() {
+      //启动动画
+      var that = this;
+      if (that.running) {
+        //如果动画正在运行，点击无效
+        return;
+      }
+      that.running = true;
+      setTimeout(() => {
+        //默认400ms能点击一次
+        var _that = this;
+        _that.running = false;
+      }, 400);
+      if (!that.stretch) {
+        //展开动作
+        this.showAnimation();
+      } else {
+        //收起动作
+        this.hiddenAnimation();
+      }
+      that.stretch = !that.stretch; //取反
+    },
+    showAnimation() {
+      //展示动画
+      var that = this;
+      that.aniStyle = true;
+      var animation1 = wx.createAnimation({
+        duration: 300,
+        delay: 0,
+        timingFunction: "ease"
+      });
+      var animation2 = wx.createAnimation({
+        duration: 300,
+        delay: 50,
+        timingFunction: "ease"
+      });
+      var animation3 = wx.createAnimation({
+        duration: 300,
+        delay: 100,
+        timingFunction: "ease"
+      });
+      var animation4 = wx.createAnimation({
+        duration: 300,
+        delay: 100,
+        timingFunction: "ease"
+      });
+
+      //表示一组动画完成
+      animation1
+        .translateX(-125)
+        .translateY(0)
+        .opacity(1)
+        .step();
+      //表示一组动画完成
+      animation2
+        .translateX(-100)
+        .translateY(-60)
+        .opacity(1)
+        .step();
+      //表示一组动画完成
+      animation3
+        .translateX(-60)
+        .translateY(-110)
+        .opacity(1)
+        .step();
+      //表示一组动画完成
+      animation4
+        .translateX(-5)
+        .translateY(-145)
+        .opacity(1)
+        .step();
+      //清掉之前的动画操作
+      that.animation1 = animation1.export();
+      that.animation2 = animation2.export();
+      that.animation3 = animation3.export();
+      that.animation4 = animation4.export();
+    },
+    hiddenAnimation() {
+      //隐藏动画
+      var that = this;
+      that.aniStyle = false;
+      var animation1 = wx.createAnimation({
+        duration: 300,
+        delay: 100,
+        timingFunction: "ease"
+      });
+      var animation2 = wx.createAnimation({
+        duration: 300,
+        delay: 50,
+        timingFunction: "ease"
+      });
+      var animation3 = wx.createAnimation({
+        duration: 300,
+        delay: 0,
+        timingFunction: "ease"
+      });
+      var animation4 = wx.createAnimation({
+        duration: 300,
+        delay: 0,
+        timingFunction: "ease"
+      });
+      animation1.opacity(0).step();
+      animation2.opacity(0).step();
+      animation3.opacity(0).step();
+      animation4.opacity(0).step();
+      that.animation1 = animation1.export();
+      that.animation2 = animation2.export();
+      that.animation3 = animation3.export();
+      that.animation4 = animation4.export();
+    },
+    create_match(tag) {
+      console.log("111！" + tag);
     }
   }
 };
@@ -70,6 +240,7 @@ export default {
   right: 0;
   background-color: rgba(0, 0, 0, 0.7);
   text-align: center;
+  background-size: 100% 100%;
   span {
     text-transform: uppercase;
   }
@@ -79,7 +250,6 @@ export default {
     height: 100%;
     padding: 10px;
     margin: 0 auto;
-    background: whitesmoke;
     position: relative;
     .balloon {
       width: 100%;
@@ -91,6 +261,7 @@ export default {
         width: 70px;
         height: 70px;
         background: rgba(182, 15, 97, 0.9);
+        background-size: 100% 100%;
         border-radius: 0;
         border-radius: 80% 80% 80% 80%;
         position: absolute;
@@ -194,16 +365,18 @@ export default {
     }
   }
   .handleBtn {
-    width: 80%;
-    height: 40px;
-    line-height: 40px;
+    width: 70px;
+    height: 70px;
+    padding: 15px;
+    border-radius: 50%;
     margin-top: 10%;
+    line-height: 20px;
     font-size: 14px;
     background-color: #1bad19;
     color: #fff;
     position: absolute;
-    bottom: 15%;
-    left: 10%;
+    bottom: 20px;
+    left: 15px;
   }
   // CSS3动画
   /*BALLOON 1 4*/
@@ -251,6 +424,125 @@ export default {
 
     50% {
       -webkit-transform: translate(-52%, -52%) rotate(0deg) scale(0.95);
+    }
+  }
+  .navStyle {
+    .navBottom {
+      z-index: 999;
+      position: fixed;
+      right: 15px;
+      bottom: 20px;
+      width: 136rpx;
+      height: 136rpx;
+      border-radius: 50%;
+      border: 3px solid #fc3e9f;
+      z-index: 40;
+      box-shadow: 0 0 9px 2px #fc3e9f, 0 0 9px 2px #fc3e9f inset;
+      transition: all 300ms ease-in-out 500ms;
+      &.aniStyle3 {
+        border-color: #2dfbb2;
+        box-shadow: 0 0 9px 2px #2dfbb2, 0 0 9px 2px #2dfbb2 inset;
+      }
+      span {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 5px;
+        height: 5px;
+        background-color: #fc3e9f;
+        border-radius: 50%;
+        box-shadow: 0 0 9px 2px #fc3e9f, 0 0 9px 2px #fc3e9f inset;
+        transition: margin 300ms, transform 600ms, height 300ms  600ms,
+          background-color 600ms, border-radius 600ms;
+        &:first-child {
+          margin-top: -10px;
+        }
+        &:last-child {
+          margin-top: 10px;
+        }
+        &.aniStyle1 {
+          // height: 30px;
+          width: 3px;
+          border-radius: 5px;
+          margin-top: 0px;
+          background-color: #2dfbb2;
+          box-shadow: 0 0 9px 2px #2dfbb2, 0 0 9px 2px #2dfbb2 inset;
+          
+          // transform: rotate(45deg);
+        }
+        &.aniStyle2 {
+          // height: 30px;
+          width: 3px;
+          border-radius: 5px;
+          margin-top: 0px;
+          background-color: #2dfbb2;
+          box-shadow: 0 0 9px 2px #2dfbb2, 0 0 9px 2px #2dfbb2 inset;
+          // transform: rotate(-45deg);
+        }
+      }
+    }
+    .navList {
+      .create_ball {
+        height: 60px;
+        width: 60px;
+        line-height: 60px;
+        border-radius: 50%;
+        opacity: 0;
+        text-align: center;
+        vertical-align: middle;
+        position: absolute;
+        right: 10rpx;
+        bottom: 20rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 3px solid #fc3e9f;
+        transform-origin: 182.5px;
+        transition: all 300ms cubic-bezier(0.64, 0.04, 0.35, 1);
+        box-shadow: 0 0 9px 2px #fc3e9f, 0 0 9px 2px #fc3e9f inset;
+        i {
+          color: #fc3e9f;
+          font-size: 22px;
+          color: #dd4814;
+          animation: blink 2.5s linear infinite;
+        }
+      }
+    }
+    @keyframes blink {
+      0% {
+        opacity: 1;
+      }
+      10% {
+        opacity: 0.9;
+      }
+      20% {
+        opacity: 0.8;
+      }
+      30% {
+        opacity: 1;
+      }
+      40% {
+        opacity: 0.8;
+      }
+      50% {
+        opacity: 0.9;
+      }
+      60% {
+        opacity: 1;
+      }
+      70% {
+        opacity: 0.6;
+      }
+      80% {
+        opacity: 0.4;
+      }
+      90% {
+        opacity: 0.9;
+      }
+      100% {
+        opacity: 1;
+      }
     }
   }
 }

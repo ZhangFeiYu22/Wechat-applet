@@ -6,15 +6,15 @@
           v-for="(item,index) in optionList"
           :key="index"
           class="optionItem"
-          :class="item.active?'act':''"
+          :class="item.active?'':'act'"
           @click="toggleStyle(index)"
         >{{item.name}}</p>
       </div>
     </div>
     <div class="contentBox">
       <div class="box">
-        <img src="../../../static/images/aaa1.png" mode="aspectFill" />
-        <p>{{msg}}</p>
+        <i class="iconfont" :class="msgShow.icon"></i>
+        <p>{{msgShow.title}}</p>
       </div>
       <button class="changBtn" @click="changeFun">换一个</button>
     </div>
@@ -26,34 +26,59 @@ export default {
   data() {
     return {
       optionList: [
-        { name: "喝酒", active: false },
-        { name: "真心话", active: false },
-        { name: "大冒险", active: false }
+        {
+          name: "喝酒",
+          active: true,
+          arrList: [
+            { icon: "icon-hejiu", title: "大家干杯" },
+            { icon: "icon-hejiu", title: "找异性碰杯" },
+            { icon: "icon-hejiu", title: "喝半杯" },
+            { icon: "icon-hejiu", title: "喝两杯" }
+          ]
+        },
+        {
+          name: "真心话",
+          active: true,
+          arrList: [
+            { icon: "icon-aixin", title: "这是真心话1" },
+            { icon: "icon-aixin", title: "这是真心话2" },
+            { icon: "icon-aixin", title: "这是真心话3" },
+            { icon: "icon-aixin", title: "这是真心话4" }
+          ]
+        },
+        {
+          name: "大冒险",
+          active: true,
+          arrList: [
+            { icon: "icon-damaoxian", title: "这是大冒险1" },
+            { icon: "icon-damaoxian", title: "这是大冒险2" },
+            { icon: "icon-damaoxian", title: "这是大冒险3" },
+            { icon: "icon-damaoxian", title: "这是大冒险4" }
+          ]
+        }
       ],
-      msg: "这是真心话内容",
-      msgArr: [
-        "这是随机内容1",
-        "这是随机内容2",
-        "这是随机内容3",
-        "这是随机内容4",
-        "这是随机内容5",
-        "这是随机内容6",
-        "这是随机内容7"
-      ]
+      msgShow: { icon: "icon-aixin", title: "真心话大冒险" },
     };
   },
   methods: {
     changeFun() {
-      this.msg = this.msgArr[Math.floor(Math.random() * this.msgArr.length)];
+      var newArr = []
+      this.optionList.map((value,index,arr)=>{
+        if(value.active == true ){
+          let aaa = newArr
+          return newArr = [...aaa,...value.arrList]
+        }
+      })
+      this.msgShow = newArr[Math.floor(Math.random() * newArr.length)];
     },
     toggleStyle(index) {
-      if (this.optionList[index].active) {
-        this.optionList[index].active = false;
+      if (!this.optionList[index].active) {
+        this.optionList[index].active = true;
       } else {
         var newArr = this.arrChange(this.optionList);
         var falseNum = this.statisticalFieldNumber(newArr.active);
-        if (falseNum.false > 1) {
-          this.optionList[index].active = true;
+        if (falseNum.true > 1) {
+          this.optionList[index].active = false;
         } else {
           wx.showToast({
             title: "至少需要选择一个模式",
@@ -112,9 +137,11 @@ export default {
       .optionItem {
         width: 33.33%;
         text-align: center;
+        color: #fff;
+        text-shadow: 0 0 2px #eee, 0 0 7px #eee, 0 0 12px #eee;
         &.act {
           background-color: #000;
-          color: #eee;
+          color: #ddd;
         }
       }
     }
@@ -143,9 +170,9 @@ export default {
           #9cf3fd
         )
         1;
-      img {
-        width: 50px;
-        height: 50px;
+      i {
+        font-size: 40px;
+        color: #ae6596;
       }
       p {
         color: #fff;

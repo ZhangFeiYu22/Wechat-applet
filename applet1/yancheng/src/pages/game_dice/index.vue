@@ -49,13 +49,40 @@
         </div>
 
         <div class="diceBox">
-          <div
-            class="stagea"
-            v-if="!openOrclose && index < diceNum"
-            v-for="(item,index) in picArr"
-            :key="index"
-          >
-            <image :src="item" class="stage-image" mode="scaleToFill" />
+          <div v-if="picArr.length == 1">
+            <div class="stageaLength1" v-for="(item,index) in picArr" :key="index">
+              <div v-if="!openOrclose">
+                <image :src="item" class="stage-image" mode="scaleToFill" />
+              </div>
+            </div>
+          </div>
+          <div v-if="picArr.length == 2">
+            <div class="stageaLength2" v-for="(item,index) in picArr" :key="index">
+              <div v-if="!openOrclose">
+                <image :src="item" class="stage-image" mode="scaleToFill" />
+              </div>
+            </div>
+          </div>
+          <div v-if="picArr.length == 3">
+            <div class="stageaLength3" v-for="(item,index) in picArr" :key="index">
+              <div v-if="!openOrclose">
+                <image :src="item" class="stage-image" mode="scaleToFill" />
+              </div>
+            </div>
+          </div>
+          <div v-if="picArr.length == 4">
+            <div class="stageaLength4" v-for="(item,index) in picArr" :key="index">
+              <div v-if="!openOrclose">
+                <image :src="item" class="stage-image" mode="scaleToFill" />
+              </div>
+            </div>
+          </div>
+          <div v-if="picArr.length == 5">
+            <div class="stageaLength5" v-for="(item,index) in picArr" :key="index">
+              <div v-if="!openOrclose">
+                <image :src="item" class="stage-image" mode="scaleToFill" />
+              </div>
+            </div>
           </div>
         </div>
         <div class="stageb" v-show="orshow">
@@ -100,16 +127,16 @@ export default {
       flag: false,
       music: true,
       isShow: true,
-      shadow: "https://minip.cndfmg.com:83/" + "shadow.png",
-      roleUrl: "https://minip.cndfmg.com:83/" + "windownew.png",
-      toy: "https://minip.cndfmg.com:83/" + "toy.png",
-      waveing: "https://minip.cndfmg.com:83/" + "openbutton.png",
-      audioUrl: "https://minip.cndfmg.com:83/" + "yaosaizi.mp3",
-      wavedice: "https://minip.cndfmg.com:83/" + "wavedice.png",
-      deleate: "https://minip.cndfmg.com:83/" + "deleate.png",
-      closeing: "https://minip.cndfmg.com:83/" + "close-button.png",
-      cover: "https://minip.cndfmg.com:83/" + "cover.png",
-      plate: "https://minip.cndfmg.com:83/" + "plate.png",
+      shadow: "https://minip.cndfmg.com:83/shadow.png",
+      roleUrl: "https://minip.cndfmg.com:83/windownew.png",
+      toy: "https://minip.cndfmg.com:83/toy.png",
+      waveing: "https://minip.cndfmg.com:83/openbutton.png",
+      audioUrl: "https://minip.cndfmg.com:83/yaosaizi.mp3",
+      wavedice: "https://minip.cndfmg.com:83/wavedice.png",
+      deleate: "https://minip.cndfmg.com:83/deleate.png",
+      closeing: "https://minip.cndfmg.com:83/close-button.png",
+      cover: "https://minip.cndfmg.com:83/cover.png",
+      plate: "https://minip.cndfmg.com:83/plate.png",
       closemusic: require("../../../static/images/closemusic.png"),
       openmusic: require("../../../static/images/music.png"),
       ltImg: require("../../../static/images/lt.png"),
@@ -184,8 +211,8 @@ export default {
           icon: "none",
           duration: 2000
         });
-      }else{
-        that.diceNum--
+      } else {
+        that.diceNum--;
       }
     },
     increaseFun() {
@@ -196,8 +223,8 @@ export default {
           icon: "none",
           duration: 2000
         });
-      }else{
-        that.diceNum++
+      } else {
+        that.diceNum++;
       }
     },
     showRole: function(e) {
@@ -234,12 +261,12 @@ export default {
         timingFunction: "linear"
       });
       var pics = [
-        "https://minip.cndfmg.com:83/" + "onea.png",
-        "https://minip.cndfmg.com:83/" + "twoa.png",
-        "https://minip.cndfmg.com:83/" + "threea.png",
-        "https://minip.cndfmg.com:83/" + "foura.png",
-        "https://minip.cndfmg.com:83/" + "fivea.png",
-        "https://minip.cndfmg.com:83/" + "sixa.png"
+        "https://minip.cndfmg.com:83/onea.png",
+        "https://minip.cndfmg.com:83/twoa.png",
+        "https://minip.cndfmg.com:83/threea.png",
+        "https://minip.cndfmg.com:83/foura.png",
+        "https://minip.cndfmg.com:83/fivea.png",
+        "https://minip.cndfmg.com:83/sixa.png"
       ];
 
       that.SetInter = setInterval(function() {
@@ -290,6 +317,11 @@ export default {
         that.animationData = animation.export();
         if (timeNum == 2000) {
           clearInterval(that.SetInter);
+          //加一个还原动画
+          animation.rotate(0).step({
+            duration: 100
+          });
+          that.animationData = animation.export();
           var numtotal = 0;
           for (let i = 1; i <= that.diceNum; i++) {
             let aa = that["num" + i];
@@ -344,12 +376,12 @@ export default {
   onLoad(options) {
     var that = this;
     var pics = [
-      "https://minip.cndfmg.com:83/" + "onea.png",
-      "https://minip.cndfmg.com:83/" + "twoa.png",
-      "https://minip.cndfmg.com:83/" + "threea.png",
-      "https://minip.cndfmg.com:83/" + "foura.png",
-      "https://minip.cndfmg.com:83/" + "fivea.png",
-      "https://minip.cndfmg.com:83/" + "sixa.png"
+      "https://minip.cndfmg.com:83/onea.png",
+      "https://minip.cndfmg.com:83/twoa.png",
+      "https://minip.cndfmg.com:83/threea.png",
+      "https://minip.cndfmg.com:83/foura.png",
+      "https://minip.cndfmg.com:83/fivea.png",
+      "https://minip.cndfmg.com:83/sixa.png"
     ];
     var num1 = Math.round(Math.random() * (pics.length - 1));
     var num2 = Math.round(Math.random() * (pics.length - 1));
@@ -554,7 +586,6 @@ export default {
     top: 0;
     left: 0;
     right: 0;
-
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -611,7 +642,59 @@ export default {
     height: 320rpx;
   }
   .diceBox {
-    .stagea {
+    .stageaLength1 {
+      position: absolute;
+      &:nth-child(1) {
+        top: 720rpx;
+        left: 328rpx;
+      }
+    }
+    .stageaLength2 {
+      position: absolute;
+      &:nth-child(1) {
+        top: 720rpx;
+        left: 260rpx;
+      }
+      &:nth-child(2) {
+        top: 720rpx;
+        left: 398rpx;
+      }
+    }
+    .stageaLength3 {
+      position: absolute;
+      &:nth-child(1) {
+        top: 720rpx;
+        left: 196rpx;
+      }
+      &:nth-child(2) {
+        top: 720rpx;
+        left: 328rpx;
+      }
+      &:nth-child(3) {
+        top: 720rpx;
+        left: 464rpx;
+      }
+    }
+    .stageaLength4 {
+      position: absolute;
+      &:nth-child(1) {
+        top: 740rpx;
+        left: 250rpx;
+      }
+      &:nth-child(2) {
+        top: 730rpx;
+        left: 380rpx;
+      }
+      &:nth-child(3) {
+        top: 640rpx;
+        left: 280rpx;
+      }
+      &:nth-child(4) {
+        top: 630rpx;
+        left: 410rpx;
+      }
+    }
+    .stageaLength5 {
       position: absolute;
       &:nth-child(1) {
         top: 632rpx;

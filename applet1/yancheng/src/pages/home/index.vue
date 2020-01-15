@@ -18,7 +18,7 @@
           </swiper-item>
         </block>
       </swiper>
-      <img v-else class="default-image" src="/static/images/default_ad.jpg" mode="aspectFill" />
+      <!-- <img v-else class="default-image" src="/static/images/default_ad.jpg" mode="aspectFill" /> -->
       <view class="dots">
         <block v-for="(item,index) in carrouseList" :key="index">
           <view :class="index == current ? ' active' : ''" class="dot"></view>
