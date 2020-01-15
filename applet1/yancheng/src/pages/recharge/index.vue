@@ -7,7 +7,7 @@
           <span>金币</span>
         </p>
         <p class="p2">
-          <i class="iconfont icon-zhuyi"></i>1元=10金币
+          <i class="iconfont icon-zhuyi"></i><span>1元=10金币</span>
         </p>
       </div>
     </div>
@@ -73,8 +73,12 @@ export default {
         line-height: 30px;
         i {
           display: inline-block;
-          font-size: 12px;
+          font-size: 14px;
           margin-right: 2px;
+          vertical-align: middle;
+        }
+        span{
+          vertical-align: middle;
         }
       }
     }

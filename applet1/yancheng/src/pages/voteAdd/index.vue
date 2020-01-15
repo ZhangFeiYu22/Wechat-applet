@@ -145,7 +145,7 @@ export default {
         width: 90px;
         height: 90px;
         border: 1px solid #707070;
-        font-size: 30px;
+        font-size: 18px;
         color: #888;
         line-height: 90px;
         text-align: center;

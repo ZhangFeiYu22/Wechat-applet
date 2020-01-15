@@ -1,7 +1,7 @@
 <template>
   <div class="myInfo">
     <div class="headImg">
-      <img src="../../../static/images/aaa1.png" mode="aspectFill">
+      <img :src="headImg" mode="aspectFill" />
     </div>
     <div class="infoList">
       <div class="infoItem">
@@ -29,49 +29,45 @@
 </template>
 
 <script>
-
-
 export default {
-  data(){
+  data() {
     return {
-
-    }
+      headImg: `${this.$store.state.imgUrlHttp}/head.png`
+    };
   },
-  methods: {
-    
-  }
-}
+  methods: {}
+};
 </script>
 
 <style lang="less" scoped>
-.myInfo{
-  .headImg{
+.myInfo {
+  .headImg {
     text-align: center;
-    padding: 10px 0 20px; 
-    img{
+    padding: 10px 0 20px;
+    img {
       width: 70px;
       height: 70px;
       border-radius: 100%;
     }
   }
-  .infoList{
+  .infoList {
     width: 85%;
     margin: 0 auto;
-    .infoItem{
+    .infoItem {
       font-size: 13px;
       line-height: 40px;
       display: flex;
       justify-content: flex-start;
       color: #525151;
-      .ll{
+      .ll {
         margin-right: 30px;
       }
-      .cc{
+      .cc {
         flex-grow: 1;
         position: relative;
-        &::after{
+        &::after {
           display: block;
-          content: '';
+          content: "";
           width: 6px;
           height: 6px;
           border-right: 1px solid #999;

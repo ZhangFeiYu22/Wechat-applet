@@ -2,7 +2,7 @@
   <div class="my">
     <div class="head">
       <div class="headImg">
-        <img src="../../../static/images/aaa1.png" mode="aspectFill" />
+        <img :src="headImg" mode="aspectFill" />
       </div>
       <div class="rightIcon" @click="isAttenToggle">
         <p class="attention attentioned" v-if="isAttention">已关注</p>
@@ -84,7 +84,7 @@
     <div class="mask" @click.stop="closeMask" v-if="maskVal"></div>
     <div class="maskCont" v-if="maskVal">
       <div class="title">
-        <img src="../../../static/images/aaa1.png" mode="aspectFill" />
+        <img :src="headImg" mode="aspectFill" />
         <span>张小凡</span>
       </div>
       <div class="textaCont">
@@ -102,18 +102,19 @@ export default {
       isAttention: false,  //关注判断
       itemActive: 0,  //话题，状态判断
       likeAct: false, //喜欢判断
+      headImg: `${this.$store.state.imgUrlHttp}/head.png`,
       ItemList: [
         {
           showEllip: false,
           content:
             "细雨秀江南，江南多雨，尤其是江南春天的烟雨，就像那吴侬软语一般，透着水乡特有的滋润，雨是江南水乡的灵气，在江南，充满浪漫气息的雨，元宵节前后的雨叫灯花雨，灯花雨往往是初春的第一场雨",
           picList: [
-            require("../../../static/images/aaa1.png"),
-            require("../../../static/images/aaa1.png"),
-            require("../../../static/images/aaa1.png"),
-            require("../../../static/images/aaa1.png"),
-            require("../../../static/images/aaa1.png"),
-            require("../../../static/images/aaa1.png")
+            `${this.$store.state.imgUrlHttp}/a1.png`,
+            `${this.$store.state.imgUrlHttp}/a2.png`,
+            `${this.$store.state.imgUrlHttp}/a3.png`,
+            `${this.$store.state.imgUrlHttp}/a4.png`,
+            `${this.$store.state.imgUrlHttp}/a5.png`,
+            `${this.$store.state.imgUrlHttp}/a6.png`,
           ]
         },
         {
@@ -121,12 +122,10 @@ export default {
           content:
             "细雨秀江南，江南多雨，尤其是江南春天的烟雨，就像那吴侬软语一般，透着水乡特有的滋润，雨是江南水乡的灵气，在江南，充满浪漫气息的雨，元宵节前后的雨叫灯花雨，灯花雨往往是初春的第一场雨，淅淅沥沥的春雨就飘然而至，莺飞草长，一泓碧水粼粼而起，杨柳拂堤，碧草如丝，繁花似锦，飞泉鸣溅，古寺的梵音在石缝间流淌，雨后的空气溢出清新的芳香。而后是杏花雨，梨花雨，暮春过后，连绵不断的黄梅雨又弥漫江南。夜晚的雨声，清晨的花香，清绝的令人深深沉醉，秀雅的让人不舍离去。纷飞的细雨沾湿了一袭素裙，润透了江南女子的心。两袖的花香，轻舞出江南的独特风韵",
           picList: [
-            require("../../../static/images/aaa1.png"),
-            require("../../../static/images/aaa1.png"),
-            require("../../../static/images/aaa1.png"),
-            require("../../../static/images/aaa1.png"),
-            require("../../../static/images/aaa1.png"),
-            require("../../../static/images/aaa1.png")
+            `${this.$store.state.imgUrlHttp}/a7.png`,
+            `${this.$store.state.imgUrlHttp}/a8.png`,
+            `${this.$store.state.imgUrlHttp}/a9.png`,
+            `${this.$store.state.imgUrlHttp}/a10.png`
           ]
         }
       ]
@@ -219,7 +218,7 @@ export default {
         border-radius: 25px;
         color: #fff;
         .iconfont {
-          font-size: 20px;
+          font-size: 12px;
           margin-right: 2px;
           color: #fff;
           display: inline-block;

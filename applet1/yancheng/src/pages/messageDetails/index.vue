@@ -2,7 +2,7 @@
   <div class="messageDetails">
     <div class="head">
       <div class="headImg">
-        <img src="../../../static/images/aaa1.png" mode="aspectFill" />
+        <img :src="headImg1" mode="aspectFill" />
       </div>
       <div class="nameTime">
         <p class="name">张小凡</p>
@@ -22,7 +22,9 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      headImg1: `${this.$store.state.imgUrlHttp}/a6.png`,
+    };
   },
   methods: {}
 };

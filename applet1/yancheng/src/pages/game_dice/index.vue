@@ -118,29 +118,28 @@ var app = getApp();
 export default {
   data() {
     return {
+      yaoyiyaoControl: true,
       diceNum: 5, //  骰子的个数
       picArr: [], //显示骰子的数组
       animationData: null,
-      serverimage: "https://minip.cndfmg.com:83/",
-      serverXiaoyao: "/image/",
       dShow: false,
       flag: false,
       music: true,
       isShow: true,
-      shadow: "https://minip.cndfmg.com:83/shadow.png",
-      roleUrl: "https://minip.cndfmg.com:83/windownew.png",
-      toy: "https://minip.cndfmg.com:83/toy.png",
-      waveing: "https://minip.cndfmg.com:83/openbutton.png",
-      audioUrl: "https://minip.cndfmg.com:83/yaosaizi.mp3",
-      wavedice: "https://minip.cndfmg.com:83/wavedice.png",
-      deleate: "https://minip.cndfmg.com:83/deleate.png",
-      closeing: "https://minip.cndfmg.com:83/close-button.png",
-      cover: "https://minip.cndfmg.com:83/cover.png",
-      plate: "https://minip.cndfmg.com:83/plate.png",
-      closemusic: require("../../../static/images/closemusic.png"),
-      openmusic: require("../../../static/images/music.png"),
-      ltImg: require("../../../static/images/lt.png"),
-      rbImg: require("../../../static/images/rb.png"),
+      shadow: `${this.$store.state.imgUrlHttp}/shadow.png`,
+      roleUrl: `${this.$store.state.imgUrlHttp}/windownew.png`,
+      toy: `${this.$store.state.imgUrlHttp}/toy.png`,
+      waveing: `${this.$store.state.imgUrlHttp}/openbutton.png`,
+      audioUrl: `https://chengmipub.oss-cn-hangzhou.aliyuncs.com/city/game/sieve/mp3/yaosaizi.mp3`,
+      wavedice: `${this.$store.state.imgUrlHttp}/wavedice.png`,
+      deleate: `${this.$store.state.imgUrlHttp}/deleate.png`,
+      closeing: `${this.$store.state.imgUrlHttp}/close-button.png`,
+      cover: `${this.$store.state.imgUrlHttp}/cover.png`,
+      plate: `${this.$store.state.imgUrlHttp}/plate.png`,
+      closemusic: `${this.$store.state.imgUrlHttp}/closemusic.png`,
+      openmusic: `${this.$store.state.imgUrlHttp}/music.png`,
+      ltImg: `${this.$store.state.imgUrlHttp}/lt.png`,
+      rbImg: `${this.$store.state.imgUrlHttp}/rb.png`,
       numtotal: 0,
       num: 0,
       SetInter: "", //定时器
@@ -253,6 +252,7 @@ export default {
     },
     snakeOne() {
       var that = this;
+      that.yaoyiyaoControl = false;
       if (that.music) {
         that.playAuto();
       }
@@ -261,12 +261,12 @@ export default {
         timingFunction: "linear"
       });
       var pics = [
-        "https://minip.cndfmg.com:83/onea.png",
-        "https://minip.cndfmg.com:83/twoa.png",
-        "https://minip.cndfmg.com:83/threea.png",
-        "https://minip.cndfmg.com:83/foura.png",
-        "https://minip.cndfmg.com:83/fivea.png",
-        "https://minip.cndfmg.com:83/sixa.png"
+        `${this.$store.state.imgUrlHttp}/onea.png`,
+        `${this.$store.state.imgUrlHttp}/twoa.png`,
+        `${this.$store.state.imgUrlHttp}/threea.png`,
+        `${this.$store.state.imgUrlHttp}/foura.png`,
+        `${this.$store.state.imgUrlHttp}/fivea.png`,
+        `${this.$store.state.imgUrlHttp}/sixa.png`
       ];
 
       that.SetInter = setInterval(function() {
@@ -317,6 +317,7 @@ export default {
         that.animationData = animation.export();
         if (timeNum == 2000) {
           clearInterval(that.SetInter);
+          that.yaoyiyaoControl = true;
           //加一个还原动画
           animation.rotate(0).step({
             duration: 100
@@ -361,14 +362,23 @@ export default {
       }
     },
     yaoyiyao() {
+      console.log();
       var that = this;
-      if (that.openOrclose) {
-        that.snakeOne();
+      if (that.yaoyiyaoControl) {
+        if (that.openOrclose) {
+          that.snakeOne();
+        } else {
+          wx.showToast({
+            title: "请合上盅罩再继续",
+            icon: "none",
+            duration: 2000
+          });
+        }
       } else {
         wx.showToast({
-          title: "请合上盅罩再继续",
+          title: "游戏进行中",
           icon: "none",
-          duration: 2000
+          duration: 1000
         });
       }
     }
@@ -376,12 +386,12 @@ export default {
   onLoad(options) {
     var that = this;
     var pics = [
-      "https://minip.cndfmg.com:83/onea.png",
-      "https://minip.cndfmg.com:83/twoa.png",
-      "https://minip.cndfmg.com:83/threea.png",
-      "https://minip.cndfmg.com:83/foura.png",
-      "https://minip.cndfmg.com:83/fivea.png",
-      "https://minip.cndfmg.com:83/sixa.png"
+      `${this.$store.state.imgUrlHttp}/onea.png`,
+      `${this.$store.state.imgUrlHttp}/twoa.png`,
+      `${this.$store.state.imgUrlHttp}/threea.png`,
+      `${this.$store.state.imgUrlHttp}/foura.png`,
+      `${this.$store.state.imgUrlHttp}/fivea.png`,
+      `${this.$store.state.imgUrlHttp}/sixa.png`
     ];
     var num1 = Math.round(Math.random() * (pics.length - 1));
     var num2 = Math.round(Math.random() * (pics.length - 1));

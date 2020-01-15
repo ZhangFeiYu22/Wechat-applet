@@ -3,7 +3,7 @@
     <div class="activityList">
       <div class="activityItem" @click="goActivityDetails">
         <div class="imgBox">
-          <img src="../../../static/images/aaa1.png" mode="aspectFill" />
+          <img :src="actImg" mode="aspectFill" />
         </div>
         <div class="wordBox">
           <p class="title">安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和</p>
@@ -20,7 +20,7 @@
       </div>
       <div class="activityItem" @click="goActivityDetails">
         <div class="imgBox">
-          <img src="../../../static/images/aaa1.png" mode="aspectFill" />
+          <img :src="actImg" mode="aspectFill" />
         </div>
         <div class="wordBox">
           <p class="title">安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和</p>
@@ -43,7 +43,9 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      actImg:  `${this.$store.state.imgUrlHttp}/d1.png`,
+    };
   },
   methods: {
     goActivityDetails() {
@@ -62,6 +64,7 @@ export default {
 
 <style lang="less" scoped>
 .activity {
+  padding-top: 15px;
   // 活动
   .activityList {
     width: 90%;

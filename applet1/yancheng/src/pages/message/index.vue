@@ -3,7 +3,7 @@
     <div class="friendsList">
       <div class="friendsItem" @click="goMessageDetail">
         <div class="imgBox">
-          <img src="../../../static/images/aaa1.png" mode="aspectFill" />
+          <img :src="headImg1" mode="aspectFill" />
         </div>
         <div class="wordBox">
           <p class="name">
@@ -18,7 +18,7 @@
       </div>
       <div class="friendsItem" @click="goMessageDetail">
         <div class="imgBox">
-          <img src="../../../static/images/aaa1.png" mode="aspectFill" />
+          <img :src="headImg2" mode="aspectFill" />
         </div>
         <div class="wordBox">
           <p class="name">
@@ -38,7 +38,10 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      headImg1: `${this.$store.state.imgUrlHttp}/a6.png`,
+      headImg2: `${this.$store.state.imgUrlHttp}/a2.png`
+    };
   },
   methods: {
     goMessageDetail() {

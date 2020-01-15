@@ -7,7 +7,7 @@
     <div class="friendsList list" v-if="itemActive == 0">
       <div class="friendsItem item" @click="goPersonal">
         <div class="imgBox">
-          <img src="../../../static/images/aaa1.png" mode="aspectFill">
+          <img :src="headImg1" mode="aspectFill">
         </div>
         <div class="wordBox">
           <p class="name"><span>张小凡</span><i class="iconfont icon-nan"></i></p>
@@ -16,7 +16,7 @@
       </div>
       <div class="friendsItem item" @click="goPersonal">
         <div class="imgBox">
-          <img src="../../../static/images/aaa1.png" mode="aspectFill">
+          <img :src="headImg2" mode="aspectFill">
         </div>
         <div class="wordBox">
           <p class="name"><span>张小凡</span><i class="iconfont icon-nan"></i></p>
@@ -27,7 +27,7 @@
     <div class="activityList list" v-else>
       <div class="activityItem item" @click="goActivityDetails">
         <div class="imgBox">
-          <img src="../../../static/images/aaa1.png" mode="aspectFill" />
+          <img :src="actImg1" mode="aspectFill" />
         </div>
         <div class="wordBox">
           <p class="title">安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和</p>
@@ -37,7 +37,7 @@
       </div>
       <div class="activityItem item" @click="goActivityDetails">
         <div class="imgBox">
-          <img src="../../../static/images/aaa1.png" mode="aspectFill" />
+          <img :src="actImg2" mode="aspectFill" />
         </div>
         <div class="wordBox">
           <p class="title">安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和</p>
@@ -53,7 +53,11 @@
 export default {
   data() {
     return {
-      itemActive: 0
+      itemActive: 0,
+      headImg1: `${this.$store.state.imgUrlHttp}/a6.png`,
+      headImg2: `${this.$store.state.imgUrlHttp}/a5.png`,
+      actImg1: `${this.$store.state.imgUrlHttp}/d1.png`,
+      actImg2: `${this.$store.state.imgUrlHttp}/d1.png`
     };
   },
   methods: {

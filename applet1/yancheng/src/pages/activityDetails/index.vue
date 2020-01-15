@@ -1,7 +1,7 @@
 <template>
   <div class="activityDetails">
     <div class="imgB">
-      <img src="../../../static/images/aaa1.png" mode="aspectFill" />
+      <img :src="actImg" mode="aspectFill" />
     </div>
     <div class="content w94">
       <h5 class="title">这个是活动的标题,可以展示两行，两行展示两行展示两行</h5>
@@ -20,7 +20,10 @@
       </p>
       <div class="contentCont">
         <p class="pp">活动详情</p>
-        <div class="details">这个是活动详情,富文本编辑过来，有图片有文字</div>
+        <div class="details">
+          这个是活动详情,富文本编辑过来，有图片有文字
+          <img :src="actContImg" mode="widthFix" />
+        </div>
         <p class="pp">活动须知</p>
         <div class="needKnow">
           <p>1. 这里是活动须知</p>
@@ -84,7 +87,9 @@ export default {
   data() {
     return {
       likeAct: false,
-      joinMaskShow: false
+      joinMaskShow: false,
+      actImg:  `${this.$store.state.imgUrlHttp}/d1.png`,
+      actContImg:  `${this.$store.state.imgUrlHttp}/dc1.png`,
     };
   },
   methods: {
@@ -115,10 +120,10 @@ export default {
   },
   onShareAppMessage: function(res) {
     return {
-      title: "分享标题",
+      title: "这是分享标题",
       // path: `/pages/topicDetails/main?topic_id=${id}`,
       path: `/pages/topicDetails/main?topic_id=6`,
-      imageUrl: "https://www.vue-js.com//public/images/vue.png"
+      imageUrl: `${this.$store.state.imgUrlHttp}/a6.png`
     };
   }
 };
@@ -179,6 +184,10 @@ export default {
         margin-bottom: 20px;
         font-size: 12px;
         color: #5e5e5e;
+        img{
+          width: 100%;
+          margin: 5px 0;
+        }
       }
       .needKnow {
         margin-bottom: 20px;

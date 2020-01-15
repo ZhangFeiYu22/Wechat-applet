@@ -4,7 +4,7 @@
       <div class="contentItem" v-for="(item,index) in ItemList" :key="item.id">
         <!-- 头像 -->
         <div class="headName" @click.stop="goPersonal">
-          <img src="../../../static/images/aaa1.png" mode="aspectFill" />
+          <img :src="item.headImg" mode="aspectFill" />
           <span>张小凡</span>
         </div>
         <!-- 内容 -->
@@ -86,7 +86,7 @@
         </view>
       </form>
     </div>
-    <div style="height:80px"></div>
+    <div style="height:20px"></div>
   </div>
 </template>
 
@@ -97,39 +97,38 @@ export default {
       isToggle: false, //是否超过2行？true--超过，false--没有超过
       requireAll: false, //展开/收起全部问题描述true--展开，false--收起
       showZanAndPinglunNum: null,
+
       ItemList: [
         {
           id: 1,
           name: "111",
+          headImg: `${this.$store.state.imgUrlHttp}/head.png`,
           imgsList: [
-            require("../../../static/images/aaa1.png"),
-            require("../../../static/images/aaa1.png"),
-            require("../../../static/images/aaa1.png"),
-            require("../../../static/images/aaa1.png"),
-            require("../../../static/images/aaa1.png"),
-            require("../../../static/images/aaa1.png")
+            `${this.$store.state.imgUrlHttp}/a5.png`,
+            `${this.$store.state.imgUrlHttp}/a6.png`,
+            `${this.$store.state.imgUrlHttp}/a2.png`,
+            `${this.$store.state.imgUrlHttp}/a1.png`,
+            `${this.$store.state.imgUrlHttp}/a3.png`,
+            `${this.$store.state.imgUrlHttp}/a4.png`
           ]
         },
         {
           id: 2,
           name: "222",
+          headImg: `${this.$store.state.imgUrlHttp}/head.png`,
           imgsList: [
-            require("../../../static/images/aaa1.png"),
-            require("../../../static/images/aaa1.png"),
-            require("../../../static/images/aaa1.png"),
-            require("../../../static/images/aaa1.png"),
-            require("../../../static/images/aaa1.png"),
-            require("../../../static/images/aaa1.png")
+            `${this.$store.state.imgUrlHttp}/a7.png`,
+            `${this.$store.state.imgUrlHttp}/a8.png`,
+            `${this.$store.state.imgUrlHttp}/a9.png`,
+            `${this.$store.state.imgUrlHttp}/a10.png`
           ]
         }
       ],
       zanPeopleList: [
-        require("../../../static/images/aaa1.png"),
-        require("../../../static/images/aaa1.png"),
-        require("../../../static/images/aaa1.png"),
-        require("../../../static/images/aaa1.png"),
-        require("../../../static/images/aaa1.png"),
-        require("../../../static/images/aaa1.png")
+        `${this.$store.state.imgUrlHttp}/a6.png`,
+        `${this.$store.state.imgUrlHttp}/a2.png`,
+        `${this.$store.state.imgUrlHttp}/a1.png`,
+        `${this.$store.state.imgUrlHttp}/a3.png`
       ],
       commentValue: "",
       showPinLun: false,
@@ -267,8 +266,8 @@ export default {
     }
   },
   onTabItemTap(item) {
-    wx.setStorageSync('tabItemClick', item.pagePath)
-  },
+    wx.setStorageSync("tabItemClick", item.pagePath);
+  }
 };
 </script>
 
@@ -310,8 +309,8 @@ export default {
       .toggleBox {
         font-size: 16px;
         color: #6f6d6d;
-        .more_txt{
-          span{
+        .more_txt {
+          span {
             border-bottom: 1px solid #6f6d6d;
           }
         }

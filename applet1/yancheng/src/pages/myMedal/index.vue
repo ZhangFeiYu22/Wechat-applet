@@ -1,7 +1,7 @@
 <template>
   <div class="myMedal">
     <div class="headImg">
-      <img src="../../../static/images/aaa1.png" mode="aspectFill" />
+      <img :src="headImg" mode="aspectFill" />
       <p class="name">碧瑶</p>
       <div class="medalNum">
         <i class="iconDot left"></i>
@@ -14,15 +14,15 @@
     </div>
     <div class="medalList">
       <div class="medalItem">
-        <img src="../../../static/images/medal.png" mode="aspectFill">
+        <img :src="medalImg" mode="aspectFill">
         <p class="info">连续登陆一周</p>
       </div>
       <div class="medalItem">
-        <img src="../../../static/images/medal.png" mode="aspectFill">
+        <img :src="medalImg" mode="aspectFill">
         <p class="info">连续登陆一个月</p>
       </div>
       <div class="medalItem">
-        <img src="../../../static/images/medal.png" mode="aspectFill">
+        <img :src="medalImg" mode="aspectFill">
         <p class="info">连续登陆一年</p>
       </div>
     </div>
@@ -32,7 +32,10 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      headImg: `${this.$store.state.imgUrlHttp}/head.png`,
+      medalImg: `${this.$store.state.imgUrlHttp}/medal.png`
+    };
   },
   methods: {}
 };

@@ -5,7 +5,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        systemInfo: null
+        systemInfo: null,
+        imgUrlHttp: 'https://chengmipub.oss-cn-hangzhou.aliyuncs.com/city/game/sieve/images'
     },
     mutations: {
         ['GET_SYSTEMINFO_SUCCESS'](state, systemInfo) {

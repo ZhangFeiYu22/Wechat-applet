@@ -2,9 +2,9 @@
   <div class="my">
     <div class="head">
       <div class="headImg">
-        <img src="../../../static/images/aaa1.png" mode="aspectFill" />
+        <img :src="headImg" mode="aspectFill" />
         <div class="hierarchy">
-          <img src="../../../static/images/hierarchy.png" mode="aspectFill" />
+          <img :src="hierarchy" mode="aspectFill" />
           <p>LV1</p>
         </div>
       </div>
@@ -90,6 +90,8 @@ export default {
     return {
       likeAct: false,
       itemActive: 0,
+      headImg: `${this.$store.state.imgUrlHttp}/head.png`,
+      hierarchy: `${this.$store.state.imgUrlHttp}/hierarchy.png`,
       ItemList: [
         {
           showEllip: false,
