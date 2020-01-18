@@ -1,104 +1,63 @@
 <template>
   <div class="game">
-    <div class="terminal_all" v-show="terminal">
-      <div class="terminal">
-        <img :src="deleate" @click.stop="xiaoshi" class="imageshow-deleate" mode="scaleToFill" />
-
-        <div class="ter-viewa">游戏规则</div>
-        <scroll-view class="scroll-view" scroll-y>
-          <div
-            class="ter-viewb"
-          >所有玩家同时打开喝酒游戏小程序，选择大话骰玩法，选择人数后开始游戏。事先约定好游戏起始者，然后按照游戏参与者座位的顺时针或逆时针进行游戏轮次。（下文以X表示任意数量，Y表示面向天的骰子数字）</div>
-          <div class="ter-viewc">
-            <block v-for="(item,index) in lists" :key="index">
-              <div class="ter-viewd">
-                <text>{{item.title}}</text>
-                <text>{{item.content}}</text>
-              </div>
-            </block>
-          </div>
-        </scroll-view>
-      </div>
-    </div>
     <div class="container">
       <img @click.stop="closemusicFun" :src="music?openmusic:closemusic" class="music" />
       <div class="show-viewa">
-        <div class="contain-right" @click.stop="showRole">
-          <text>规</text>
-          <text>则</text>
-        </div>
         <div class="show-viewb">
           <img :src="shadow" class="shadow-image" />
         </div>
 
-        <div class="bigBox">
-          <img v-if="dShow" :src="ltImg" class="dShow" />
-          <image v-if="dShow" :src="rbImg" class="dShow2" />
-          <div class="show-viewd" v-if="openOrclose" :animation="animationData">
-            <img :src="toy" class="state-imageall" />
-          </div>
-        </div>
-        <div class="show-viewc" v-if="openOrclose">
-          <image :src="wavedice" class="stagec-image" />
-        </div>
-        <div class="show-viewe" v-if="!openOrclose" @click.stop="openCover">
-          <image :src="cover" class="stagee-image" />
-        </div>
-        <div class="show-viewf" v-if="!openOrclose">
+        <div class="show-viewf">
           <image :src="plate" class="stagef-image" />
         </div>
 
+        <!-- <div class="boli"></div> -->
         <div class="diceBox">
-          <div v-if="picArr.length == 1">
-            <div class="stageaLength1" v-for="(item,index) in picArr" :key="index">
-              <div v-if="!openOrclose">
-                <image :src="item" class="stage-image" mode="scaleToFill" />
-              </div>
-            </div>
+          <div class="stageaLength5">
+            <image
+              v-if="picArr[0]"
+              :src="pic1"
+              class="stage-image"
+              :animation="animationData0"
+              mode="scaleToFill"
+            />
           </div>
-          <div v-if="picArr.length == 2">
-            <div class="stageaLength2" v-for="(item,index) in picArr" :key="index">
-              <div v-if="!openOrclose">
-                <image :src="item" class="stage-image" mode="scaleToFill" />
-              </div>
-            </div>
+          <div class="stageaLength5">
+            <image
+              v-if="picArr[1]"
+              :src="pic2"
+              class="stage-image"
+              :animation="animationData1"
+              mode="scaleToFill"
+            />
           </div>
-          <div v-if="picArr.length == 3">
-            <div class="stageaLength3" v-for="(item,index) in picArr" :key="index">
-              <div v-if="!openOrclose">
-                <image :src="item" class="stage-image" mode="scaleToFill" />
-              </div>
-            </div>
+          <div class="stageaLength5">
+            <image
+              v-if="picArr[2]"
+              :src="pic3"
+              class="stage-image"
+              :animation="animationData2"
+              mode="scaleToFill"
+            />
           </div>
-          <div v-if="picArr.length == 4">
-            <div class="stageaLength4" v-for="(item,index) in picArr" :key="index">
-              <div v-if="!openOrclose">
-                <image :src="item" class="stage-image" mode="scaleToFill" />
-              </div>
-            </div>
+          <div class="stageaLength5">
+            <image
+              v-if="picArr[3]"
+              :src="pic4"
+              class="stage-image"
+              :animation="animationData3"
+              mode="scaleToFill"
+            />
           </div>
-          <div v-if="picArr.length == 5">
-            <div class="stageaLength5" v-for="(item,index) in picArr" :key="index">
-              <div v-if="!openOrclose">
-                <image :src="item" class="stage-image" mode="scaleToFill" />
-              </div>
-            </div>
+          <div class="stageaLength5">
+            <image
+              v-if="picArr[4]"
+              :src="pic5"
+              class="stage-image"
+              :animation="picArr[4] ? animationData4 : animationData"
+              mode="scaleToFill"
+            />
           </div>
-        </div>
-        <div class="stageb" v-show="orshow">
-          <image
-            v-if="flag"
-            :src="openOrclose == true ? waveing : closeing"
-            class="stageb-image"
-            mode="scaleToFill"
-          />
-          <image
-            v-else
-            @click.stop="openCover"
-            :src="openOrclose == true ? waveing : closeing"
-            class="stageb-image"
-            mode="scaleToFill"
-          />
         </div>
       </div>
     </div>
@@ -108,7 +67,7 @@
         <p>{{diceNum}}</p>
         <i class="iconfont icon-tianjia" @click="increaseFun"></i>
       </div>
-      <button @click="yaoyiyao">摇一摇</button>
+      <button @click="dongyixia">摇一摇</button>
     </div>
   </div>
 </template>
@@ -122,26 +81,25 @@ export default {
       diceNum: 5, //  骰子的个数
       picArr: [], //显示骰子的数组
       animationData: null,
-      dShow: false,
-      flag: false,
+      animationData0: null,
+      animationData1: null,
+      animationData2: null,
+      animationData3: null,
+      animationData4: null,
+      animationData5: null,
       music: true,
       isShow: true,
       shadow: `${this.$store.state.imgUrlHttp}/shadow.png`,
       roleUrl: `${this.$store.state.imgUrlHttp}/windownew.png`,
       toy: `${this.$store.state.imgUrlHttp}/toy.png`,
-      waveing: `${this.$store.state.imgUrlHttp}/openbutton.png`,
       audioUrl: `https://chengmipub.oss-cn-hangzhou.aliyuncs.com/city/game/sieve/mp3/yaosaizi.mp3`,
       wavedice: `${this.$store.state.imgUrlHttp}/wavedice.png`,
       deleate: `${this.$store.state.imgUrlHttp}/deleate.png`,
-      closeing: `${this.$store.state.imgUrlHttp}/close-button.png`,
       cover: `${this.$store.state.imgUrlHttp}/cover.png`,
       plate: `${this.$store.state.imgUrlHttp}/plate.png`,
       closemusic: `${this.$store.state.imgUrlHttp}/closemusic.png`,
       openmusic: `${this.$store.state.imgUrlHttp}/music.png`,
-      ltImg: `${this.$store.state.imgUrlHttp}/lt.png`,
-      rbImg: `${this.$store.state.imgUrlHttp}/rb.png`,
       numtotal: 0,
-      num: 0,
       SetInter: "", //定时器
       num1: 0,
       num2: 0,
@@ -153,52 +111,13 @@ export default {
       last_x: 0,
       last_y: 0,
       last_z: 0,
-      determination: true,
-      terminal: false,
       pic1: "",
       pic2: "",
       pic3: "",
       pic4: "",
       pic5: "",
       openOrclose: true,
-      orshow: false,
-      lists: [
-        {
-          title: "1、摇骰",
-          content:
-            "每局游戏开始时，每位游戏参与者必须摇晃自己的手机上的骰盅，以打乱骰子的点（与麻将和扑克牌洗牌的目的相同）"
-        },
-        {
-          title: "2、叫骰",
-          content:
-            "由游戏起始者率先喊出“X个Y”（即自己觉得全场一共拥有X个Y点数的骰子）。注意这里不是单纯叫骰者骰盅内真实的情况，这里是尽情发挥演技的时间。"
-        },
-        {
-          title: "",
-          content:
-            "然后根据事先约定好的方向依次“叫骰”，但是“叫骰”者喊出的数值需高于自己座位上方的人所喊出的数值总和，或者要大于上家的“X”数值。"
-        },
-        {
-          title: "3、叫斋",
-          content:
-            "通常骰子的“1”点是通用的，可以变成任何点数，但是开局喊了X个“1”，则“1”点便不再通用。"
-        },
-        {
-          title: "4、开杀",
-          content:
-            "当你根据自己骰盅内的实际情况，而不相信上一位与你相邻的叫骰者，开骰盅清点所有参加者骰子与叫骰者所喊的Y的数量。"
-        },
-        {
-          title: "5、跳杀",
-          content:
-            "类似“开杀”，但是该“开杀者”与叫骰者不相邻。这样的失败者是需要加倍喝酒。"
-        },
-        {
-          title: "6、反杀",
-          content:
-            "叫骰者被开杀后，开骰盅前有权对开杀者“加注”，通常固定，“开多少（码数）大多少(码数)”。 开杀者被“反杀”后，有全权再“反杀”多一次叫骰者。"
-        }
-      ]
+      orshow: false
     };
   },
   methods: {
@@ -212,6 +131,13 @@ export default {
         });
       } else {
         that.diceNum--;
+        that.picArr.splice(that.picArr.length - 1, 1);
+        that.animationData0 = null;
+        that.animationData1 = null;
+        that.animationData2 = null;
+        that.animationData3 = null;
+        that.animationData4 = null;
+        that.animationData5 = null;
       }
     },
     increaseFun() {
@@ -224,15 +150,24 @@ export default {
         });
       } else {
         that.diceNum++;
+        that.animationData0 = null;
+        that.animationData1 = null;
+        that.animationData2 = null;
+        that.animationData3 = null;
+        that.animationData4 = null;
+        that.animationData5 = null;
+        var pics = [
+          `${this.$store.state.imgUrlHttp}/onea.png`,
+          `${this.$store.state.imgUrlHttp}/twoa.png`,
+          `${this.$store.state.imgUrlHttp}/threea.png`,
+          `${this.$store.state.imgUrlHttp}/foura.png`,
+          `${this.$store.state.imgUrlHttp}/fivea.png`,
+          `${this.$store.state.imgUrlHttp}/sixa.png`
+        ];
+        var num1 = Math.round(Math.random() * (pics.length - 1));
+        var pic1 = pics[num1];
+        that.picArr.push(pic1);
       }
-    },
-    showRole: function(e) {
-      var that = this;
-      that.terminal = true;
-    },
-    xiaoshi: function(e) {
-      var that = this;
-      that.terminal = false;
     },
     playAuto: function() {
       var that = this;
@@ -250,16 +185,11 @@ export default {
         that.music = true;
       }
     },
-    snakeOne() {
+    dongyixia() {
       var that = this;
-      that.yaoyiyaoControl = false;
       if (that.music) {
         that.playAuto();
       }
-      var animation = wx.createAnimation({
-        duration: 2000,
-        timingFunction: "linear"
-      });
       var pics = [
         `${this.$store.state.imgUrlHttp}/onea.png`,
         `${this.$store.state.imgUrlHttp}/twoa.png`,
@@ -268,119 +198,162 @@ export default {
         `${this.$store.state.imgUrlHttp}/fivea.png`,
         `${this.$store.state.imgUrlHttp}/sixa.png`
       ];
+      var num1 = Math.round(Math.random() * (pics.length - 1));
+      var num2 = Math.round(Math.random() * (pics.length - 1));
+      var num3 = Math.round(Math.random() * (pics.length - 1));
+      var num4 = Math.round(Math.random() * (pics.length - 1));
+      var num5 = Math.round(Math.random() * (pics.length - 1));
+      var pic1 = pics[num1];
+      var pic2 = pics[num2];
+      var pic3 = pics[num3];
+      var pic4 = pics[num4];
+      var pic5 = pics[num5];
 
-      that.SetInter = setInterval(function() {
-        that.flag = true;
-        var num1 = Math.round(Math.random() * (pics.length - 1));
-        var num2 = Math.round(Math.random() * (pics.length - 1));
-        var num3 = Math.round(Math.random() * (pics.length - 1));
-        var num4 = Math.round(Math.random() * (pics.length - 1));
-        var num5 = Math.round(Math.random() * (pics.length - 1));
-        var pic1 = pics[num1];
-        var pic2 = pics[num2];
-        var pic3 = pics[num3];
-        var pic4 = pics[num4];
-        var pic5 = pics[num5];
-        var numVal = that.num + 1;
-        var timeNum = that.timeNum + 100;
-        if (numVal % 2 == 1) {
-          animation.rotate(10).step({
-            duration: 100
-          });
-        } else {
-          animation.rotate(-10).step({
-            duration: 100
-          });
-        }
-        // 隐藏声音图标
-        if (parseInt(numVal / 5) % 2 == 1) {
-          that.dShow = true;
-        } else {
-          that.dShow = false;
-        }
+      that.pic1 = pic1;
+      that.pic2 = pic2;
+      that.pic3 = pic3;
+      that.pic4 = pic4;
+      that.pic5 = pic5;
 
-        animation.rotate(0).step({
-          duration: 100
-        });
-        that.pic1 = pic1;
-        that.pic2 = pic2;
-        that.pic3 = pic3;
-        that.pic4 = pic4;
-        that.pic5 = pic5;
-        that.num = numVal;
-        that.num1 = num1 + 1;
-        that.num2 = num2 + 1;
-        that.num3 = num3 + 1;
-        that.num4 = num4 + 1;
-        that.num5 = num5 + 1;
-        that.timeNum = timeNum;
-        that.animationData = animation.export();
-        if (timeNum == 2000) {
-          clearInterval(that.SetInter);
-          that.yaoyiyaoControl = true;
-          //加一个还原动画
-          animation.rotate(0).step({
-            duration: 100
-          });
-          that.animationData = animation.export();
-          var numtotal = 0;
-          for (let i = 1; i <= that.diceNum; i++) {
-            let aa = that["num" + i];
-            numtotal = numtotal + aa;
-          }
-          that.flag = false;
-          that.numtotal = numtotal;
-          that.determination = true;
-          that.num = 0;
-          that.timeNum = 0;
-          console.log("2--", that.numtotal);
-          var newArr = [];
-          for (let i = 1; i <= that.diceNum; i++) {
-            let aa = that["pic" + i];
-            newArr.push(that["pic" + i]);
-          }
-          that.picArr = newArr;
-          return;
-        }
-      }, 100);
-    },
-    openCover: function(e) {
-      var that = this;
-      var openOrclose = !that.openOrclose;
-      if (openOrclose) {
-        var animation = wx.createAnimation({
-          duration: 0,
-          timingFunction: "linear"
-        });
-        animation.rotate(0).step({
-          duration: 100
-        });
-        that.openOrclose = openOrclose;
-        that.animationData = animation.export();
-      } else {
-        that.openOrclose = openOrclose;
+      var numtotal = 0;
+      for (let i = 1; i <= that.diceNum; i++) {
+        let aa = that["num" + i];
+        numtotal = numtotal + aa;
       }
-    },
-    yaoyiyao() {
-      console.log();
-      var that = this;
-      if (that.yaoyiyaoControl) {
-        if (that.openOrclose) {
-          that.snakeOne();
-        } else {
-          wx.showToast({
-            title: "请合上盅罩再继续",
-            icon: "none",
-            duration: 2000
-          });
-        }
-      } else {
-        wx.showToast({
-          title: "游戏进行中",
-          icon: "none",
-          duration: 1000
-        });
+      that.numtotal = numtotal;
+
+      var newArr = [];
+      for (let i = 1; i <= that.diceNum; i++) {
+        let aa = that["pic" + i];
+        newArr.push(that["pic" + i]);
       }
+      that.picArr = newArr;
+      var animation = wx.createAnimation({
+        duration: 200,
+        timingFunction: "linear"
+      });
+      var animation0 = wx.createAnimation({
+        duration: 200,
+        timingFunction: "linear"
+      });
+      var animation1 = wx.createAnimation({
+        duration: 200,
+        timingFunction: "linear"
+      });
+      var animation2 = wx.createAnimation({
+        duration: 200,
+        timingFunction: "linear"
+      });
+      var animation3 = wx.createAnimation({
+        duration: 200,
+        timingFunction: "linear"
+      });
+      var animation4 = wx.createAnimation({
+        duration: 300,
+        timingFunction: "linear"
+      });
+      animation
+        .translate(0, 0)
+        .rotate(0)
+        .step();
+      that.animationData = animation.export();
+      animation0
+        .translate(70, -120)
+        .rotate(-180)
+        .step()
+        .translate(80, -0)
+        .rotate(-360)
+        .step()
+        .translate(-100, -0)
+        .rotate(-540)
+        .step()
+        .translate(-70, -60)
+        .rotate(-720)
+        .step()
+        .translate(70, -30)
+        .rotate(-1080)
+        .step()
+        .translate(0, 0)
+        .rotate(-1440)
+        .step();
+      that.animationData0 = animation0.export();
+      animation1
+        .translate(40, -140)
+        .rotate(-180)
+        .step()
+        .translate(50, 10)
+        .rotate(-360)
+        .step()
+        .translate(-40, -0)
+        .rotate(-540)
+        .step()
+        .translate(-90, 50)
+        .rotate(-720)
+        .step()
+        .translate(70, -30)
+        .rotate(-1080)
+        .step()
+        .translate(0, 0)
+        .rotate(-1440)
+        .step();
+      that.animationData1 = animation1.export();
+      animation2
+        .translate(150, -170)
+        .rotate(-180)
+        .step()
+        .translate(150, 10)
+        .rotate(-360)
+        .step()
+        .translate(50, -30)
+        .rotate(-540)
+        .step()
+        .translate(-20, 10)
+        .rotate(-720)
+        .step()
+        .translate(70, -40)
+        .rotate(-1080)
+        .step()
+        .translate(100, -10)
+        .rotate(-1440)
+        .step()
+        .translate(0, 0)
+        .rotate(-1800)
+        .step();
+      that.animationData2 = animation2.export();
+      animation3
+        .translate(90, -180)
+        .rotate(180)
+        .step()
+        .translate(90, 0)
+        .rotate(360)
+        .step()
+        .translate(20, -50)
+        .rotate(720)
+        .step()
+        .translate(-20, 10)
+        .rotate(1080)
+        .step()
+        .translate(70, 0)
+        .rotate(1440)
+        .step()
+        .translate(0, 0)
+        .rotate(1800)
+        .step();
+      that.animationData3 = animation3.export();
+      animation4
+        .translate(40, -180)
+        .rotate(180)
+        .step()
+        .translate(20, 0)
+        .rotate(360)
+        .step()
+        .translate(-100, 0)
+        .rotate(720)
+        .step()
+        .translate(0, 0)
+        .rotate(1080)
+        .step();
+      that.animationData4 = animation4.export();
     }
   },
   onLoad(options) {
@@ -408,34 +381,12 @@ export default {
     that.pic3 = pic3;
     that.pic4 = pic4;
     that.pic5 = pic5;
-  },
-  onShow: function() {
-    var that = this;
-    that.isShow = true;
-    wx.onAccelerometerChange(function(res) {
-      var curTime = new Date().getTime();
-      var determination = that.determination;
-      var openOrclose = that.openOrclose;
-      var last_update = that.last_update;
-      if (curTime - last_update > 100) {
-        var diffTime = curTime - last_update;
-        var speed =
-          Math.abs(
-            res.x + res.y + res.z - that.last_x - that.last_y - that.last_z
-          ) /
-          diffTime *
-          10000;
-        if (speed > 60 && determination && openOrclose && that.isShow) {
-          (that.determination = false),
-            console.log("开关处于什么状态==" + openOrclose);
-          that.snakeOne();
-        }
-        that.last_update = curTime;
-        that.last_x = res.x;
-        that.last_y = res.y;
-        that.last_z = res.z;
-      }
-    });
+    var newArr = [];
+    for (let i = 1; i <= that.diceNum; i++) {
+      let aa = that["pic" + i];
+      newArr.push(that["pic" + i]);
+    }
+    that.picArr = newArr;
   },
   /**
    * 生命周期函数--监听页面隐藏
@@ -444,23 +395,17 @@ export default {
     var that = this;
     clearInterval(that.SetInter);
 
-    that.determination = true;
-    that.num = 0;
     that.timeNum = 0;
     that.orshow = false;
     that.isShow = false;
-    that.dShow = false;
   },
   onUnload: function() {
     var that = this;
     clearInterval(that.SetInter);
 
-    that.determination = true;
-    that.num = 0;
     that.timeNum = 0;
     that.orshow = false;
     that.isShow = false;
-    that.dShow = false;
   }
 };
 </script>
@@ -473,48 +418,6 @@ export default {
     height: 50rpx;
     left: 20rpx;
     top: 20rpx;
-  }
-  .terminal {
-    position: absolute;
-    width: 650rpx;
-    height: 700rpx;
-    font-size: 32rpx;
-    font-weight: 500;
-    color: rgba(255, 254, 254, 1);
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 8px;
-    z-index: 9;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-  .scroll-view {
-    height: 570rpx;
-  }
-  .ter-viewa {
-    display: flex;
-    margin-top: 44rpx;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-  }
-  .ter-viewb {
-    padding: 30rpx;
-    line-height: 55rpx;
-  }
-  .ter-viewc {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 10rpx 30rpx;
-    font-weight: 500;
-    color: rgba(255, 254, 254, 1);
-  }
-  .ter-viewd {
-    display: flex;
-    line-height: 55rpx;
-    flex-direction: column;
-    align-items: flex-start;
   }
   .container {
     position: absolute;
@@ -537,26 +440,6 @@ export default {
     width: 26rpx;
     height: 26rpx;
   }
-
-  .contain-right {
-    position: fixed;
-    right: 0;
-    z-index: 444;
-    top: 168rpx;
-    width: 46rpx;
-    height: 124rpx;
-    font-weight: 500;
-    font-size: 30rpx;
-    border-top-left-radius: 10rpx;
-    border-bottom-left-radius: 10rpx;
-    background: #fec600;
-    color: #c5701d;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
   .show-viewb {
     text-align: center;
     position: absolute;
@@ -591,55 +474,14 @@ export default {
     justify-content: center;
     height: 572rpx;
   }
-  .show-viewd {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-  }
-  .dShow {
-    width: 70rpx;
-    height: 70rpx;
-    position: absolute;
-    top: 100rpx;
-    left: 40rpx;
-  }
-  .dShow2 {
-    width: 70rpx;
-    height: 70rpx;
-    position: absolute;
-    bottom: 40rpx;
-    right: 40rpx;
-  }
-  .state-imageall {
-    height: 572rpx;
-    width: 574rpx;
-  }
-  .show-viewe {
-    position: absolute;
-    top: 254rpx;
-    left: 0;
-    right: 0;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-  }
-  .stagee-image {
-    width: 500rpx;
-    height: 346rpx;
-  }
+
   .stage-image {
-    width: 91rpx;
-    height: 85rpx;
+    width: 84rpx;
+    height: 89rpx;
   }
   .show-viewf {
     position: absolute;
-    top: 590rpx;
+    top: 295px;
     left: 0;
     right: 0;
     display: flex;
@@ -707,59 +549,52 @@ export default {
     .stageaLength5 {
       position: absolute;
       &:nth-child(1) {
-        top: 632rpx;
-        left: 260rpx;
+        top: 315px;
+        left: 170px;
       }
       &:nth-child(2) {
-        top: 632rpx;
-        left: 398rpx;
+        top: 330px;
+        left: 215px;
       }
       &:nth-child(3) {
-        top: 720rpx;
-        left: 196rpx;
+        top: 350px;
+        left: 110px;
       }
       &:nth-child(4) {
-        top: 720rpx;
-        left: 328rpx;
+        top: 370px;
+        left: 160px;
       }
       &:nth-child(5) {
-        top: 720rpx;
-        left: 464rpx;
+        top: 370px;
+        left: 210px;
       }
     }
   }
+  .boli {
+    position: absolute;
+    width: 80%;
+    height: 60%;
+    background-color: pink;
+    left: 10%;
+    top: 150px;
+    z-index: 9;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 3px 3px 6px 3px rgba(0, 0, 0, 0.3);
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.3);
+      // filter: blur(50px);
+      // -webkit-filter: blur(50px);
+      z-index: 10;
+    }
+  }
 
-  .stageb {
-    position: absolute;
-    top: 920rpx;
-    left: 0;
-    right: 0;
-    display: flex;
-    font-size: 28rpx;
-    color: white;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-  }
-  .stageb-image {
-    margin-right: 10rpx;
-    width: 112rpx;
-    height: 112rpx;
-  }
-  .show-viewc {
-    position: absolute;
-    top: 570rpx;
-    left: 0;
-    right: 0;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-  }
-  .stagec-image {
-    width: 96rpx;
-    height: 96rpx;
-  }
   .otherBox {
     display: flex;
     justify-content: space-around;

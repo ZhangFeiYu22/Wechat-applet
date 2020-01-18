@@ -1,4 +1,6 @@
 <template>
+  <!-- <div class="community" @click.stop="hideZanAndPinglun" :style="{marginTop: topHeight + 'px'}">
+    <navigation-bar title="社区" background="#fff" color="#000"></navigation-bar> -->
   <div class="community" @click.stop="hideZanAndPinglun">
     <div class="contentList w94">
       <div class="contentItem" v-for="(item,index) in ItemList" :key="item.id">
@@ -47,7 +49,7 @@
           </div>
         </div>
         <!-- 点赞展示 -->
-        <div class="zanShowBox">
+        <div class="zanShowBox" @click.stop="goZan">
           <div class="imgLi" v-for="(item,zanIndex) in zanPeopleList" :key="zanIndex">
             <img v-if="zanIndex<3" :src="item" mode="aspectFill" />
           </div>
@@ -91,9 +93,14 @@
 </template>
 
 <script>
+import navigationBar from '@/components/navigationBar'
 export default {
+  components: {
+    navigationBar
+  },
   data() {
     return {
+      topHeight: '',
       isToggle: false, //是否超过2行？true--超过，false--没有超过
       requireAll: false, //展开/收起全部问题描述true--展开，false--收起
       showZanAndPinglunNum: null,
@@ -135,6 +142,9 @@ export default {
       placeholderPL: "评论"
     };
   },
+  mounted () {
+    this.topHeight= wx.getStorageSync('topHeight')
+  },
   methods: {
     requireTxt() {
       if (this.isToggle) {
@@ -150,6 +160,11 @@ export default {
         url: "/pages/personal/main"
       });
     },
+    goZan(){
+      wx.navigateTo({
+        url: "/pages/zanList/main"
+      });
+    },
     zanHandle() {
       this.showZanAndPinglunNum = null;
       wx.showToast({
@@ -157,9 +172,11 @@ export default {
         icon: "none"
       });
     },
+    
     showPinLunFun() {
       this.showZanAndPinglunNum = null;
-      (this.placeholderPL = "留言: " + "飞鱼"), (this.showPinLun = true);
+      this.placeholderPL = "留言: " + "飞鱼"; 
+      this.showPinLun = true;
     },
     //点击朋友圈图片,弹出框预览大图
     showImg(index, imgIndex) {

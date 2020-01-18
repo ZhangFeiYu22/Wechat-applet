@@ -33,27 +33,44 @@ export default {
             { icon: "icon-hejiu", title: "大家干杯" },
             { icon: "icon-hejiu", title: "找异性碰杯" },
             { icon: "icon-hejiu", title: "喝半杯" },
-            { icon: "icon-hejiu", title: "喝两杯" }
+            { icon: "icon-hejiu", title: "喝两杯" },
+            { icon: "icon-hejiu", title: "杯子里喝光" },
+            { icon: "icon-hejiu", title: "找人碰杯" }
           ]
         },
         {
           name: "真心话",
           active: true,
           arrList: [
-            { icon: "icon-aixin", title: "这是真心话1" },
-            { icon: "icon-aixin", title: "这是真心话2" },
-            { icon: "icon-aixin", title: "这是真心话3" },
-            { icon: "icon-aixin", title: "这是真心话4" }
+            { icon: "icon-aixin", title: "你希望你现在是多少岁" },
+            { icon: "icon-aixin", title: "用四个字形容你现在的生活状态" },
+            { icon: "icon-aixin", title: "世界上最大的悲剧是什么" },
+            { icon: "icon-aixin", title: "晚上睡觉要上几次厕所" },
+            { icon: "icon-aixin", title: "在座你最想打的人是谁" },
+            { icon: "icon-aixin", title: "你最短的一次恋爱是什么情况" },
+            { icon: "icon-aixin", title: "收到过最难忘的礼物是什么" },
+            { icon: "icon-aixin", title: "如果有来生，你选择当什么" },
+            { icon: "icon-aixin", title: "如果让你选择做一个电影中的角色，你会选谁呢" },
+            { icon: "icon-aixin", title: "如果有一天我和你吵架，你会怎么办" },
+            { icon: "icon-aixin", title: "哭得最伤心的是哪一次?为什么" }
           ]
         },
         {
           name: "大冒险",
           active: true,
           arrList: [
-            { icon: "icon-damaoxian", title: "这是大冒险1" },
-            { icon: "icon-damaoxian", title: "这是大冒险2" },
-            { icon: "icon-damaoxian", title: "这是大冒险3" },
-            { icon: "icon-damaoxian", title: "这是大冒险4" }
+            { icon: "icon-damaoxian", title: "对右侧第一位异性说一分钟情话" },
+            { icon: "icon-damaoxian", title: "打开抖音模仿推荐的第一个人" },
+            { icon: "icon-damaoxian", title: "抱着正对面人的大腿唱情歌" },
+            { icon: "icon-damaoxian", title: "对异性服务员说“请给我你的微笑 我要打包" },
+            { icon: "icon-damaoxian", title: "背一位异性绕场一周" },
+            { icon: "icon-damaoxian", title: "唱青藏高原最后一句" },
+            { icon: "icon-damaoxian", title: "跳草裙舞、脱衣舞" },
+            { icon: "icon-damaoxian", title: "深情地吻墙10秒" },
+            { icon: "icon-damaoxian", title: "对人美眉挤眉弄眼" },
+            { icon: "icon-damaoxian", title: "摆3个芙蓉姐姐S形" },
+            { icon: "icon-damaoxian", title: "喊 燃烧吧，小宇宙" },
+            { icon: "icon-damaoxian", title: "和右数第一个异性拥抱" },
           ]
         }
       ],

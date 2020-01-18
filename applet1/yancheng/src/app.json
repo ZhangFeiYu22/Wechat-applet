@@ -14,8 +14,8 @@
     "pages/myAttestation/main",
     "pages/message/main",
     "pages/messageDetails/main",
-    "pages/emotion/main",
     "pages/community/main",
+    "pages/zanList/main",
     "pages/release/main",
     "pages/releaseRealy/main",
     "pages/discover/main",
@@ -35,7 +35,6 @@
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "城谜",
     "navigationBarTextStyle": "black"
-    
   },
   "tabBar": {
     "color": "#999",

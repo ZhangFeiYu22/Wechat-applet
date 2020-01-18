@@ -1,17 +1,28 @@
 <template>
-  <div class="discover" :style="{paddingTop: topHeight + 'px'}">
-    <div class="gameList" @click="goActivity">
-      <img :src="bgUrl1" mode="aspectFill" />
+  <div class="discover" :style="{backgroundImage:'url('+bgurl +')'}">
+    <div class="container">
+      <div class="balloon">
+        <div class="gameBox game1" @click="goGame1" :style="{backgroundImage:'url('+cir2 +')'}">
+          <span>真心话</span>
+        </div>
+        <div class="gameBox game2" @click="goGame2" :style="{backgroundImage:'url('+cir1 +')'}">
+          <span>摇骰子</span>
+        </div>
+        <div class="gameBox game3" :style="{backgroundImage:'url('+cir3 +')'}">
+          <span>Game Center</span>
+        </div>
+        <div class="gameBox game4" @click="goVote">
+          <span>投票专区</span>
+        </div>
+        <div class="gameBox game5" @click="goActivity">
+          <span>活动中心</span>
+        </div>
+        <!-- <div class="gameBox game6">
+          <span>game6</span>
+        </div>-->
+      </div>
     </div>
-    <div class="gameList" @click="goVote">
-      <img :src="bgUrl2" mode="aspectFill" />
-    </div>
-    <div class="gameList" @click="goGame1">
-      <img :src="bgUrl3" mode="aspectFill" />
-    </div>
-    <div class="gameList" @click="goGame2">
-      <img :src="bgUrl4" mode="aspectFill" />
-    </div>
+    <!-- <button class="handleBtn" @click="btnClick">登录授权</button> -->
     <div class="navStyle">
       <div class="navBottom" @click="doAnimation" :class="aniStyle ? 'aniStyle3' : 'spanBack'">
         <span :class="aniStyle ? 'aniStyle1' : ''"></span>
@@ -40,11 +51,10 @@
 export default {
   data() {
     return {
-      topHeight: '',
-      bgUrl1: require("../../../static/images/home1.png"),
-      bgUrl2: require("../../../static/images/home2.png"),
-      bgUrl3: require("../../../static/images/home3.png"),
-      bgUrl4: require("../../../static/images/home4.png"),
+      bgurl: `${this.$store.state.imgUrlHttp}/bg.jpeg`,
+      cir1: `${this.$store.state.imgUrlHttp}/cir1.png`,
+      cir2: `${this.$store.state.imgUrlHttp}/cir2.png`,
+      cir3: `${this.$store.state.imgUrlHttp}/cir3.png`,
       animation1: {},
       animation2: {},
       animation3: {},
@@ -54,10 +64,12 @@ export default {
       running: false //动画正在运行状态：控制动画运行完毕后才能再次运行
     };
   },
-  mounted () {
-    this.topHeight= this.$store.state.systemInfo.statusBarHeight + 40
-  },
   methods: {
+    goGame1() {
+      wx.navigateTo({
+        url: "/pages/game_truchOrDare/main"
+      });
+    },
     goActivity() {
       wx.navigateTo({
         url: "/pages/activity/main"
@@ -68,14 +80,14 @@ export default {
         url: "/pages/vote/main"
       });
     },
-    goGame1() {
+    goGame2() {
       wx.navigateTo({
         url: "/pages/game_dice/main"
       });
     },
-    goGame2() {
-      wx.navigateTo({
-        url: "/pages/game_truchOrDare/main"
+    btnClick() {
+      wx.switchTab({
+        url: "/pages/home/main"
       });
     },
     navHome() {
@@ -91,6 +103,11 @@ export default {
     navMy() {
       wx.switchTab({
         url: "/pages/my/main"
+      });
+    },
+    btnClick() {
+      wx.switchTab({
+        url: "/pages/home/main"
       });
     },
     doAnimation() {
@@ -142,23 +159,26 @@ export default {
 
       //表示一组动画完成
       animation1
-        .translateX(-150)
+        .translateX(-125)
         .translateY(0)
         .opacity(1)
         .step();
       //表示一组动画完成
       animation2
-        .translateX(-75)
+        .translateX(-100)
+        .translateY(-60)
         .opacity(1)
         .step();
       //表示一组动画完成
       animation3
-        .translateX(75)
+        .translateX(-60)
+        .translateY(-110)
         .opacity(1)
         .step();
       //表示一组动画完成
       animation4
-        .translateX(150)
+        .translateX(-5)
+        .translateY(-145)
         .opacity(1)
         .step();
       //清掉之前的动画操作
@@ -200,10 +220,7 @@ export default {
       that.animation3 = animation3.export();
       that.animation4 = animation4.export();
     }
-  },
-  onUnload(){ 
-		this.hiddenAnimation();
-	},
+  }
 };
 </script>
 
@@ -216,29 +233,187 @@ export default {
   right: 0;
   background-color: rgba(0, 0, 0, 0.7);
   text-align: center;
-  .gameList {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 132px;
-    width: 90%;
+  background-size: 100% 100%;
+  span {
+    text-transform: uppercase;
+  }
+
+  .container {
+    width: 100%;
+    height: 100%;
+    padding: 10px;
     margin: 0 auto;
-    color: #fff;
-    border-radius: 10px;
-    img {
+    position: relative;
+    .balloon {
       width: 100%;
       height: 100%;
+      margin: 0 auto;
+      padding-top: 30px;
+      position: relative;
+      .gameBox {
+        width: 70px;
+        height: 70px;
+        // background: rgba(182, 15, 97, 0.9);
+        background-size: 100% 100%;
+        border-radius: 50%;
+        position: absolute;
+        padding: 10px;
+        // box-shadow: inset 17px 7px 10px rgba(182, 15, 97, 0.9);
+        -webkit-transform-origin: bottom center;
+        span {
+          font-size: 14px;
+          color: white;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        }
+      }
+      .game1 {
+        width: 90px;
+        height: 90px;
+        z-index: 1;
+        // background: rgba(182, 15, 97, 0.9);
+        left: 5%;
+        top: 45%;
+        transform: translateY(-50%);
+        // box-shadow: inset 0px -10px 10px rgba(135, 11, 72, 0.9);
+        -webkit-animation: balloon1 6s ease-in-out infinite;
+        animation: balloon1 6s ease-in-out infinite;
+      }
+      .game2 {
+        width: 100px;
+        height: 100px;
+        z-index: 1;
+        // background: rgba(242, 112, 45, 0.9);
+        left: 22%;
+        top: 17%;
+        transform: translateY(-50%);
+        // box-shadow: inset 0px -10px 10px rgba(222, 85, 14, 0.9);
+        -webkit-animation: balloon2 6s ease-in-out infinite;
+        animation: balloon2 6s ease-in-out infinite;
+      }
+      .game3 {
+        // background: rgba(45, 181, 167, 0.9);
+        width: 150px;
+        height: 150px;
+        z-index: 9;
+        left: 50%;
+        top: 42%;
+        transform: translate(-50%, -50%);
+        // box-shadow: inset 0px -10px 10px rgba(35, 140, 129, 0.9);
+        -webkit-animation: balloon4 6s ease-in-out infinite;
+        animation: balloon4 6s ease-in-out infinite;
+      }
+      .game4 {
+        width: 115px;
+        height: 115px;
+        z-index: 1;
+        background: rgba(190, 61, 244, 0.9);
+        left: 60%;
+        top: 12%;
+        transform: translateY(-50%);
+        box-shadow: inset 0px -10px 10px rgba(173, 14, 240, 0.9);
+        -webkit-animation: balloon1 5s ease-in-out infinite;
+        animation: balloon1 5s ease-in-out infinite;
+      }
+      .game5 {
+        width: 115px;
+        height: 115px;
+        z-index: 1;
+        background: rgba(180, 224, 67, 0.9);
+        left: 69%;
+        top: 54%;
+        transform: translateY(-50%);
+        box-shadow: inset 0px -10px 10px rgba(158, 206, 34, 0.9);
+        -webkit-animation: balloon3 5s ease-in-out infinite;
+        animation: balloon3 5s ease-in-out infinite;
+      }
+      .game6 {
+        width: 100px;
+        height: 100px;
+        background: rgba(242, 194, 58, 0.9);
+        left: 600px;
+        z-index: 1;
+        left: 30%;
+        top: 62%;
+        transform: translateY(-50%);
+        box-shadow: inset 0px -10px 10px rgba(234, 177, 15, 0.9);
+        -webkit-animation: balloon2 5s ease-in-out infinite;
+        animation: balloon2 5s ease-in-out infinite;
+      }
+    }
+  }
+  .handleBtn {
+    width: 70px;
+    height: 70px;
+    padding: 15px;
+    border-radius: 50%;
+    margin-top: 10%;
+    line-height: 20px;
+    font-size: 14px;
+    background-color: #1bad19;
+    color: #fff;
+    position: absolute;
+    bottom: 20px;
+    left: 15px;
+  }
+  // CSS3动画
+  /*BALLOON 1 4*/
+  @-webkit-keyframes balloon1 {
+    0%,
+    100% {
+      -webkit-transform: translateY(0) rotate(-6deg) scale(1);
+    }
+
+    50% {
+      -webkit-transform: translateY(-20px) rotate(8deg) scale(0.95);
+    }
+  }
+
+  /* BAllOON 2 5*/
+  @-webkit-keyframes balloon2 {
+    0%,
+    100% {
+      -webkit-transform: translateY(0) rotate(6eg) scale(1);
+    }
+
+    50% {
+      -webkit-transform: translateY(-30px) rotate(-8deg) scale(0.95);
+    }
+  }
+
+  /* BAllOON 0*/
+  @-webkit-keyframes balloon3 {
+    0%,
+    100% {
+      -webkit-transform: translate(0, -50%) rotate(6eg) scale(1);
+    }
+
+    50% {
+      -webkit-transform: translate(-10px, -52%) rotate(-8deg) scale(0.95);
+    }
+  }
+
+  /* BAllOON 3*/
+  @-webkit-keyframes balloon4 {
+    0%,
+    100% {
+      -webkit-transform: translate(-46.5%, -46.5%) rotate(-5eg) scale(1);
+    }
+
+    50% {
+      -webkit-transform: translate(-52%, -52%) rotate(0deg) scale(0.95);
     }
   }
   .navStyle {
     .navBottom {
       z-index: 999;
       position: fixed;
-      left: 50%;
-      margin-left: -30px;
-      bottom: 10px;
-      width: 60px;
-      height: 60px;
+      right: 15px;
+      bottom: 20px;
+      width: 136rpx;
+      height: 136rpx;
       border-radius: 50%;
       border: 3px solid #fc3e9f;
       z-index: 40;
@@ -264,7 +439,9 @@ export default {
         background-color: #fc3e9f;
         border-radius: 2px;
         box-shadow: 0 0 9px 2px #fc3e9f, 0 0 9px 2px #fc3e9f inset;
-        transition: margin 300ms, width 300ms 600ms, background-color 600ms;
+        transition: margin 300ms, width 300ms 600ms, background-color 600ms,
+          border-radius 600ms;
+
         &:first-child {
           margin-top: -10px;
         }
@@ -295,9 +472,8 @@ export default {
         text-align: center;
         vertical-align: middle;
         position: absolute;
-        left: 50%;
-        margin-left: -30px;
-        bottom: 10px;
+        right: 10rpx;
+        bottom: 20rpx;
         display: flex;
         align-items: center;
         justify-content: center;

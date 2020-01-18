@@ -10,12 +10,35 @@
       </div>
     </div>
     <div class="content">
-      <p class="list">
-        对你说：
-        <span>你就是个棒槌</span>
-      </p>
+      <div class="list" v-for="(item,index) in messageList" :key="index">
+        <p v-if="item.type == 'from'" class="fromStyle">
+          <span class="fff">{{item.fff}}</span>对
+          <span class="ttt">{{item.ttt}}</span>说：
+          <span class="say">{{item.say}}</span>
+        </p>
+        <p v-else class="toStyle">
+          <span class="fff">{{item.fff}}</span>回复
+          <span class="ttt">{{item.ttt}}</span>：
+          <span class="say">{{item.say}}</span>
+        </p>
+      </div>
     </div>
-    <div class="returnBtn">回发消息</div>
+    <div class="returnBtn" @click="backMessage">回发消息</div>
+    <div v-if="showPinLun" class="pinlunB">
+      <form report-submit="true" @submit="submitComment">
+        <view class="liuyan">
+          <input
+            class="input"
+            auto-focus
+            cursor-spacing="32rpx"
+            :value="commentValue"
+            @input="getcomment"
+            :placeholder="placeholderPL"
+          />
+          <button class="btnPut" form-type="submit">发送</button>
+        </view>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -24,9 +47,34 @@ export default {
   data() {
     return {
       headImg1: `${this.$store.state.imgUrlHttp}/a6.png`,
+      showPinLun: false,
+      placeholderPL: " 回复",
+      commentValue: "",
+      messageList: [
+        { fff: "张小凡", ttt: "你", say: "你就是个棒槌！！", type: "from" }
+      ]
     };
   },
-  methods: {}
+  methods: {
+    backMessage() {
+      this.commentValue = "";
+      this.placeholderPL = "回复: " + "张小凡";
+      this.showPinLun = true;
+    },
+    getcomment(e) {
+      this.commentValue = e.target.value;
+    },
+    submitComment() {
+      let msgs = {
+        fff: "你",
+        ttt: "张小凡",
+        say: this.commentValue,
+        type: "to"
+      };
+      this.messageList.push(msgs);
+      this.showPinLun = false;
+    }
+  }
 };
 </script>
 
@@ -69,6 +117,20 @@ export default {
     .list {
       font-size: 13px;
       color: #797979;
+      .fromStyle,
+      .toStyle {
+        .left {
+          .fff,
+          .ttt {
+            color: #516f8e;
+          }
+        }
+        .right {
+          .say {
+            line-height: 25px;
+          }
+        }
+      }
     }
   }
   .returnBtn {
@@ -84,6 +146,45 @@ export default {
     border-radius: 5px;
     left: 20%;
     letter-spacing: 2px;
+  }
+  .pinlunB {
+    .liuyan {
+      display: flex;
+      background: #fafafa;
+      border-top: 1px solid #ddd;
+      width: 100%;
+      bottom: 0;
+      position: fixed;
+      z-index: 4;
+      height: 50px;
+      justify-content: center;
+      align-items: center;
+      padding: 10px 5px;
+      .input {
+        background-color: #fff;
+        flex: 1;
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 14px;
+        padding-left: 10px;
+      }
+      .btnPut {
+        font-size: 10px;
+        width: 50px;
+        background: #00c161;
+        color: #fff;
+        height: 40px;
+        line-height: 40px;
+        border-radius: 0;
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+        &::after {
+          border: none;
+        }
+      }
+    }
   }
 }
 </style>

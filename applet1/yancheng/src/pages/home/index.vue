@@ -1,4 +1,6 @@
 <template>
+  <!-- <div class="home" :style="{marginTop: topHeight + 'px'}"> -->
+    <!-- <navigation-bar title="城谜" background="#fff" color="#000"></navigation-bar> -->
   <div class="home">
     <!-- 轮播 -->
     <div class="carrousel w94">
@@ -81,13 +83,14 @@
 </template>
 
 <script>
-import navBar from "@/components/navbar";
+import navigationBar from '@/components/navigationBar'
 export default {
   components: {
-    navBar
+    navigationBar
   },
   data() {
     return {
+      topHeight: '',
       likeAct: false,
       carrouseList: [
         { imgUrl: `${this.$store.state.imgUrlHttp}/c1.png` },
@@ -128,6 +131,9 @@ export default {
         }
       ]
     };
+  },
+  mounted () {
+    this.topHeight= wx.getStorageSync('topHeight')
   },
   methods: {
     // 轮播切换时控制指示点切换
