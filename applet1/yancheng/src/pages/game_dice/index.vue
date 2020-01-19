@@ -8,10 +8,10 @@
         </div>
 
         <div class="show-viewf">
-          <image :src="plate" class="stagef-image" />
+          <image :src="plate" class="stagef-image" mode="aspectFill" />
         </div>
 
-        <!-- <div class="boli"></div> -->
+        <!-- <div class="boli" v-if="boliShow"></div> -->
         <div class="diceBox">
           <div class="stageaLength5">
             <image
@@ -67,7 +67,8 @@
         <p>{{diceNum}}</p>
         <i class="iconfont icon-tianjia" @click="increaseFun"></i>
       </div>
-      <button @click="dongyixia">摇一摇</button>
+      <button @click="dongyixia" v-if="canClick">摇一摇</button>
+      <button v-else>摇一摇</button>
     </div>
   </div>
 </template>
@@ -88,7 +89,6 @@ export default {
       animationData4: null,
       animationData5: null,
       music: true,
-      isShow: true,
       shadow: `${this.$store.state.imgUrlHttp}/shadow.png`,
       roleUrl: `${this.$store.state.imgUrlHttp}/windownew.png`,
       toy: `${this.$store.state.imgUrlHttp}/toy.png`,
@@ -96,28 +96,24 @@ export default {
       wavedice: `${this.$store.state.imgUrlHttp}/wavedice.png`,
       deleate: `${this.$store.state.imgUrlHttp}/deleate.png`,
       cover: `${this.$store.state.imgUrlHttp}/cover.png`,
-      plate: `${this.$store.state.imgUrlHttp}/plate.png`,
+      maoboli: require("../../../static/images/maoboli.png"),
+      // plate: `${this.$store.state.imgUrlHttp}/plate.png`,
+      plate: require("../../../static/images/wan2.png"),
       closemusic: `${this.$store.state.imgUrlHttp}/closemusic.png`,
       openmusic: `${this.$store.state.imgUrlHttp}/music.png`,
       numtotal: 0,
-      SetInter: "", //定时器
       num1: 0,
       num2: 0,
       num3: 0,
       num4: 0,
       num5: 0,
-      timeNum: 0,
-      last_update: 0,
-      last_x: 0,
-      last_y: 0,
-      last_z: 0,
       pic1: "",
       pic2: "",
       pic3: "",
       pic4: "",
       pic5: "",
-      openOrclose: true,
-      orshow: false
+      canClick: true, //防止多次点击
+      boliShow: true //毛玻璃控制
     };
   },
   methods: {
@@ -190,6 +186,8 @@ export default {
       if (that.music) {
         that.playAuto();
       }
+
+      that.canClick = false;
       var pics = [
         `${this.$store.state.imgUrlHttp}/onea.png`,
         `${this.$store.state.imgUrlHttp}/twoa.png`,
@@ -214,7 +212,6 @@ export default {
       that.pic3 = pic3;
       that.pic4 = pic4;
       that.pic5 = pic5;
-
       var numtotal = 0;
       for (let i = 1; i <= that.diceNum; i++) {
         let aa = that["num" + i];
@@ -354,6 +351,17 @@ export default {
         .rotate(1080)
         .step();
       that.animationData4 = animation4.export();
+
+      setTimeout(() => {
+        that.canClick = true;
+        that.animationData0 = null;
+        that.animationData1 = null;
+        that.animationData2 = null;
+        that.animationData3 = null;
+        that.animationData4 = null;
+        that.animationData5 = null;
+        console.log("wwww");
+      }, 1000);
     }
   },
   onLoad(options) {
@@ -387,25 +395,6 @@ export default {
       newArr.push(that["pic" + i]);
     }
     that.picArr = newArr;
-  },
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function() {
-    var that = this;
-    clearInterval(that.SetInter);
-
-    that.timeNum = 0;
-    that.orshow = false;
-    that.isShow = false;
-  },
-  onUnload: function() {
-    var that = this;
-    clearInterval(that.SetInter);
-
-    that.timeNum = 0;
-    that.orshow = false;
-    that.isShow = false;
   }
 };
 </script>
@@ -481,7 +470,8 @@ export default {
   }
   .show-viewf {
     position: absolute;
-    top: 295px;
+    // top: 295px;
+    top: 260px;
     left: 0;
     right: 0;
     display: flex;
@@ -490,8 +480,10 @@ export default {
     justify-content: center;
   }
   .stagef-image {
-    width: 574rpx;
-    height: 320rpx;
+    // width: 574rpx;
+    // height: 320rpx;
+    width: 284px;
+    height: 257px;
   }
   .diceBox {
     .stageaLength1 {
@@ -581,17 +573,15 @@ export default {
     border-radius: 5px;
     background: rgba(255, 255, 255, 0.3);
     box-shadow: 3px 3px 6px 3px rgba(0, 0, 0, 0.3);
-    &::before {
-      content: "";
+    &::after{
       position: absolute;
-      top: 0;
-      bottom: 0;
+      content: '';
       left: 0;
-      right: 0;
-      background: rgba(255, 255, 255, 0.3);
-      // filter: blur(50px);
-      // -webkit-filter: blur(50px);
-      z-index: 10;
+      top: 0;
+      background-color: rgba(255, 255, 255, 0.9);
+      width: 100%;
+      height: 100%;
+      filter:blur(10px);
     }
   }
 

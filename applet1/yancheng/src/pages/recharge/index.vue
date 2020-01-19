@@ -26,16 +26,16 @@
           <p class="p2">送200金币</p>
         </div>
       </div>
-      <div class="topItem otherItem">
-        <p class="p1">其他金额</p>
+      <div class="topItem" :class="reClick ? 'otherItem' : ''" @click="rechargeClick">
+        <p class="p1 pp1">其他金额</p>
         <p class="p2">
           <i class="iconfont icon-xiangxia"></i>
         </p>
       </div>
     </div>
-    <div class="rechargeMoney">
+    <div class="rechargeMoney" v-if="reClick">
       <div>
-        <input type="text" />
+        <input type="number" />
         <span class="btnSpan">立即充值</span>
       </div>
     </div>
@@ -45,9 +45,15 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      reClick: false
+    };
   },
-  methods: {}
+  methods: {
+    rechargeClick(){
+      this.reClick = !this.reClick
+    }
+  }
 };
 </script>
 
@@ -101,6 +107,9 @@ export default {
       .p1 {
         font-size: 20px;
         line-height: 20px;
+        &.pp1{
+          font-size: 14px;
+        }
       }
       .p2 {
         color: #ff3f3f;

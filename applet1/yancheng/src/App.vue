@@ -92,4 +92,7 @@ view {
   width: 94%;
   margin: 0 auto;
 }
+.icon-aixin1{
+  color: #f00 !important;
+}
 </style>

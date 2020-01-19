@@ -113,7 +113,9 @@
           @input="getSixin"
           placeholder-style="color:#b8b8b8"
         ></textarea>
+        <span class="numSpan">限100字</span>
       </div>
+      <button class="contBtn" @click="conBtnPut">发送</button>
     </div>
 
     <div v-if="showPinLun" class="pinlunB">
@@ -217,6 +219,13 @@ export default {
     },
     getSixin(e) {
       this.sixinValue = e.target.value;
+    },
+    conBtnPut(){
+      this.maskVal = false;
+       wx.showToast({
+        title: "发送成功",
+        duration: 2000 //停留时间
+      });
     },
     //点选和评论的隐藏通过事件委托到全页面(暂时只实现当条朋友所在区域,全页面和滚动时也隐藏在考虑实现)
     hideInputFun() {
@@ -523,7 +532,7 @@ export default {
     position: absolute;
     z-index: 4;
     width: 80%;
-    height: 30%;
+    // height: 35%;
     background-color: #fff;
     padding: 5px;
     top: 50%;
@@ -544,14 +553,35 @@ export default {
     }
     .textaCont {
       background-color: #e8e8e8;
-      height: 60%;
+      height: 127px;
       padding: 10px;
+      position: relative;
       .textA {
         font-size: 14px;
         width: 100%;
         height: 100%;
         text-align: justify;
         color: #333;
+      }
+      .numSpan{
+        position: absolute;
+        display: block;
+        right: 10px;
+        bottom: 5px;
+        color: #B7B7B7;
+        font-size: 15px;
+      }
+    }
+    .contBtn{
+      background-color: #B1A1A3;
+      color: #fff;
+      width: 110px;
+      height: 26px;
+      line-height: 26px;
+      margin: 10px auto 0;
+      font-size: 15px;
+      &::after{
+        border: none;
       }
     }
   }

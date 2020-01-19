@@ -4,12 +4,12 @@
       <div class="navItem" :class="itemActive == '0' ? 'active' : ''" @click="itemToggle('0')">
         <!-- <img src="../../../static/images/aaa1.png" mode="aspectFill"> -->
         <i class="iconfont icon-huati"></i>
-        <p>话题</p>
+        <!-- <p>话题</p> -->
       </div>
       <div class="navItem" :class="itemActive == '1' ? 'active' : ''" @click="itemToggle('1')">
         <!-- <img src="../../../static/images/aaa1.png" mode="aspectFill"> -->
         <i class="iconfont icon-xiangji"></i>
-        <p>状态</p>
+        <!-- <p>状态</p> -->
       </div>
     </div>
     <!-- 内容列表 -->
@@ -154,8 +154,8 @@ export default {
         display: inline-block;
         vertical-align: middle;
         margin-right: 5px;
-        font-size: 22px;
-        color: #707070;
+        font-size: 30px;
+        color: #999;
       }
       p {
         display: inline-block;
@@ -165,7 +165,7 @@ export default {
       }
       &.active {
         i {
-          color: #333;
+          color: #111;
           font-weight: 600;
         }
       }
