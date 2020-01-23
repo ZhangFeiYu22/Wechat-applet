@@ -73,8 +73,8 @@ export default {
       textareaTxt: null,
       imgArr: null,
       location: null,
-      maskShow: true,
-      hcName: "", //选择是首页还是社区
+      maskShow: false,
+      hcName: "首页", //选择是首页还是社区
       cName: "", //选择社区的时候  选择什么栏目
       kinds: [
         {
@@ -132,6 +132,7 @@ export default {
     }
   },
   mounted () {
+    this.hcName = "首页";
     let systemInfo = wx.getSystemInfoSync();
     this.ktxScreentHeight = systemInfo.windowHeight * 0.98 + 'px';
   },

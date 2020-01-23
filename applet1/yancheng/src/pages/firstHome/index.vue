@@ -12,7 +12,7 @@
     <div class="gameList" @click="goGame2">
       <img :src="bgUrl4" mode="aspectFill" />
     </div>
-    <div class="navStyle">
+    <!-- <div class="navStyle">
       <div class="navBottom" @click="doAnimation" :class="aniStyle ? 'aniStyle3' : 'spanBack'">
         <span :class="aniStyle ? 'aniStyle1' : ''"></span>
         <span></span>
@@ -29,6 +29,22 @@
           <i class="iconfont icon-zu"></i>
         </div>
         <div class="create_ball" :animation="animation4" @click="navMy">
+          <i class="iconfont icon-zu2"></i>
+        </div>
+      </div>
+    </div> -->
+    <div class="navStyle2">
+      <div class="navList">
+        <div class="create_ball" @click="navHome">
+          <i class="iconfont icon-zu1"></i>
+        </div>
+        <div class="create_ball" @click="navCommunity">
+          <i class="iconfont icon-zu3"></i>
+        </div>
+        <div class="create_ball" @click="navHome">
+          <i class="iconfont icon-zu"></i>
+        </div>
+        <div class="create_ball" @click="navMy">
           <i class="iconfont icon-zu2"></i>
         </div>
       </div>
@@ -297,6 +313,73 @@ export default {
         position: absolute;
         left: 50%;
         margin-left: -30px;
+        bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 3px solid #fc3e9f;
+        transform-origin: 182.5px;
+        transition: all 300ms cubic-bezier(0.64, 0.04, 0.35, 1);
+        box-shadow: 0 0 9px 2px #fc3e9f, 0 0 9px 2px #fc3e9f inset;
+        i {
+          color: #fc3e9f;
+          font-size: 22px;
+          color: #dd4814;
+          animation: blink 2.5s linear infinite;
+        }
+      }
+    }
+    @keyframes blink {
+      0% {
+        opacity: 1;
+      }
+      10% {
+        opacity: 0.9;
+      }
+      20% {
+        opacity: 0.8;
+      }
+      30% {
+        opacity: 1;
+      }
+      40% {
+        opacity: 0.8;
+      }
+      50% {
+        opacity: 0.9;
+      }
+      60% {
+        opacity: 1;
+      }
+      70% {
+        opacity: 0.6;
+      }
+      80% {
+        opacity: 0.4;
+      }
+      90% {
+        opacity: 0.9;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+  }
+  .navStyle2 {
+    width: 90%;
+    position: fixed;
+    left: 5%;
+    bottom: 2%;
+    .navList {
+      display: flex;
+      justify-content: space-between;
+      .create_ball {
+        height: 60px;
+        width: 60px;
+        line-height: 60px;
+        border-radius: 50%;
+        text-align: center;
+        vertical-align: middle;
         bottom: 10px;
         display: flex;
         align-items: center;

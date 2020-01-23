@@ -1,59 +1,93 @@
 <template>
   <div class="game">
-    <div class="container">
+    <div class="terminal_all" v-show="terminal">
+      <div class="terminal">
+        <img :src="deleate" @click.stop="xiaoshi" class="imageshow-deleate" mode="scaleToFill" />
+
+        <div class="ter-viewa">游戏规则</div>
+        <scroll-view class="scroll-view" scroll-y>
+          <div
+            class="ter-viewb"
+          >所有玩家同时打开喝酒游戏小程序，选择大话骰玩法，选择人数后开始游戏。事先约定好游戏起始者，然后按照游戏参与者座位的顺时针或逆时针进行游戏轮</div>
+          <div class="ter-viewc">
+            <block v-for="(item,index) in lists" :key="index">
+              <div class="ter-viewd">
+                <text>{{item.title}}</text>
+                <text>{{item.content}}</text>
+              </div>
+            </block>
+          </div>
+        </scroll-view>
+      </div>
+    </div>
+    <div class="container" :style="{filter: 'blur('+ blurNum +'px)'}">
       <img @click.stop="closemusicFun" :src="music?openmusic:closemusic" class="music" />
       <div class="show-viewa">
+        <div class="contain-right" @click.stop="showRole">
+          <text>规</text>
+          <text>则</text>
+        </div>
+
         <div class="show-viewb">
-          <img :src="shadow" class="shadow-image" />
+          <img :src="shadow" class="shadow-image" :style="{filter: 'blur('+ blurNum +'px)'}" />
+        </div>
+
+         <div class="guize">
+          <p>长按显示点数</p>
         </div>
 
         <div class="show-viewf">
-          <image :src="plate" class="stagef-image" mode="aspectFill" />
+          <image
+            :src="plate"
+            class="stagef-image"
+            :style="{filter: 'blur('+ blurNum +'px)'}"
+            mode="aspectFill"
+          />
         </div>
 
-        <!-- <div class="boli" v-if="boliShow"></div> -->
+        <div class="boli" @touchstart="touchStartBlur" @touchend="touchEndBlur" v-if="boliShow"></div>
         <div class="diceBox">
-          <div class="stageaLength5">
+          <div class="stageaLength5" v-if="picArr[0]">
             <image
-              v-if="picArr[0]"
               :src="pic1"
               class="stage-image"
+              :style="{filter: 'blur('+ blurNum +'px)'}"
               :animation="animationData0"
               mode="scaleToFill"
             />
           </div>
-          <div class="stageaLength5">
+          <div class="stageaLength5" v-if="picArr[1]">
             <image
-              v-if="picArr[1]"
               :src="pic2"
               class="stage-image"
+              :style="{filter: 'blur('+ blurNum +'px)'}"
               :animation="animationData1"
               mode="scaleToFill"
             />
           </div>
-          <div class="stageaLength5">
+          <div class="stageaLength5" v-if="picArr[2]">
             <image
-              v-if="picArr[2]"
               :src="pic3"
               class="stage-image"
+              :style="{filter: 'blur('+ blurNum +'px)'}"
               :animation="animationData2"
               mode="scaleToFill"
             />
           </div>
-          <div class="stageaLength5">
+          <div class="stageaLength5" v-if="picArr[3]">
             <image
-              v-if="picArr[3]"
               :src="pic4"
               class="stage-image"
+              :style="{filter: 'blur('+ blurNum +'px)'}"
               :animation="animationData3"
               mode="scaleToFill"
             />
           </div>
-          <div class="stageaLength5">
+          <div class="stageaLength5" v-if="picArr[4]">
             <image
-              v-if="picArr[4]"
               :src="pic5"
               class="stage-image"
+              :style="{filter: 'blur('+ blurNum +'px)'}"
               :animation="picArr[4] ? animationData4 : animationData"
               mode="scaleToFill"
             />
@@ -78,6 +112,10 @@ var app = getApp();
 export default {
   data() {
     return {
+      boliShow: false, //透明长按遮罩控制
+      blurTimeInto: "",
+      blurTimeFade: "",
+      blurNum: 0, //模糊度控制
       yaoyiyaoControl: true,
       diceNum: 5, //  骰子的个数
       picArr: [], //显示骰子的数组
@@ -96,9 +134,8 @@ export default {
       wavedice: `${this.$store.state.imgUrlHttp}/wavedice.png`,
       deleate: `${this.$store.state.imgUrlHttp}/deleate.png`,
       cover: `${this.$store.state.imgUrlHttp}/cover.png`,
-      maoboli: require("../../../static/images/maoboli.png"),
       // plate: `${this.$store.state.imgUrlHttp}/plate.png`,
-      plate: require("../../../static/images/wan2.png"),
+      plate: require("../../../static/images/plate.png"),
       closemusic: `${this.$store.state.imgUrlHttp}/closemusic.png`,
       openmusic: `${this.$store.state.imgUrlHttp}/music.png`,
       numtotal: 0,
@@ -107,13 +144,45 @@ export default {
       num3: 0,
       num4: 0,
       num5: 0,
+      terminal: false,
       pic1: "",
       pic2: "",
       pic3: "",
       pic4: "",
       pic5: "",
       canClick: true, //防止多次点击
-      boliShow: true //毛玻璃控制
+      lists: [
+        {
+          title: "1、吹牛",
+          content:
+            "每个人五颗骰子"
+        },
+        {
+          title: "2、大姨妈",
+          content:
+            "每个人五颗骰子，谁红色点数多为赢（一般为一点和四点）"
+        },
+        {
+          title: "3、中奖",
+          content:
+            "每人手里两颗骰子，中间两颗公骰，跟公骰点数之和一样就惩罚，点数一模一样，惩罚双倍"
+        },
+        {
+          title: "4、牛牛",
+          content:
+            "每人五颗骰子，找出三个相加为十，另外两个相加比大小，如果找不出三个骰子加起来之和为十则视为零点"
+        },
+        {
+          title: "5、扫雷",
+          content:
+            "每个人三颗骰子，先规定一人埋雷，摇出“对子”加“单点”为埋雷成功，“单点”的骰子为雷，下面每个人摇出几个跟“单点”一样的骰子惩罚几次，如果埋雷者摇三次都失败，惩罚后换下一个参与者（可以自行规定一圈结束或三次都没有踩雷的人就换下一个埋雷者）"
+        },
+        {
+          title: "6、血拼一点",
+          content:
+            "开始用一颗骰，每个人轮流摇，每摇完一次加一颗骰，直到骰子中出现一点，有几个骰子就惩罚几次"
+        }
+      ]
     };
   },
   methods: {
@@ -165,6 +234,14 @@ export default {
         that.picArr.push(pic1);
       }
     },
+    showRole: function(e) {
+      var that = this;
+      that.terminal = true;
+    },
+    xiaoshi: function(e) {
+      var that = this;
+      that.terminal = false;
+    },
     playAuto: function() {
       var that = this;
       wx.playBackgroundAudio({
@@ -187,7 +264,9 @@ export default {
         that.playAuto();
       }
 
+      that.boliShow = false;
       that.canClick = false;
+
       var pics = [
         `${this.$store.state.imgUrlHttp}/onea.png`,
         `${this.$store.state.imgUrlHttp}/twoa.png`,
@@ -354,6 +433,7 @@ export default {
 
       setTimeout(() => {
         that.canClick = true;
+        that.boliShow = true;
         that.animationData0 = null;
         that.animationData1 = null;
         that.animationData2 = null;
@@ -361,7 +441,36 @@ export default {
         that.animationData4 = null;
         that.animationData5 = null;
         console.log("wwww");
+        that.blurTimeInto = setInterval(() => {
+          that.blurNum++;
+          console.log(that.blurNum);
+          if (that.blurNum > 5) {
+            clearInterval(that.blurTimeInto);
+          }
+        }, 50);
       }, 1000);
+    },
+    touchStartBlur() {
+      var that = this;
+      clearInterval(that.blurTimeInto);
+      that.blurTimeFade = setInterval(() => {
+        that.blurNum--;
+        console.log(that.blurNum);
+        if (that.blurNum < 1) {
+          clearInterval(that.blurTimeFade);
+        }
+      }, 50);
+    },
+    touchEndBlur() {
+      var that = this;
+      clearInterval(that.blurTimeFade);
+      that.blurTimeInto = setInterval(() => {
+        that.blurNum++;
+        console.log(that.blurNum);
+        if (that.blurNum > 5) {
+          clearInterval(that.blurTimeInto);
+        }
+      }, 50);
     }
   },
   onLoad(options) {
@@ -395,12 +504,70 @@ export default {
       newArr.push(that["pic" + i]);
     }
     that.picArr = newArr;
+  },
+  onHide: function() {
+    var that = this;
+    clearInterval(that.blurTimeInto);
+    clearInterval(that.blurTimeFade);
+    that.blurNum = 0;
+    that.canClick = true;
+    that.boliShow = false;
+  },
+  onUnload: function() {
+    var that = this;
+    clearInterval(that.blurTimeInto);
+    clearInterval(that.blurTimeFade);
+    that.blurNum = 0;
+    that.canClick = true;
+    that.boliShow = false;
   }
 };
 </script>
 
 <style lang="less" scoped>
 .game {
+  .terminal {
+    position: absolute;
+    width: 650rpx;
+    height: 700rpx;
+    font-size: 32rpx;
+    font-weight: 500;
+    color: rgba(255, 254, 254, 1);
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    z-index: 9;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .scroll-view {
+    height: 570rpx;
+  }
+  .ter-viewa {
+    display: flex;
+    margin-top: 44rpx;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+  .ter-viewb {
+    padding: 30rpx;
+    line-height: 55rpx;
+  }
+  .ter-viewc {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10rpx 30rpx;
+    font-weight: 500;
+    color: rgba(255, 254, 254, 1);
+  }
+  .ter-viewd {
+    display: flex;
+    line-height: 55rpx;
+    flex-direction: column;
+    align-items: flex-start;
+  }
   .music {
     position: absolute;
     width: 50rpx;
@@ -429,12 +596,41 @@ export default {
     width: 26rpx;
     height: 26rpx;
   }
+  .contain-right {
+    position: fixed;
+    right: 0;
+    z-index: 444;
+    top: 168rpx;
+    width: 46rpx;
+    height: 124rpx;
+    font-weight: 500;
+    font-size: 30rpx;
+    border-top-left-radius: 10rpx;
+    border-bottom-left-radius: 10rpx;
+    background: #fec600;
+    color: #c5701d;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
   .show-viewb {
     text-align: center;
     position: absolute;
     left: 0;
     width: 100%;
     top: 112rpx;
+  }
+  .guize{
+    text-align: center;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    top: 130px;
+    p{
+      font-size: 12px;
+      color: #eee;
+    }
   }
   .shadow-image {
     width: 460rpx;
@@ -564,25 +760,13 @@ export default {
   }
   .boli {
     position: absolute;
-    width: 80%;
-    height: 60%;
-    background-color: pink;
-    left: 10%;
+    width: 90%;
+    height: 64%;
+    left: 5%;
     top: 150px;
     z-index: 9;
     border-radius: 5px;
-    background: rgba(255, 255, 255, 0.3);
-    box-shadow: 3px 3px 6px 3px rgba(0, 0, 0, 0.3);
-    &::after{
-      position: absolute;
-      content: '';
-      left: 0;
-      top: 0;
-      background-color: rgba(255, 255, 255, 0.9);
-      width: 100%;
-      height: 100%;
-      filter:blur(10px);
-    }
+    background: transparent;
   }
 
   .otherBox {
