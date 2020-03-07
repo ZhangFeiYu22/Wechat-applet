@@ -1,5 +1,10 @@
 <template>
-  <scroll-view class="scrollView" scroll-y="true" :style="{'width': ktxScreentWidth,'height': ktxScreentHeight}">
+  <scroll-view class="scrollView" scroll-y="true">
+    <navigation-bar
+      :title="'活动添加'"
+      :navBackgroundColor="'#fff'"
+      :back-visible="true"
+    ></navigation-bar>
     <div class="voteAdd">
       <!-- 内容列表 -->
       <div class="content w94">
@@ -80,7 +85,11 @@
 </template>
 
 <script>
+import navigationBar from "@/components/navigationBar";
 export default {
+  components: {
+    navigationBar
+  },
   data() {
     return {
       ktxScreentWidth: '',
@@ -154,18 +163,19 @@ export default {
 
 <style lang="less" scoped>
 .scrollView {
-  margin: 3% auto 0;
-  box-shadow: 0 0 2px 2px #eee;
-  border-radius: 5px;
+  // margin: 0 auto;
+  // box-shadow: 0 0 2px 2px #eee;
+  // border-radius: 5px;
 }
 .voteAdd {
-  // width: 94%;
+  width: 94%;
   // height: 94%;
   // left: 2%;
   // top: 2%;
-  // box-shadow: 0 0 2px 2px #eee;
+  box-shadow: 0 0 2px 2px #eee;
+  margin: 10px auto;
   padding: 15px 0;
-  // border-radius: 5px;
+  border-radius: 5px;
   // position: fixed;
   // overflow-y: scroll;
   // margin: 3%;

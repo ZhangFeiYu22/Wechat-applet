@@ -1,5 +1,10 @@
 <template>
   <div class="myAttestation">
+    <navigation-bar
+      :title="'认证'"
+      :navBackgroundColor="'#fff'"
+      :back-visible="true"
+    ></navigation-bar>
     <div class="lineHeight">
       <span class="left">真实姓名</span>
       <input
@@ -40,7 +45,11 @@
 </template>
 
 <script>
+import navigationBar from "@/components/navigationBar";
 export default {
+  components: {
+    navigationBar
+  },
   data() {
     return {
       attForm: {

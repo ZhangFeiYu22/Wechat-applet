@@ -1,5 +1,6 @@
 <template>
   <div class="messageDetails">
+    <navigation-bar :title="'消息'" :navBackgroundColor="'#fff'" :back-visible="true"></navigation-bar>
     <div class="head">
       <div class="headImg">
         <img :src="headImg1" mode="aspectFill" />
@@ -43,7 +44,11 @@
 </template>
 
 <script>
+import navigationBar from "@/components/navigationBar";
 export default {
+  components: {
+    navigationBar
+  },
   data() {
     return {
       headImg1: `${this.$store.state.imgUrlHttp}/a6.png`,

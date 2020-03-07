@@ -1,5 +1,10 @@
 <template>
   <div class="my">
+    <navigation-bar
+      :title="'个人详情'"
+      :navBackgroundColor="'#fff'"
+      :back-visible="true"
+    ></navigation-bar>
     <div class="head">
       <div class="headImg">
         <img :src="headImg" mode="aspectFill" />
@@ -95,7 +100,11 @@
 </template>
 
 <script>
+import navigationBar from "@/components/navigationBar";
 export default {
+  components: {
+    navigationBar
+  },
   data() {
     return {
       maskVal: false, //私信显示判断

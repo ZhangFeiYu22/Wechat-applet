@@ -1,5 +1,10 @@
 <template>
   <div class="aboutUs">
+    <navigation-bar
+      :title="'关于我们'"
+      :navBackgroundColor="'#fff'"
+      :back-visible="true"
+    ></navigation-bar>
     <div class="otherList">
       <div class="otherItem" @click="goAboutUs">
         <i class="iconfont icon-folder_icon iconLeft"></i>
@@ -17,7 +22,11 @@
 </template>
 
 <script>
+import navigationBar from "@/components/navigationBar";
 export default {
+  components: {
+    navigationBar
+  },
   data() {
     return {};
   },

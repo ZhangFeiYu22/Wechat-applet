@@ -6,22 +6,12 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     systemInfo: null,
-    menuSettings: {
-      height: 0
-    },
-    topHeight: '',
     imgUrlHttp: 'https://chengmipub.oss-cn-hangzhou.aliyuncs.com/city/game/sieve/images'
   },
   mutations: {
     ['GET_SYSTEMINFO_SUCCESS'](state, systemInfo) {
       state.systemInfo = systemInfo;
     },
-    setMenuSettings(state, settings) {
-      state.menuSettings = settings
-    },
-    topHeightFun(state,val){
-        state.topHeight = val
-    }
   },
   actions: {
     getSystemInfo({
@@ -48,8 +38,5 @@ export default new Vuex.Store({
     },
   },
   getters: {
-    isIphoneX: state => {
-      return state.systemInfo ? state.systemInfo.model.includes("iPhone X") : false
-    }
   }
 })

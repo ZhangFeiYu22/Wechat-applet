@@ -6,47 +6,24 @@ export default {
     return res;
   },
   onLaunch() {
-    wx.getSystemInfo({
-      success: res => {
-        // let statusBarHeight = res.statusBarHeight,
-        //   navTop = menuButtonObject.top, //胶囊按钮与顶部的距离
-        //   navHeight =
-        //     statusBarHeight +
-        //     menuButtonObject.height +
-        //     (menuButtonObject.top - statusBarHeight) * 2; //导航高度
-        // this.globalData.navHeight = navHeight;
-        // this.globalData.navTop = navTop;
-        // this.globalData.windowHeight = res.windowHeight;
-      },
-      fail(err) {
-        console.log(err);
-      }
-    });
+    // wx.getSystemInfo({
+    //   success: res => {
+    //     let statusBarHeight = res.statusBarHeight,
+    //       navTop = menuButtonObject.top, //胶囊按钮与顶部的距离
+    //       navHeight =
+    //         statusBarHeight +
+    //         menuButtonObject.height +
+    //         (menuButtonObject.top - statusBarHeight) * 2; //导航高度
+    //     this.globalData.navHeight = navHeight;
+    //     this.globalData.navTop = navTop;
+    //     this.globalData.windowHeight = res.windowHeight;
+    //   },
+    //   fail(err) {
+    //     console.log(err);
+    //   }
+    // });
   },
   created() {
-    // 调用API从本地缓存中获取数据
-    /*
-     * 平台 api 差异的处理方式:  api 方法统一挂载到 mpvue 名称空间, 平台判断通过 mpvuePlatform 特征字符串
-     * 微信：mpvue === wx, mpvuePlatform === 'wx'
-     * 头条：mpvue === tt, mpvuePlatform === 'tt'
-     * 百度：mpvue === swan, mpvuePlatform === 'swan'
-     * 支付宝(蚂蚁)：mpvue === my, mpvuePlatform === 'my'
-     */
-
-    let logs;
-    if (mpvuePlatform === "my") {
-      logs = mpvue.getStorageSync({ key: "logs" }).data || [];
-      logs.unshift(Date.now());
-      mpvue.setStorageSync({
-        key: "logs",
-        data: logs
-      });
-    } else {
-      logs = mpvue.getStorageSync("logs") || [];
-      logs.unshift(Date.now());
-      mpvue.setStorageSync("logs", logs);
-    }
-
     this.globalData = {
       userInfo: null,
       serverimage: "https://minip.cndfmg.com:83/",
@@ -59,9 +36,6 @@ export default {
 
     // console.log(store);
     store.dispatch("getSystemInfo");
-  },
-  log() {
-    console.log(`log at:${Date.now()}`);
   }
 };
 </script>
@@ -92,7 +66,7 @@ view {
   width: 94%;
   margin: 0 auto;
 }
-.icon-aixin1{
+.icon-aixin1 {
   color: #f00 !important;
 }
 </style>

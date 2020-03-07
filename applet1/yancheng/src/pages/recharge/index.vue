@@ -1,5 +1,10 @@
 <template>
   <div class="recharge">
+     <navigation-bar
+      :title="'充值'"
+      :navBackgroundColor="'#fff'"
+      :back-visible="true"
+    ></navigation-bar>
     <div class="wallet">
       <div class="gold">
         <p class="p1">
@@ -43,7 +48,11 @@
 </template>
 
 <script>
+import navigationBar from "@/components/navigationBar";
 export default {
+  components: {
+    navigationBar
+  },
   data() {
     return {
       reClick: false
@@ -61,7 +70,7 @@ export default {
 .recharge {
   .wallet {
     height: 120px;
-    margin: 15px auto 10px;
+    margin: 0px auto 10px;
     background: linear-gradient(to right, #fd5139, #fe9386);
     display: flex;
     justify-content: space-around;

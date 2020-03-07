@@ -1,7 +1,6 @@
 <template>
-  <!-- <div class="home" :style="{marginTop: topHeight + 'px'}"> -->
-    <!-- <navigation-bar title="城谜" background="#fff" color="#000"></navigation-bar> -->
   <div class="home">
+    <navigation-bar :title="'城谜'" :navBackgroundColor="'#fff'" :publish-visible="true"></navigation-bar>
     <!-- 轮播 -->
     <div class="carrousel w94">
       <swiper
@@ -28,18 +27,23 @@
       </view>
     </div>
     <!-- 小菜单 -->
-    <!-- <div class="navBox w94">
-      <div class="navItem" v-for="(item,index) in navItemList" :key="index" @click="navJump(index)">
+    <div class="navBox w94">
+      <div
+        class="navItem"
+        v-for="(item,index) in navItemList"
+        :key="index"
+        @click="navJump(item.jumpPath)"
+      >
         <div class="navIcon">
-          <img :src="item.imgUrl" mode="aspectFill" />
+          <i class="iconfont" :class="item.iconClass"></i>
         </div>
-        <div class="navTitle">{{item.title}}</div>
+        <div class="navTitle">{{item.name}}</div>
       </div>
-    </div> -->
+    </div>
     <!-- 广告 -->
     <!-- <div class="ad w94">
       <img src="../../../static/images/aaa1.png" mode="aspectFill" />
-    </div> -->
+    </div>-->
     <!-- 内容列表 -->
     <div class="contentList w94">
       <div class="contentItem" v-for="(item,index) in ItemList" :key="index">
@@ -83,14 +87,36 @@
 </template>
 
 <script>
-import navigationBar from '@/components/navigationBar'
+import navigationBar from "@/components/navigationBar";
 export default {
   components: {
     navigationBar
   },
   data() {
     return {
-      topHeight: '',
+      topHeight: "",
+      navItemList: [
+        {
+          name: "活动",
+          iconClass: "icon-huodong",
+          jumpPath: "/pages/activity/main"
+        },
+        {
+          name: "投票",
+          iconClass: "icon-navicon-tp",
+          jumpPath: "/pages/vote/main"
+        },
+        {
+          name: "骰子",
+          iconClass: "icon-touzi",
+          jumpPath: "/pages/game_dice/main"
+        },
+        {
+          name: "真心话",
+          iconClass: "icon-xintiao",
+          jumpPath: "/pages/game_truchOrDare/main"
+        }
+      ],
       likeAct: false,
       carrouseList: [
         { imgUrl: `${this.$store.state.imgUrlHttp}/c1.png` },
@@ -115,7 +141,7 @@ export default {
             `${this.$store.state.imgUrlHttp}/a3.png`,
             `${this.$store.state.imgUrlHttp}/a4.png`,
             `${this.$store.state.imgUrlHttp}/a5.png`,
-            `${this.$store.state.imgUrlHttp}/a6.png`,
+            `${this.$store.state.imgUrlHttp}/a6.png`
           ]
         },
         {
@@ -132,8 +158,8 @@ export default {
       ]
     };
   },
-  mounted () {
-    this.topHeight= wx.getStorageSync('topHeight')
+  mounted() {
+    this.topHeight = wx.getStorageSync("topHeight");
   },
   methods: {
     // 轮播切换时控制指示点切换
@@ -148,16 +174,10 @@ export default {
         this.ItemList[index].showEllip = true;
       }
     },
-    navJump(num) {
-      if (num == 1) {
-        wx.navigateTo({
-          url: "/pages/emotion/main"
-        });
-      } else if (num == 0) {
-        wx.navigateTo({
-          url: "/pages/myAttention/main"
-        });
-      }
+    navJump(path) {
+      wx.navigateTo({
+        url: path
+      });
     },
     goPersonal() {
       wx.navigateTo({
@@ -198,7 +218,7 @@ export default {
     }
   },
   onTabItemTap(item) {
-    wx.setStorageSync('tabItemClick', item.pagePath)
+    wx.setStorageSync("tabItemClick", item.pagePath);
   }
 };
 </script>
@@ -260,12 +280,9 @@ export default {
     .navItem {
       width: 25%;
       .navIcon {
-        width: 32px;
-        height: 32px;
-        margin: 0 auto 8px;
-        img {
-          width: 100%;
-          height: 100%;
+        margin-bottom: 8px;
+        i {
+          font-size: 26px;
         }
       }
       .navTitle {
@@ -320,8 +337,8 @@ export default {
       .toggleBox {
         font-size: 16px;
         color: #6f6d6d;
-        .more_txt{
-          span{
+        .more_txt {
+          span {
             border-bottom: 1px solid #6f6d6d;
           }
         }

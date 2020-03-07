@@ -1,5 +1,10 @@
 <template>
   <div class="myPublish">
+    <navigation-bar
+      :title="'我的发布'"
+      :navBackgroundColor="'#fff'"
+      :back-visible="true"
+    ></navigation-bar>
     <div class="navBox">
       <div class="navItem" :class="itemActive == '0' ? 'active' : ''" @click="itemToggle('0')">
         <!-- <img src="../../../static/images/aaa1.png" mode="aspectFill"> -->
@@ -54,7 +59,11 @@
 </template>
 
 <script>
+import navigationBar from "@/components/navigationBar";
 export default {
+  components: {
+    navigationBar
+  },
   data() {
     return {
       likeAct: false,

@@ -1,5 +1,10 @@
 <template>
   <div class="activity">
+    <navigation-bar
+      :title="'活动'"
+      :navBackgroundColor="'#fff'"
+      :back-visible="true"
+    ></navigation-bar>
     <div class="activityList">
       <div class="activityItem" @click="goActivityDetails">
         <div class="imgBox">
@@ -41,7 +46,11 @@
 </template>
 
 <script>
+import navigationBar from "@/components/navigationBar";
 export default {
+  components: {
+    navigationBar
+  },
   data() {
     return {
       actImg:  `${this.$store.state.imgUrlHttp}/d1.png`,
@@ -64,7 +73,6 @@ export default {
 
 <style lang="less" scoped>
 .activity {
-  padding-top: 15px;
   // 活动
   .activityList {
     width: 90%;

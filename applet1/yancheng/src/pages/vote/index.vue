@@ -1,5 +1,10 @@
 <template>
   <div class="vote">
+    <navigation-bar
+      :title="'投票'"
+      :navBackgroundColor="'#fff'"
+      :back-visible="true"
+    ></navigation-bar>
     <!-- 内容列表 -->
     <div class="contentList">
       <div class="contentItem w94" v-for="(item,index) in ItemList" :key="index">
@@ -65,7 +70,11 @@
 </template>
 
 <script>
+import navigationBar from "@/components/navigationBar";
 export default {
+  components: {
+    navigationBar
+  },
   data() {
     return {
       maskVal: false,

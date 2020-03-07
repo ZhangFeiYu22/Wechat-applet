@@ -1,214 +1,278 @@
 <template>
-  <div
-    class="navigation-bar"
-    :style="{paddingTop: paddingTop + 'px', height: height + 'px', backgroundColor: background||barStyle.background}"
-  >
-    <div
-      v-if="leftShow"
-      class="back-home"
-      :style="{minWidth:menuSettings.width + 'px',height: menuSettings.height + 'px',borderRadius: (menuSettings.height/2) + 'px',marginTop:marginTop + 'px', transform:'scale('+scale+')'}"
-    >
-      <div class="back" @click="goBack" :style="{height: menuSettings.height + 'px'}">
-        <i class="iconfont icon-Left"></i>
-      </div>
-      <div class="line"></div>
-      <div class="home" @click="goHome" :style="{height: menuSettings.height + 'px'}">
-        <i class="iconfont icon-zu1"></i>
+  <div class="comp-navbar">
+    <!-- 占位栏 -->
+    <div class="placeholder-bar" :style="{height: navBarHeight + 'px'}"></div>
+    <!-- 导航栏主体 -->
+    <div class="navbar" :style="{height: navBarHeight + 'px',backgroundColor:navBackgroundColor}">
+      <!-- 状态栏 -->
+      <div class="nav-statusbar" :style="{height: statusBarHeight + 'px'}"></div>
+      <!-- 标题栏 -->
+      <div class="nav-titlebar" :style="{height: titleBarHeight + 'px' }">
+        <!-- 按键显示情况 -->
+        <!-- 显示发布 -->
+        <div v-if="publishVisible" class="bar-optionsBox">
+          <div class="onlyBack">
+            <div class="opt opt-add" @click="publishClick()">
+              <i class="iconfont icon-add"></i>
+            </div>
+          </div>
+        </div>
+        <div v-else class="bar-optionsBox">
+          <!-- 返回键 -->
+          <div class="onlyBack" v-if="backVisible && !homeVisible">
+            <div class="opt opt-back" @click="backClick()">
+              <i class="iconfont icon-Left"></i>
+            </div>
+          </div>
+          <!-- 返回键和home键 -->
+          <div v-if="backVisible && homeVisible" class="back_home">
+            <div class="opt opt-back" @click="backClick()">
+              <i class="iconfont icon-Left"></i>
+            </div>
+            <div class="line"></div>
+            <div class="opt opt-home" @click="homeClick()">
+              <i class="iconfont icon-faxian"></i>
+            </div>
+          </div>
+        </div>
+        <!-- 都不显示 -->
+        <div v-if="!backVisible && !homeVisible && !publishVisible" class="bar-optionsBox"></div>
+        <!-- 标题 -->
+        <div class="bar-title">
+          {{title}}
+          <image src="../../static/images/titlebg.png" mode="aspectFill" />
+        </div>
       </div>
     </div>
-    <div
-      v-else
-      class="back-home2"
-      :style="{minWidth:menuSettings.width + 'px',height: menuSettings.height + 'px'}"
-    ></div>
-    <div
-      class="title"
-      :style="{textAlign: barStyle.textAlign, color: color||barStyle.color,fontSize: barStyle.fontSize + 'px',lineHeight: barStyle.fontSize + 'px', lineHeight:barStyle.height + 'px'}"
-    >
-    <p>{{title}}</p>
-    <img :src="titleBg" mode="widthFix"></div>
-    <div
-      class="back-home1"
-      :style="{minWidth:menuSettings.width + 'px',height: menuSettings.height + 'px'}"
-    ></div>
   </div>
 </template>
 
 <script>
-import { statusBar, navigationBar, navBarStyle } from "@/utils/systemSetting";
-import store from "@/store";
 export default {
   props: {
-    title: { type: String, default: "" },
-    color: { type: String, default: "" },
-    background: { type: String, default: "" }
+    // 导航栏背景色
+    navBackgroundColor: {
+      default: "#ffffff"
+    },
+    //标题文字
+    title: {
+      required: false,
+      default: "城谜"
+    },
+    // 是否显示后退按钮
+    backVisible: {
+      required: false,
+      default: false
+    },
+    // 是否显示Home按钮
+    homeVisible: {
+      required: false,
+      default: false
+    },
+    // 是否显示发布按钮
+    publishVisible: {
+      required: false,
+      default: false
+    },
+    // home按钮的路径
+    homePath: {
+      required: false,
+      default: "/pages/community/main"
+    }
   },
-  /**
-   * 组件的初始数据
-   */
   data() {
     return {
-      titleBg: require('../../static/images/titlebg.png'),
-      paddingTop: statusBar.android, // 默认为android大部分普通机型高度
-      height: navigationBar.default + statusBar.android,
-      barStyle: {},
+      statusBarHeight: "", // 状态栏高度
+      titleBarHeight: "", // 标题栏高度
+      navBarHeight: "", // 导航栏总高度
+      platform: "",
+      model: "",
+      brand: "",
+      system: "",
       currentPage: "",
-      leftShow: false,
-      marginTop: 0,
-      scale: 1
+      leftShow: false
     };
   },
   computed: {
     showBackIcon() {
       const pages = getCurrentPages();
       this.currentPage = pages[pages.length - 1].route;
-      console.log("x----", this.currentPage);
+      console.log("x----", this.currentPage, "------", pages.length);
       if (pages.length > 1) {
         this.leftShow = true;
+        console.log("leftShow--1--", this.leftShow);
         return true;
       } else {
-        if (this.currentPage !== "pages/home/main") {
-          this.leftShow = true;
+        if (
+          this.currentPage == "pages/community/main" ||
+          this.currentPage == "pages/home/main" ||
+          this.currentPage == "pages/discover/main" ||
+          this.currentPage == "pages/my/main"
+        ) {
+          this.leftShow = false;
         }
-        return false;
+        console.log("leftShow--2--", this.leftShow);
+        return true;
       }
-    },
-    menuSettings() {
-      return store.state.menuSettings;
     }
+  },
+  beforeMount() {
+    const self = this;
+    wx.getSystemInfo({
+      success(system) {
+        // console.log(`system:`, system);
+        self.statusBarHeight = system.statusBarHeight;
+        self.platform = system.platform;
+        self.model = system.model;
+        self.brand = system.brand;
+        self.system = system.system;
+        let platformReg = /ios/i;
+        if (platformReg.test(system.platform)) {
+          self.titleBarHeight = 44;
+        } else {
+          self.titleBarHeight = 48;
+        }
+        self.navBarHeight = self.statusBarHeight + self.titleBarHeight;
+        wx.setStorageSync('navBar_Height', self.navBarHeight)
+      }
+    });
   },
   mounted() {
-    const systemInfo = wx.getSystemInfoSync();
-    if (this.menuSettings.height === 0) {
-      this.getMenuSettings(1, 3);
-    }
-    this.scale = 1 - 0.5 / this.menuSettings.height;
-    this.marginTop = this.menuSettings.top - systemInfo.statusBarHeight;
-    const ratio = systemInfo.screenHeight / systemInfo.screenWidth; // 高宽比例
-    const isNewModel = ratio >= 2;
-    const isIPhone = systemInfo.model.indexOf("iPhone") >= 0;
-    const barHeight =
-      systemInfo.statusBarHeight ||
-      (isNewModel
-        ? statusBar.newModel
-        : isIPhone
-          ? statusBar.iPhone
-          : statusBar.android);
-    this.paddingTop = barHeight;
-    this.height = barHeight + navigationBar.default;
-    let barStyle = { ...navBarStyle };
-    barStyle.height = navigationBar.default;
-    this.barStyle = barStyle;
-    let hhh = this.paddingTop + this.height;
-    store.commit("topHeightFun", hhh);
+    console.log(`this.backVisible:`, this.backVisible);
   },
-  /**
-   * 组件的方法列表
-   */
   methods: {
-    getMenuSettings(current, count) {
-      let menuSettings = wx.getMenuButtonBoundingClientRect();
-      if (menuSettings.height === 0) {
-        if (current > 3) {
-          return;
-        }
-        setTimeout(() => {
-          this.getMenuSettings(current + 1, count);
-        }, 200);
-      } else {
-        store.commit("setMenuSettings", menuSettings);
-      }
-    },
-    goBack() {
+    backClick() {
+      // if (getCurrentPages().length == 1) {
+      //   // 打开分享卡片无法回退
+      //   wx.redirectTo({
+      //     url: this.homePath
+      //   });
+      // } else {
+      //   wx.navigateBack({
+      //     delta: 1
+      //   });
+      // }
       if (this.showBackIcon) {
         wx.navigateBack({
           delta: 1
         });
       } else {
-        if (this.currentPage !== "pages/home/main") {
+        if (this.currentPage !== "pages/community/main") {
           wx.reLaunch({
-            url: "/pages/home/main"
+            url: "/pages/community/main"
           });
         }
       }
     },
-    goHome() {
-      if (this.currentPage !== "pages/home/main") {
-        wx.reLaunch({
-          url: "/pages/home/main"
-        });
-      }
+    homeClick() {
+      wx.redirectTo({
+        url: this.homePath
+      });
+    },
+    publishClick() {
+      console.log("0000");
+      wx.navigateTo({
+        url: "/pages/releaseRealy/main"
+      });
     }
   }
 };
 </script>
 
 <style lang="less" scoped>
-.navigation-bar {
+.comp-navbar {
   width: 100vw;
-  height: 60px;
-  background-color: rgba(255, 255, 255, 0);
-  color: #000;
-  display: flex;
-  justify-content: space-between;
-  position: fixed;
-  top: 0;
-  left: 0;
-  box-sizing: border-box;
-  z-index: 1000;
-}
-.back-home {
-  display: flex;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 16px;
-  margin-left: 10px;
-  box-sizing: border-box;
-  box-shadow: 0 0 1px rgb(207, 207, 207);
-  overflow: hidden;
-}
-.back-home2 {
-  margin-left: 10px;
-}
-.back-home1 {
-  margin-right: 10px;
-}
-.back,
-.home {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.back img {
-  width: 9px;
-  height: 16px;
-}
-.home img {
-  width: 17px;
-  height: 17px;
-}
-.line {
-  width: 1px;
-  height: 20px;
-  background: rgba(0, 0, 0, 0.2);
-  transform: scaleX(0.5);
-}
-.title {
-  flex: 1;
-  box-sizing: border-box;
-  padding: 0 2px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  /* font-weight: bold; */
-  position: relative;
-  img{
-    width: 60px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
+  .navbar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    z-index: 99;
+    .nav-titlebar {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      .bar-optionsBox {
+        width: 146rpx;
+        height: 56rpx;
+        position: absolute;
+        left: 7px;
+        .onlyBack {
+          height: 56rpx;
+          line-height: 56rpx;
+          font-weight: 600;
+          position: absolute;
+          left: 7px;
+        }
+        .back_home {
+          width: 146rpx;
+          height: 56rpx;
+          display: flex;
+          box-sizing: border-box;
+          align-items: center;
+          justify-content: space-around;
+          position: absolute;
+          left: 7px;
+          display: flex;
+          align-items: center;
+          background: hsla(0, 0%, 100%, 0.6);
+          border-radius: 27px;
+          border: 1px solid #ddd;
+          padding-right: 5rpx;
+          .opt {
+            width: 50rpx;
+            height: 50rpx;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+          .opt-back {
+            i {
+              font-size: 18px;
+            }
+          }
+          .line {
+            display: block;
+            height: 30rpx;
+            width: 1px;
+            background-color: gray;
+          }
+          .opt-home {
+            i {
+              font-size: 18px;
+            }
+          }
+          .opt-add {
+            i {
+              font-size: 18px;
+            }
+          }
+        }
+      }
+      .bar-title {
+        width: 45%;
+        font-size: 16px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        text-align: center;
+        position: relative;
+        image {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -20%);
+          height: 14px;
+          width: 50px;
+        }
+      }
+    }
+  }
+  .placeholder-bar {
+    background-color: transparent;
+    width: 100%;
   }
 }
 </style>

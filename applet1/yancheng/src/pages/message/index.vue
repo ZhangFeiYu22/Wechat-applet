@@ -1,5 +1,10 @@
 <template>
   <div class="message">
+     <navigation-bar
+      :title="'消息'"
+      :navBackgroundColor="'#fff'"
+      :back-visible="true"
+    ></navigation-bar>
     <div class="friendsList">
       <div class="friendsItem" @click="goMessageDetail">
         <div class="imgBox">
@@ -36,7 +41,11 @@
 </template>
 
 <script>
+import navigationBar from "@/components/navigationBar";
 export default {
+  components: {
+    navigationBar
+  },
   data() {
     return {
       headImg1: `${this.$store.state.imgUrlHttp}/a6.png`,

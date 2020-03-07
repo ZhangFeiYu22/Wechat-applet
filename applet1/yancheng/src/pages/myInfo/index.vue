@@ -1,5 +1,10 @@
 <template>
   <div class="myInfo">
+     <navigation-bar
+      :title="'设置'"
+      :navBackgroundColor="'#fff'"
+      :back-visible="true"
+    ></navigation-bar>
     <div class="headImg">
       <img :src="headImg" mode="aspectFill" />
     </div>
@@ -52,7 +57,11 @@
 </template>
 
 <script>
+import navigationBar from "@/components/navigationBar";
 export default {
+  components: {
+    navigationBar
+  },
   data() {
     return {
       headImg: `${this.$store.state.imgUrlHttp}/head.png`,

@@ -1,5 +1,10 @@
 <template>
   <div class="zanList">
+    <navigation-bar
+      :title="'赞'"
+      :navBackgroundColor="'#fff'"
+      :back-visible="true"
+    ></navigation-bar>
     <div class="list" v-for="(item,index) in zanList" :key="index" @click.stop="goPersonal">
       <img :src="item.headImg" mode="aspectFill" />
       <p>{{item.name}}</p>
@@ -8,7 +13,11 @@
 </template>
 
 <script>
+import navigationBar from "@/components/navigationBar";
 export default {
+  components: {
+    navigationBar
+  },
   data() {
     return {
       zanList: [

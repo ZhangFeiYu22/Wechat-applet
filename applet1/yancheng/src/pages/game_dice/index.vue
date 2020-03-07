@@ -1,5 +1,10 @@
 <template>
   <div class="game">
+    <navigation-bar
+      :title="'大话骰'"
+      :navBackgroundColor="'#fff'"
+      :back-visible="true"
+    ></navigation-bar>
     <div class="terminal_all" v-show="terminal">
       <div class="terminal">
         <img :src="deleate" @click.stop="xiaoshi" class="imageshow-deleate" mode="scaleToFill" />
@@ -20,7 +25,7 @@
         </scroll-view>
       </div>
     </div>
-    <div class="container" :style="{filter: 'blur('+ blurNum +'px)'}">
+    <div class="container" :style="{filter: 'blur('+ blurNum +'px)', top: navBar_Height}">
       <img @click.stop="closemusicFun" :src="music?openmusic:closemusic" class="music" />
       <div class="show-viewa">
         <div class="contain-right" @click.stop="showRole">
@@ -32,7 +37,7 @@
           <img :src="shadow" class="shadow-image" :style="{filter: 'blur('+ blurNum +'px)'}" />
         </div>
 
-         <div class="guize">
+        <div class="guize">
           <p>长按显示点数</p>
         </div>
 
@@ -108,10 +113,15 @@
 </template>
 
 <script>
-var app = getApp();
+// var app = getApp();
+import navigationBar from "@/components/navigationBar";
 export default {
+  components: {
+    navigationBar
+  },
   data() {
     return {
+      navBar_Height: '',
       boliShow: false, //透明长按遮罩控制
       blurTimeInto: "",
       blurTimeFade: "",
@@ -154,13 +164,11 @@ export default {
       lists: [
         {
           title: "1、吹牛",
-          content:
-            "每个人五颗骰子"
+          content: "每个人五颗骰子"
         },
         {
           title: "2、大姨妈",
-          content:
-            "每个人五颗骰子，谁红色点数多为赢（一般为一点和四点）"
+          content: "每个人五颗骰子，谁红色点数多为赢（一般为一点和四点）"
         },
         {
           title: "3、中奖",
@@ -440,12 +448,13 @@ export default {
         that.animationData3 = null;
         that.animationData4 = null;
         that.animationData5 = null;
-        console.log("wwww");
+        // console.log("wwww");
         that.blurTimeInto = setInterval(() => {
-          that.blurNum++;
-          console.log(that.blurNum);
           if (that.blurNum > 5) {
             clearInterval(that.blurTimeInto);
+          } else {
+            that.blurNum++;
+            // console.log(that.blurNum);
           }
         }, 50);
       }, 1000);
@@ -455,7 +464,7 @@ export default {
       clearInterval(that.blurTimeInto);
       that.blurTimeFade = setInterval(() => {
         that.blurNum--;
-        console.log(that.blurNum);
+        // console.log(that.blurNum);
         if (that.blurNum < 1) {
           clearInterval(that.blurTimeFade);
         }
@@ -466,7 +475,7 @@ export default {
       clearInterval(that.blurTimeFade);
       that.blurTimeInto = setInterval(() => {
         that.blurNum++;
-        console.log(that.blurNum);
+        // console.log(that.blurNum);
         if (that.blurNum > 5) {
           clearInterval(that.blurTimeInto);
         }
@@ -504,6 +513,8 @@ export default {
       newArr.push(that["pic" + i]);
     }
     that.picArr = newArr;
+    // 导航栏高度获取
+    that.navBar_Height = wx.getStorageSync('navBar_Height') + 'px'
   },
   onHide: function() {
     var that = this;
@@ -621,13 +632,13 @@ export default {
     width: 100%;
     top: 112rpx;
   }
-  .guize{
+  .guize {
     text-align: center;
     position: absolute;
     left: 0;
     width: 100%;
     top: 130px;
-    p{
+    p {
       font-size: 12px;
       color: #eee;
     }

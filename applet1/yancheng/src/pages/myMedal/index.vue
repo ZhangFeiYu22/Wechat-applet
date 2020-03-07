@@ -1,5 +1,10 @@
 <template>
   <div class="myMedal">
+    <navigation-bar
+      :title="'我的勋章'"
+      :navBackgroundColor="'#fff'"
+      :back-visible="true"
+    ></navigation-bar>
     <div class="headImg">
       <img :src="headImg" mode="aspectFill" />
       <p class="name">碧瑶</p>
@@ -30,7 +35,11 @@
 </template>
 
 <script>
+import navigationBar from "@/components/navigationBar";
 export default {
+  components: {
+    navigationBar
+  },
   data() {
     return {
       headImg: `${this.$store.state.imgUrlHttp}/head.png`,

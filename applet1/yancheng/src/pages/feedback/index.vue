@@ -1,5 +1,10 @@
 <template>
   <div class="feedback">
+     <navigation-bar
+      :title="'反馈与建议'"
+      :navBackgroundColor="'#fff'"
+      :back-visible="true"
+    ></navigation-bar>
     <form @submit="bindFormSubmit" class="formBox">
       <textarea
         placeholder="请留下你的宝贵意见或者建议，我们将努力改进"
@@ -12,7 +17,11 @@
 </template>
 
 <script>
+import navigationBar from "@/components/navigationBar";
 export default {
+  components: {
+    navigationBar
+  },
   data() {
     return {};
   },

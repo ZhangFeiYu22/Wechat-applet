@@ -1,5 +1,10 @@
 <template>
   <div class="game1">
+    <navigation-bar
+      :title="'真心话大冒险'"
+      :navBackgroundColor="'#fff'"
+      :back-visible="true"
+    ></navigation-bar>
     <div class="selectBox">
       <div class="optionBox">
         <p
@@ -22,7 +27,11 @@
 </template>
 
 <script>
+import navigationBar from "@/components/navigationBar";
 export default {
+  components: {
+    navigationBar
+  },
   data() {
     return {
       optionList: [
@@ -193,7 +202,7 @@ export default {
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: #000;
+  background: linear-gradient(#5a197f, #551b7f, #5a1a7b,);
   .selectBox {
     width: 70%;
     height: 50px;

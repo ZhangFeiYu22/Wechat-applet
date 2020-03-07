@@ -1,41 +1,48 @@
 <template>
-  <div class="voteAdd">
-    <!-- 内容列表 -->
-    <div class="content w94">
-      <textarea
-        class="edit-text"
-        placeholder="请输入投票内容简述..."
-        placeholder-style="color:#dcdcdc"
-        @input="getInputValue"
-      ></textarea>
-      <div class="optionList" v-for="(item,index) in options" :key="index">
-        <i class="iconfont icon-iconless" @click.stop="optionDel(index)"></i>
-        <input
-          type="text"
-          placeholder="输入投票选项"
-          :value="item.name"
-          placeholder-style="color:#c4c4c4"
-        />
-      </div>
-      <div class="optionList optionAdd" @click="optionAdd">
-        <i class="iconfont icon-tianjia"></i>
-        <p>添加投票选项</p>
-      </div>
-
-      <div class="edit-img">
-        <div v-for="(item,index) in imgArr" :key="index">
-          <image :src="item" mode="aspectFill" />
+  <div>
+    <navigation-bar :title="'创建投票'" :navBackgroundColor="'#fff'" :back-visible="true"></navigation-bar>
+    <div class="voteAdd">
+      <!-- 内容列表 -->
+      <div class="content w94">
+        <textarea
+          class="edit-text"
+          placeholder="请输入投票内容简述..."
+          placeholder-style="color:#dcdcdc"
+          @input="getInputValue"
+        ></textarea>
+        <div class="optionList" v-for="(item,index) in options" :key="index">
+          <i class="iconfont icon-iconless" @click.stop="optionDel(index)"></i>
+          <input
+            type="text"
+            placeholder="输入投票选项"
+            :value="item.name"
+            placeholder-style="color:#c4c4c4"
+          />
         </div>
-        <div class="iconfont icon-jiahao" @click.stop="chooseImage"></div>
-      </div>
-    </div>
+        <div class="optionList optionAdd" @click="optionAdd">
+          <i class="iconfont icon-tianjia"></i>
+          <p>添加投票选项</p>
+        </div>
 
-    <div class="createBtn" @click="publishFun">发布</div>
+        <div class="edit-img">
+          <div v-for="(item,index) in imgArr" :key="index">
+            <image :src="item" mode="aspectFill" />
+          </div>
+          <div class="iconfont icon-jiahao" @click.stop="chooseImage"></div>
+        </div>
+      </div>
+
+      <div class="createBtn" @click="publishFun">发布</div>
+    </div>
   </div>
 </template>
 
 <script>
+import navigationBar from "@/components/navigationBar";
 export default {
+  components: {
+    navigationBar
+  },
   data() {
     return {
       imgArr: null,
@@ -90,9 +97,9 @@ export default {
 <style lang="less" scoped>
 .voteAdd {
   width: 96%;
-  height: 96%;
   left: 2%;
-  top: 2%;
+  top: 12%;
+  bottom: 2%;
   box-shadow: 0 0 2px 2px #eee;
   padding: 15px 0;
   border-radius: 5px;

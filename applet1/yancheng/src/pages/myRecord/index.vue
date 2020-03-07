@@ -1,5 +1,10 @@
 <template>
   <div class="attention">
+    <navigation-bar
+      :title="'记录'"
+      :navBackgroundColor="'#fff'"
+      :back-visible="true"
+    ></navigation-bar>
     <div class="navToggle">
       <div class="navI" :class="itemActive == '1' ? 'active' : ''" @click="itemToggle('1')">活动</div>
       <div class="navI" :class="itemActive == '0' ? 'active' : ''" @click="itemToggle('0')">投票</div>
@@ -99,7 +104,11 @@
 </template>
 
 <script>
+import navigationBar from "@/components/navigationBar";
 export default {
+  components: {
+    navigationBar
+  },
   data() {
     return {
       actImg1: `${this.$store.state.imgUrlHttp}/d1.png`,

@@ -1,7 +1,10 @@
 <template>
-  <!-- <div class="community" @click.stop="hideZanAndPinglun" :style="{marginTop: topHeight + 'px'}">
-    <navigation-bar title="社区" background="#fff" color="#000"></navigation-bar> -->
   <div class="community" @click.stop="hideZanAndPinglun">
+    <navigation-bar
+      :title="'社区'"
+      :navBackgroundColor="'#fff'"
+      :publish-visible="true"
+    ></navigation-bar>
     <div class="contentList w94">
       <div class="contentItem" v-for="(item,index) in ItemList" :key="item.id">
         <!-- 头像 -->
@@ -93,14 +96,14 @@
 </template>
 
 <script>
-import navigationBar from '@/components/navigationBar'
+import navigationBar from "@/components/navigationBar";
 export default {
   components: {
     navigationBar
   },
   data() {
     return {
-      topHeight: '',
+      topHeight: "",
       isToggle: false, //是否超过2行？true--超过，false--没有超过
       requireAll: false, //展开/收起全部问题描述true--展开，false--收起
       showZanAndPinglunNum: null,
@@ -142,8 +145,8 @@ export default {
       placeholderPL: "评论"
     };
   },
-  mounted () {
-    this.topHeight= wx.getStorageSync('topHeight')
+  mounted() {
+    this.topHeight = wx.getStorageSync("topHeight");
   },
   methods: {
     requireTxt() {
@@ -160,7 +163,7 @@ export default {
         url: "/pages/personal/main"
       });
     },
-    goZan(){
+    goZan() {
       wx.navigateTo({
         url: "/pages/zanList/main"
       });
@@ -172,10 +175,10 @@ export default {
         icon: "none"
       });
     },
-    
+
     showPinLunFun() {
       this.showZanAndPinglunNum = null;
-      this.placeholderPL = "留言: " + "飞鱼"; 
+      this.placeholderPL = "留言: " + "飞鱼";
       this.showPinLun = true;
     },
     //点击朋友圈图片,弹出框预览大图
@@ -291,7 +294,6 @@ export default {
 <style lang="less" scoped>
 .community {
   .contentList {
-    margin-top: 20px;
     .contentItem {
       padding-bottom: 20px;
       border-bottom: 1px solid #f1f1f1;

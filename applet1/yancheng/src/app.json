@@ -1,6 +1,8 @@
 {
   "pages": [
-    "pages/firstHome/main",
+    "pages/community/main",
+    "pages/mallCenter/main",
+    "pages/zanList/main",
     "pages/home/main",
     "pages/my/main",
     "pages/myInfo/main",
@@ -14,9 +16,6 @@
     "pages/myAttestation/main",
     "pages/message/main",
     "pages/messageDetails/main",
-    "pages/community/main",
-    "pages/zanList/main",
-    "pages/release/main",
     "pages/releaseRealy/main",
     "pages/discover/main",
     "pages/topicDetails/main",
@@ -33,8 +32,8 @@
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "城谜",
-    "navigationBarTextStyle": "black"
+    "navigationBarTextStyle": "black",
+    "navigationStyle": "custom"
   },
   "tabBar": {
     "color": "#999",
@@ -42,21 +41,17 @@
     "selectedColor": "#333",
     "borderStyle": "white",
     "list": [{
-      "pagePath": "pages/home/main",
-      "iconPath": "static/tabbar/home.png",
-      "selectedIconPath": "static/tabbar/home-active.png"
-    }, {
       "pagePath": "pages/community/main",
       "iconPath": "static/tabbar/community.png",
       "selectedIconPath": "static/tabbar/community-avtive.png"
     }, {
-      "pagePath": "pages/release/main",
-      "iconPath": "static/tabbar/icon_release.png",
-      "selectedIconPath": "static/tabbar/icon_release.png"
+      "pagePath": "pages/home/main",
+      "iconPath": "static/tabbar/home.png",
+      "selectedIconPath": "static/tabbar/home-active.png"
     }, {
-      "pagePath": "pages/discover/main",
-      "iconPath": "static/tabbar/discover.png",
-      "selectedIconPath": "static/tabbar/discover-active.png"
+      "pagePath": "pages/mallCenter/main",
+      "iconPath": "static/tabbar/mall.png",
+      "selectedIconPath": "static/tabbar/mall-active.png"
     }, {
       "pagePath": "pages/my/main",
       "iconPath": "static/tabbar/my.png",

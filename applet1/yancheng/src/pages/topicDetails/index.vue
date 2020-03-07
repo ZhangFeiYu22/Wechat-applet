@@ -1,5 +1,10 @@
 <template>
   <div class="topicDetails" @click.stop="hideInputFun" @touchmove="hideInputFun">
+    <navigation-bar
+      :title="'话题详情'"
+      :navBackgroundColor="'#fff'"
+      :back-visible="true"
+    ></navigation-bar>
     <!-- 内容列表 -->
     <div class="contentItem w94">
       <div class="headName" @click="goPersonal">
@@ -137,7 +142,11 @@
 </template>
 
 <script>
+import navigationBar from "@/components/navigationBar";
 export default {
+  components: {
+    navigationBar
+  },
   data() {
     return {
       maskVal: false,

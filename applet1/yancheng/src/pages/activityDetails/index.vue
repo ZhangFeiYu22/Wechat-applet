@@ -1,5 +1,10 @@
 <template>
   <div class="activityDetails">
+    <navigation-bar
+      :title="'活动详情'"
+      :navBackgroundColor="'#fff'"
+      :back-visible="true"
+    ></navigation-bar>
     <div class="imgB">
       <img :src="actImg" mode="aspectFill" />
     </div>
@@ -83,7 +88,11 @@
 </template>
 
 <script>
+import navigationBar from "@/components/navigationBar";
 export default {
+  components: {
+    navigationBar
+  },
   data() {
     return {
       likeAct: false,

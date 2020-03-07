@@ -1,5 +1,9 @@
 <template>
   <div class="my">
+    <navigation-bar
+      :title="'我的'"
+      :navBackgroundColor="'#fff'"
+    ></navigation-bar>
     <div class="head">
       <div class="headImg">
         <img :src="headImg" mode="aspectFill" />
@@ -85,7 +89,11 @@
 </template>
 
 <script>
+import navigationBar from "@/components/navigationBar";
 export default {
+  components: {
+    navigationBar
+  },
   data() {
     return {
       likeAct: false,

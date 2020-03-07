@@ -1,5 +1,10 @@
 <template>
   <scroll-view class="scrollView" scroll-y="true" :style="{'height': ktxScreentHeight}">
+    <navigation-bar
+      :title="'发布'"
+      :navBackgroundColor="'#fff'"
+      :back-visible="true"
+    ></navigation-bar>
     <div class="release">
       <!-- <text bindtap="saveEditOrNot">取消</text> -->
       <div class="edit-main">
@@ -66,7 +71,11 @@
 </template>
 
 <script>
+import navigationBar from "@/components/navigationBar";
 export default {
+  components: {
+    navigationBar
+  },
   data() {
     return {
       ktxScreentHeight: '',
@@ -314,11 +323,12 @@ export default {
     right: 0;
     background-color: rgba(0, 0, 0, 0.65);
     text-align: center;
+    z-index: 5;
     h5 {
-      top: 10%;
       color: #fff;
       font-size: 20px;
-      margin-top: 20%;
+      margin-top: 50%;
+      transform: translateY(-50%);
     }
     .hc {
       i {
