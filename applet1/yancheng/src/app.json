@@ -17,7 +17,6 @@
     "pages/message/main",
     "pages/messageDetails/main",
     "pages/releaseRealy/main",
-    "pages/discover/main",
     "pages/topicDetails/main",
     "pages/personal/main",
     "pages/activity/main",
@@ -26,7 +25,8 @@
     "pages/vote/main",
     "pages/voteAdd/main",
     "pages/game_dice/main",
-    "pages/game_truchOrDare/main"
+    "pages/game_truchOrDare/main",
+    "pages/login/main"
   ],
   "requiredBackgroundModes": ["audio"],
   "window": {

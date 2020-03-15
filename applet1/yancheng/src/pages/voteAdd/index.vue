@@ -4,18 +4,31 @@
     <div class="voteAdd">
       <!-- 内容列表 -->
       <div class="content w94">
-        <textarea
+        <!-- <textarea
           class="edit-text"
           placeholder="请输入投票内容简述..."
           placeholder-style="color:#dcdcdc"
           @input="getInputValue"
+        ></textarea>-->
+        <textarea
+          v-if="textStatus"
+          class="edit-text edit-textShow"
+          auto-focus
+          @blur="bindblurTextStatus"
+          v-model="optionsData.content"
         ></textarea>
+        <div
+          v-else
+          class="edit-text edit-textNo"
+          :style="{color: textNoColor}"
+          @click="changeTextStatus"
+        >{{realTextValue}}</div>
         <div class="optionList" v-for="(item,index) in options" :key="index">
           <i class="iconfont icon-iconless" @click.stop="optionDel(index)"></i>
           <input
             type="text"
-            placeholder="输入投票选项"
-            :value="item.name"
+            placeholder="输入选项内容"
+            v-model="item.optionsContent"
             placeholder-style="color:#c4c4c4"
           />
         </div>
@@ -38,6 +51,8 @@
 </template>
 
 <script>
+import { voteAdd } from "@/api/vote";
+import { imgsUpload } from "@/utils/imgsUpload";
 import navigationBar from "@/components/navigationBar";
 export default {
   components: {
@@ -45,11 +60,35 @@ export default {
   },
   data() {
     return {
-      imgArr: null,
-      options: [{ name: "1" }, { name: "2" }, { name: "3" }]
+      imgArr: [],
+      optionsData: {
+        content: ""
+      },
+      options: [
+        { optionsContent: "" },
+        { optionsContent: "" },
+        { optionsContent: "" }
+      ],
+      textStatus: false,
+      textNoColor: "#dcdcdc",
+      realTextValue: "请输入投票内容简述..."
     };
   },
   methods: {
+    changeTextStatus() {
+      this.realTextValue = "";
+      this.textStatus = true;
+    },
+    bindblurTextStatus() {
+      if (this.optionsData.content.length == 0) {
+        this.realTextValue = "请输入投票内容简述...";
+        this.textNoColor = "#dcdcdc";
+      } else {
+        this.realTextValue = this.optionsData.content;
+        this.textNoColor = "#353535";
+      }
+      this.textStatus = false;
+    },
     selectOne(num) {
       this.itemsNum = num;
     },
@@ -65,8 +104,11 @@ export default {
       });
     },
     optionAdd() {
+      console.log("this.options--", this.options);
       if (this.options.length < 6) {
-        this.options.push("");
+        var lists = this.options;
+        lists.push({ optionsContent: "" });
+        this.options = lists;
       } else {
         wx.showToast({
           title: "最多可添加六个选项",
@@ -82,13 +124,32 @@ export default {
         sizeType: "compressed",
         sourceType: ["album", "camera"],
         success(res) {
-          // tempFilePath可以作为img标签的src属性显示图片
-          self.imgArr = res.tempFilePaths;
+          self.imgArr = imgsUpload(res.tempFilePaths);
         }
       });
     },
     publishFun() {
-      console.log("发布");
+      var _this = this;
+      _this.options.forEach((item, index) => {
+        if (index == 0) {
+          _this.optionsData.optionOne = item.optionsContent;
+        } else if (index == 1) {
+          _this.optionsData.optionTwo = item.optionsContent;
+        } else if (index == 2) {
+          _this.optionsData.optionThree = item.optionsContent;
+        } else if (index == 3) {
+          _this.optionsData.optionFour = item.optionsContent;
+        }
+      });
+      console.log("发布", this.optionsData);
+      wx.showModal({
+        title: "确定发布？",
+        success(res) {
+          voteAdd(_this.optionsData).then(res => {
+            console.log(res);
+          });
+        }
+      });
     }
   }
 };
@@ -107,10 +168,18 @@ export default {
   .content {
     .edit-text {
       height: 60px;
+      padding: 2px 0;
       overflow-y: scroll;
-      font-size: 14px;
+      width: 100%;
+      font-size: 15px;
       line-height: 20px;
       color: #353535;
+    }
+    .edit-textShow {
+      box-sizing: border-box;
+    }
+    .edit-textNo {
+      color: #dcdcdc;
     }
     .optionList {
       display: flex;

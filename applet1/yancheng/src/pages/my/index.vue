@@ -6,7 +6,7 @@
     ></navigation-bar>
     <div class="head">
       <div class="headImg">
-        <img :src="headImg" mode="aspectFill" />
+        <img :src="userInfo.avatarUrl" mode="aspectFill" />
         <div class="hierarchy">
           <img :src="hierarchy" mode="aspectFill" />
           <p>LV1</p>
@@ -19,9 +19,9 @@
     </div>
     <div class="baseInfo">
       <div class="nameSexPhone">
-        <p class="name">张小凡</p>
+        <p class="name">{{userInfo.nickName}}</p>
         <p class="sex">
-          <i class="iconfont icon-nan"></i>
+          <i class="iconfont" :class="userInfo.gender == 1 ? 'icon-nan': 'icon-nv'"></i>
         </p>
         <p class="phone">182****1234</p>
       </div>
@@ -96,11 +96,16 @@ export default {
   },
   data() {
     return {
+      userInfo: {},
       likeAct: false,
       itemActive: 0,
       headImg: `${this.$store.state.imgUrlHttp}/head.png`,
       hierarchy: `${this.$store.state.imgUrlHttp}/hierarchy.png`,
     };
+  },
+  mounted () {
+    this.userInfo = wx.getStorageSync('userInfoAll').userInfo
+    console.log(wx.getStorageSync('userInfoAll'))
   },
   methods: {
     goMessage() {
@@ -153,9 +158,6 @@ export default {
         url: "/pages/aboutUs/main"
       });
     }
-  },
-  onTabItemTap(item) {
-    wx.setStorageSync("tabItemClick", item.pagePath);
   }
 };
 </script>

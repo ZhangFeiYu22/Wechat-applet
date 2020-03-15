@@ -26,7 +26,7 @@
       <div class="contentCont">
         <p class="pp">活动详情</p>
         <div class="details">
-          这个是活动详情,富文本编辑过来，有图片有文字
+          这个是活动详情
           <img :src="actContImg" mode="widthFix" />
         </div>
         <p class="pp">活动须知</p>

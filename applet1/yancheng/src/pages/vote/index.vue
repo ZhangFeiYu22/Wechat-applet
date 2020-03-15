@@ -70,6 +70,7 @@
 </template>
 
 <script>
+import { voteGet } from "@/api/vote";
 import navigationBar from "@/components/navigationBar";
 export default {
   components: {
@@ -88,6 +89,7 @@ export default {
         { name: "ENG", value: "英国" },
         { name: "FRA", value: "法国" }
       ],
+      voteLists: [],
       ItemList: [
         {
           showEllip: false,
@@ -110,7 +112,18 @@ export default {
       ]
     };
   },
+  mounted () {
+    this.fetchVoteData()
+  },
   methods: {
+    fetchVoteData(){
+      voteGet().then(res=>{
+        console.log(res)
+        if(res.status == 200){
+          this.voteLists = res.result.data
+        }
+      })
+    },
     requireTxt(index) {
       let val = this.ItemList[index].showEllip;
       if (val) {

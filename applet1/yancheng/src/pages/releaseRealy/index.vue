@@ -1,19 +1,22 @@
 <template>
-  <scroll-view class="scrollView" scroll-y="true" :style="{'height': ktxScreentHeight}">
-    <navigation-bar
-      :title="'发布'"
-      :navBackgroundColor="'#fff'"
-      :back-visible="true"
-    ></navigation-bar>
-    <div class="release">
+  <scroll-view class="scrollView" scroll-y="true">
+    <navigation-bar :title="'发布'" :navBackgroundColor="'#fff'" :back-visible="true"></navigation-bar>
+    <div class="release" :style="{'top': navBar_Height}">
       <!-- <text bindtap="saveEditOrNot">取消</text> -->
       <div class="edit-main">
         <textarea
-          class="edit-text"
-          placeholder="写下此刻的心声吧..."
-          placeholder-style="color:#dcdcdc"
-          @input="getInputValue"
+          v-if="textStatus"
+          class="edit-text edit-textShow"
+          auto-focus
+          @blur="bindblurTextStatus"
+          v-model="cfpData.content"
         ></textarea>
+        <div
+          v-else
+          class="edit-text edit-textNo"
+          :style="{color: textNoColor}"
+          @click="changeTextStatus"
+        >{{realTextValue}}</div>
         <div class="edit-img">
           <div v-for="(item,index) in imgArr" :key="index">
             <image :src="item" mode="aspectFill" />
@@ -21,129 +24,49 @@
           <div class="iconfont icon-jiahao" @click.stop="chooseImage"></div>
         </div>
       </div>
-      <div class="edit-footer">
-        <div class="footer-row" @click="selectHC">
-          <p class="rowI left">
-            <i class="iconfont icon-fabu"></i>
-            <span>发布栏目</span>
-          </p>
-          <p class="rowI right">
-            <span>{{hcName}}</span>
-            <i class="iconfont icon-right"></i>
-          </p>
-        </div>
-        <!-- <div class="footer-row" @click="selectC" v-if="communityShow">
-          <p class="rowI left">
-            <i class="iconfont icon-lanmu"></i>
-            <span>频道与话题</span>
-          </p>
-          <p class="rowI right">
-            <span>{{cName}}</span>
-            <i class="iconfont icon-right"></i>
-          </p>
-        </div>
-        <div class="footer-row" v-else>
-          <p class="rowI left no">
-            <i class="iconfont icon-lanmu no"></i>
-            <span class="no">频道与话题</span>
-          </p>
-          <p class="rowI right no">
-            <i class="iconfont icon-right no"></i>
-          </p>
-        </div> -->
-      </div>
 
-      <cover-view  class="publishBtn" @click="postData">发布</cover-view >
-
-      <div class="mask" v-if="maskShow">
-        <h5>选择栏目</h5>
-        <div class="hc home" @click="selectHome">
-          <i class="iconfont icon-huangguan"></i>
-          <p>首页话题栏目</p>
-        </div>
-        <div class="hc community" @click="selectCommunity">
-          <i class="iconfont icon-faxian"></i>
-          <p>社区状态栏目</p>
-        </div>
-      </div>
+      <cover-view class="publishBtn" @click="postData">发布</cover-view>
     </div>
   </scroll-view>
 </template>
 
 <script>
+import store from "@/store";
+import {
+  getOssParamsGet,
+  communityFriendsPost,
+  forumContentPost
+} from "@/api/release";
 import navigationBar from "@/components/navigationBar";
+import {imgsUpload} from '@/utils/imgsUpload'
 export default {
   components: {
     navigationBar
   },
   data() {
     return {
-      ktxScreentHeight: '',
+      publishType: 0,
+      realTextValue: "写下此刻的心声吧...",
+      textStatus: false,
+      textNoColor: "#dcdcdc",
+      navBar_Height: "",
+      ktxScreentHeight: "",
       textareaTxt: null,
-      imgArr: null,
+      imgArr: [],
       location: null,
-      maskShow: false,
-      hcName: "首页", //选择是首页还是社区
-      cName: "", //选择社区的时候  选择什么栏目
-      kinds: [
-        {
-          kindName: "情绪",
-          kindList: [
-            { name: "恋爱" },
-            { name: "吐槽" },
-            { name: "秘密" },
-            { name: "开心" },
-            { name: "兴奋" }
-          ]
-        },
-        {
-          kindName: "社交",
-          kindList: [
-            { name: "恋爱" },
-            { name: "吐槽" },
-            { name: "秘密" },
-            { name: "开心" },
-            { name: "兴奋" }
-          ]
-        },
-        {
-          kindName: "爱好",
-          kindList: [
-            { name: "恋爱" },
-            { name: "吐槽" },
-            { name: "秘密" },
-            { name: "开心" },
-            { name: "兴奋" }
-          ]
-        },
-        {
-          kindName: "生活",
-          kindList: [
-            { name: "恋爱" },
-            { name: "吐槽" },
-            { name: "秘密" },
-            { name: "开心" },
-            { name: "兴奋" }
-          ]
-        }
-      ]
+      cfpData: {
+        content: "",
+        images: ""
+      }
     };
   },
-  computed: {
-    communityShow() {
-      if (this.hcName == "首页") {
-        return false;
-      } else if (this.hcName == "社区") {
-        return true;
-      } else {
-        return false;
-      }
-    }
+  onLoad(options) {
+    this.publishType = options.publishType;
+    console.log("publishType--", this.publishType);
   },
-  mounted () {
-    this.hcName = "首页";
+  mounted() {
     let systemInfo = wx.getSystemInfoSync();
-    this.ktxScreentHeight = systemInfo.windowHeight * 0.98 + 'px';
+    this.navBar_Height = wx.getStorageSync("navBar_Height") + "px";
   },
   methods: {
     // saveEditOrNot() {
@@ -163,50 +86,88 @@ export default {
     //     }
     //   });
     // },
-    selectHC() {
-      this.maskShow = true;
+
+    changeTextStatus() {
+      this.realTextValue = "";
+      this.textStatus = true;
     },
-    selectHome() {
-      this.hcName = "首页";
-      this.maskShow = false;
-    },
-    selectCommunity() {
-      this.hcName = "社区";
-      this.maskShow = false;
-    },
-    getInputValue(e) {
-      this.textareaTxt = e.detail.value;
+    bindblurTextStatus() {
+      if (this.cfpData.content.length == 0) {
+        this.realTextValue = "写下此刻的心声吧...";
+        this.textNoColor = "#dcdcdc";
+      } else {
+        this.realTextValue = this.cfpData.content;
+        this.textNoColor = "#353535";
+      }
+      this.textStatus = false;
     },
     chooseImage() {
       let self = this;
+      store.dispatch("getOssData", { dir: "city/release" });
       wx.chooseImage({
         count: 9,
         sizeType: "compressed",
         sourceType: ["album", "camera"],
         success(res) {
-          // tempFilePath可以作为img标签的src属性显示图片
-          self.imgArr = res.tempFilePaths;
+          self.imgArr = imgsUpload(res.tempFilePaths);
         }
       });
     },
     postData() {
-      // wx.navigateBack({
-      //   delta: 1
-      // });
-      // wx.request({
-      //   url: app.globalData.baseUrl + "api",
-      //   method: "POST",
-      //   data: {
-      //     avatarUrl: app.globalData.userInfo.avatarUrl,
-      //     nickName: app.globalData.userInfo.nickName,
-      //     textareaTxt: this.data.textareaTxt,
-      //     imgArr: this.data.imgArr,
-      //     location: this.data.location
-      //   },
-      //   header: {
-      //     "content-type": "application/x-www-form-urlencoded"
-      //   }
-      // });
+      let _this = this;
+      _this.cfpData.images = _this.imgArr.join(";");
+      wx.showModal({
+        title: "发布提示",
+        content: "确定发布？",
+        showCancel: true, //是否显示取消按钮
+        success: function(res) {
+          if (res.cancel) {
+            return;
+          } else {
+            _this.publishTypeFun(_this.publishType);
+          }
+        },
+        fail: function(res) {}, //接口调用失败的回调函数
+        complete: function(res) {} //接口调用结束的回调函数（调用成功、失败都会执行）
+      });
+    },
+    publishTypeFun(type) {
+      var _this = this;
+      if (type == 1) {
+        communityFriendsPost(_this.cfpData).then(res => {
+          if (res.status == 200) {
+            wx.showToast({
+              title: "发布成功",
+              icon: "success",
+              duration: 1000,
+              success: function() {
+                setTimeout(function() {
+                  wx.switchTab({
+                    url: "/pages/community/main"
+                  });
+                }, 1000);
+              }
+            });
+          }
+        });
+      } else {
+        forumContentPost(_this.cfpData).then(res => {
+          if (res.status == 200) {
+            wx.showToast({
+              title: "发布成功",
+              icon: "success",
+              duration: 1000,
+              success: function() {
+                setTimeout(function() {
+                  wx.switchTab({
+                    url: "/pages/home/main"
+                  });
+                }, 1000);
+              }
+            });
+          }
+        });
+      }
     }
   }
 };
@@ -214,14 +175,18 @@ export default {
 
 <style lang="less" scoped>
 .scrollView {
-  overflow: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 .release {
-  // position: fixed;
-  width: 94%;
-  height: 94%;
-  // top: 2%;
-  // left: 3%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   margin: 3%;
   border-radius: 5px;
   box-shadow: 0 0 2px 2px #eee;
@@ -229,11 +194,19 @@ export default {
   .edit-main {
     .edit-text {
       height: 104px;
-      padding: 2px 0;
+      width: 100%;
+      padding: 2px 0 10px;
       overflow-y: scroll;
-      font-size: 14px;
       line-height: 20px;
+      font-size: 14px;
       color: #353535;
+      margin-bottom: 10px;
+    }
+    .edit-textShow {
+      box-sizing: border-box;
+    }
+    .edit-textNo {
+      color: #dcdcdc;
     }
     .edit-img {
       display: flex;
@@ -257,50 +230,6 @@ export default {
     }
   }
 
-  .edit-footer {
-    margin-top: 20px;
-    .footer-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      height: 32px;
-      font-size: 14px;
-      .rowI {
-        i {
-          display: inline-block;
-          vertical-align: middle;
-          margin-right: 5px;
-        }
-        span {
-          vertical-align: middle;
-          color: #1e1e1e;
-          &.no {
-            color: #c5c5c5;
-          }
-        }
-        &.left {
-          i {
-            font-size: 18px;
-            color: #1e1e1e;
-            &.no {
-              color: #c5c5c5;
-            }
-          }
-        }
-        &.right {
-          i {
-            font-size: 13px;
-            color: #707070;
-            margin-right: 0;
-            margin-left: 5px;
-            &.no {
-              color: #c5c5c5;
-            }
-          }
-        }
-      }
-    }
-  }
   .publishBtn {
     position: absolute;
     bottom: 10%;
@@ -314,50 +243,6 @@ export default {
     border-radius: 32px;
     background-color: #b1a1a3;
     color: #fff;
-  }
-  .mask {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: rgba(0, 0, 0, 0.65);
-    text-align: center;
-    z-index: 5;
-    h5 {
-      color: #fff;
-      font-size: 20px;
-      margin-top: 50%;
-      transform: translateY(-50%);
-    }
-    .hc {
-      i {
-        display: inline-block;
-        color: #fff;
-        width: 60px;
-        height: 60px;
-        line-height: 57px;
-        border-radius: 60px;
-        font-size: 50px;
-        margin-top: 15%;
-      }
-      p {
-        height: 40px;
-        line-height: 40px;
-        font-size: 14px;
-        color: #fff;
-      }
-      &.home {
-        i {
-          background-color: #fee08d;
-        }
-      }
-      &.community {
-        i {
-          background-color: #8ddffe;
-        }
-      }
-    }
   }
 }
 </style>

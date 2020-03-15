@@ -46,22 +46,7 @@
 		},
 		"miniprogram": {
 			"current": -1,
-			"list": [
-				{
-					"id": -1,
-					"name": "我的",
-					"pathName": "pages/my/main",
-					"query": "",
-					"scene": null
-				},
-				{
-					"id": -1,
-					"name": "骰子",
-					"pathName": "pages/game_dice/main",
-					"query": "",
-					"scene": null
-				}
-			]
+			"list": []
 		}
 	}
 }

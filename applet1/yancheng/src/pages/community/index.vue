@@ -1,26 +1,18 @@
 <template>
   <div class="community" @click.stop="hideZanAndPinglun">
-    <navigation-bar
-      :title="'社区'"
-      :navBackgroundColor="'#fff'"
-      :publish-visible="true"
-    ></navigation-bar>
+    <navigation-bar :title="'社区'" :navBackgroundColor="'#fff'" :publish-visible="true"></navigation-bar>
     <div class="contentList w94">
-      <div class="contentItem" v-for="(item,index) in ItemList" :key="item.id">
+      <div class="contentItem" v-for="(item,index) in communityFriendsList" :key="item.id">
         <!-- 头像 -->
         <div class="headName" @click.stop="goPersonal">
-          <img :src="item.headImg" mode="aspectFill" />
-          <span>张小凡</span>
+          <img v-if="item.memberAvatar" :src="item.memberAvatar" mode="aspectFill" />
+          <span>{{item.memberName}}</span>
         </div>
         <!-- 内容 -->
-        <div
-          class="content"
-          id="contentInfo"
-          :class="isToggle ?'ellip': ''"
-        >细雨秀江南，江南多雨，尤其是江南春天的烟雨，就像那吴侬软语一般，透着水乡特有的滋润，雨是江南水乡的灵气，在江南，充满浪漫气息的雨，元宵节前后的雨叫灯花雨</div>
-        <div v-if="isToggle" class="toggleBox">
-          <div class="more_txt" @click="requireTxt">
-            <span>{{requireAll ? '展开' : '收起'}}</span>
+        <div class="content" id="contentInfo" :class="item.showEllip ?'ellip': ''">{{item.content}}</div>
+        <div v-if="item.showEllip" class="toggleBox">
+          <div class="more_txt" @click="requireTxt(index)">
+            <span>{{item.showEllip ? '展开' : '收起'}}</span>
           </div>
         </div>
         <!-- 图片 -->
@@ -28,18 +20,18 @@
           <div
             class="imgsItem"
             @click.stop="showImg(index,imgIndex)"
-            v-for="(imgItem,imgIndex) in item.imgsList"
+            v-for="(imgItem,imgIndex) in item.images"
             :key="imgIndex"
           >
-            <img :src="imgItem" mode="aspectFill" />
+            <img v-if="imgItem" :src="imgItem" mode="aspectFill" />
           </div>
         </div>
-        <!-- 时间点赞 -->
+        <!-- 时间  点赞 -->
         <div class="timeHandle">
-          <div class="time">10分钟前</div>
+          <div class="time">{{item.createTime}}</div>
           <div class="handle">
             <div class="zan-pinglun" v-if="showZanAndPinglunNum == item.id">
-              <span @click.stop="zanHandle">
+              <span @click.stop="zanHandle(item.id)">
                 <!-- <i class="iconfont icon-aixin" @click="dianzan(index)"></i> -->
                 点赞
               </span>
@@ -77,26 +69,32 @@
     </div>
 
     <div v-if="showPinLun" class="pinlunB">
-      <form report-submit="true" @submit="submitComment">
-        <view class="liuyan">
-          <input
-            class="input"
-            auto-focus
-            cursor-spacing="32rpx"
-            :value="commentValue"
-            @input="getcomment"
-            :placeholder="placeholderPL"
-          />
-          <button class="btnPut" form-type="submit">发送</button>
-        </view>
-      </form>
+      <!-- <form report-submit="true" @submit="submitComment"> -->
+      <view class="liuyan">
+        <input
+          class="input"
+          auto-focus
+          cursor-spacing="32rpx"
+          :value="commentValue"
+          @input="getcomment"
+          :placeholder="placeholderPL"
+        />
+        <button class="btnPut" @click="submitComment">发送</button>
+      </view>
+      <!-- </form> -->
     </div>
     <div style="height:20px"></div>
   </div>
 </template>
 
 <script>
+import {
+  communityFriendsListGet,
+  communityLikePost,
+  communityCommentPost
+} from "@/api/community";
 import navigationBar from "@/components/navigationBar";
+import { getDateDiff } from "@/utils/getDateDiff";
 export default {
   components: {
     navigationBar
@@ -104,36 +102,10 @@ export default {
   data() {
     return {
       topHeight: "",
-      isToggle: false, //是否超过2行？true--超过，false--没有超过
-      requireAll: false, //展开/收起全部问题描述true--展开，false--收起
-      showZanAndPinglunNum: null,
+      showZanAndPinglunNum: null, //点击是那个  将评论点赞显示出来
+      zanPingActiveId: null, //点击是那个  将评论点赞显示出来    保存这个ID  评论和点赞使用
 
-      ItemList: [
-        {
-          id: 1,
-          name: "111",
-          headImg: `${this.$store.state.imgUrlHttp}/head.png`,
-          imgsList: [
-            `${this.$store.state.imgUrlHttp}/a5.png`,
-            `${this.$store.state.imgUrlHttp}/a6.png`,
-            `${this.$store.state.imgUrlHttp}/a2.png`,
-            `${this.$store.state.imgUrlHttp}/a1.png`,
-            `${this.$store.state.imgUrlHttp}/a3.png`,
-            `${this.$store.state.imgUrlHttp}/a4.png`
-          ]
-        },
-        {
-          id: 2,
-          name: "222",
-          headImg: `${this.$store.state.imgUrlHttp}/head.png`,
-          imgsList: [
-            `${this.$store.state.imgUrlHttp}/a7.png`,
-            `${this.$store.state.imgUrlHttp}/a8.png`,
-            `${this.$store.state.imgUrlHttp}/a9.png`,
-            `${this.$store.state.imgUrlHttp}/a10.png`
-          ]
-        }
-      ],
+      communityFriendsList: [],
       zanPeopleList: [
         `${this.$store.state.imgUrlHttp}/a6.png`,
         `${this.$store.state.imgUrlHttp}/a2.png`,
@@ -147,15 +119,38 @@ export default {
   },
   mounted() {
     this.topHeight = wx.getStorageSync("topHeight");
+    this.fetchData();
   },
   methods: {
-    requireTxt() {
-      if (this.isToggle) {
-        this.isToggle = false;
-        this.requireAll = false;
+    fetchData() {
+      communityFriendsListGet().then(res => {
+        if (res.status == 200) {
+          var resData = res.result.data;
+          resData.map(item => {
+            if (item.images !== "") {
+              item.images = item.images.split(";");
+            }
+            if (item.content.length > 80) {
+              item["showEllip"] = true;
+            } else {
+              item["showEllip"] = false;
+            }
+            if (item.createTime) {
+              let dateStr = item.createTime;
+              item.createTime = getDateDiff(dateStr);
+            }
+          });
+          this.communityFriendsList = resData;
+        }
+        console.log(this.communityFriendsList);
+      });
+    },
+    requireTxt(index) {
+      let val = this.communityFriendsList[index].showEllip;
+      if (val) {
+        this.communityFriendsList[index].showEllip = false;
       } else {
-        this.isToggle = true;
-        this.requireAll = true;
+        this.communityFriendsList[index].showEllip = true;
       }
     },
     goPersonal() {
@@ -168,26 +163,35 @@ export default {
         url: "/pages/zanList/main"
       });
     },
-    zanHandle() {
+    zanHandle(id) {
       this.showZanAndPinglunNum = null;
-      wx.showToast({
-        title: "点赞成功",
-        icon: "none"
+      console.log(id);
+      let zanD = {
+        communityId: id,
+        memberId: "1"
+      };
+      communityLikePost(zanD).then(res => {
+        console.log(res);
+        if (res.status == 200) {
+          wx.showToast({
+            title: "点赞成功",
+            icon: "none"
+          });
+        }
       });
     },
 
     showPinLunFun() {
       this.showZanAndPinglunNum = null;
+      this.commentValue = "";
       this.placeholderPL = "留言: " + "飞鱼";
       this.showPinLun = true;
     },
     //点击朋友圈图片,弹出框预览大图
     showImg(index, imgIndex) {
-      console.log(`${index}----${imgIndex}`);
       let outIdx = index;
       let inIdx = imgIndex;
-      let imgArr = this.ItemList[outIdx].imgsList;
-      console.log(imgArr);
+      let imgArr = this.communityFriendsList[outIdx].images;
       wx.previewImage({
         current: imgArr[inIdx].url, // 当前显示图片的http链接
         urls: imgArr // 需要预览的图片http链接列表
@@ -195,8 +199,8 @@ export default {
     },
     //点击评论图标,显示点赞和评论按钮
     showZanAndPinglun(id) {
-      console.log(id);
       this.showZanAndPinglunNum = id;
+      this.zanPingActiveId = id;
     },
     //点选和评论的隐藏通过事件委托到全页面(暂时只实现当条朋友所在区域,全页面和滚动时也隐藏在考虑实现)
     hideZanAndPinglun() {
@@ -231,6 +235,22 @@ export default {
         });
         return;
       }
+      let pingD = {
+        comment: this.commentValue,
+        communityId: this.zanPingActiveId,
+        memberId: "1",
+        memberName: "飞鱼"
+      };
+      console.log(pingD);
+      communityCommentPost(pingD).then(res => {
+        console.log(res);
+        if (res.status == 200) {
+          wx.showToast({
+            title: "评论成功",
+            icon: "none"
+          });
+        }
+      });
 
       // var _id = this.data.wallData[this.data.showZan]._id
       // var formId = e.detail.formId
@@ -284,9 +304,6 @@ export default {
       //   )
       // })
     }
-  },
-  onTabItemTap(item) {
-    wx.setStorageSync("tabItemClick", item.pagePath);
   }
 };
 </script>
@@ -336,11 +353,11 @@ export default {
       }
       .imgsList {
         display: flex;
-        justify-content: space-between;
         flex-wrap: wrap;
         margin-top: 10px;
         .imgsItem {
           width: 32%;
+          margin-right: 1.3333%;
           height: 115px;
           margin-bottom: 5px;
           border-radius: 5px;

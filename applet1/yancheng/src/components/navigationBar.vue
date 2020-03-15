@@ -3,7 +3,10 @@
     <!-- 占位栏 -->
     <div class="placeholder-bar" :style="{height: navBarHeight + 'px'}"></div>
     <!-- 导航栏主体 -->
-    <div class="navbar" :style="{height: navBarHeight + 'px',backgroundColor:navBackgroundColor}">
+    <div
+      class="navbar"
+      :style="{height: navBarHeight + 'px',backgroundColor:navBackgroundColor}"
+    >
       <!-- 状态栏 -->
       <div class="nav-statusbar" :style="{height: statusBarHeight + 'px'}"></div>
       <!-- 标题栏 -->
@@ -40,7 +43,7 @@
         <!-- 标题 -->
         <div class="bar-title">
           {{title}}
-          <image src="../../static/images/titlebg.png" mode="aspectFill" />
+          <image class="imgS" src="../../static/images/titlebg.png"></image>
         </div>
       </div>
     </div>
@@ -89,38 +92,13 @@ export default {
       model: "",
       brand: "",
       system: "",
-      currentPage: "",
-      leftShow: false
+      currentPage: ""
     };
-  },
-  computed: {
-    showBackIcon() {
-      const pages = getCurrentPages();
-      this.currentPage = pages[pages.length - 1].route;
-      console.log("x----", this.currentPage, "------", pages.length);
-      if (pages.length > 1) {
-        this.leftShow = true;
-        console.log("leftShow--1--", this.leftShow);
-        return true;
-      } else {
-        if (
-          this.currentPage == "pages/community/main" ||
-          this.currentPage == "pages/home/main" ||
-          this.currentPage == "pages/discover/main" ||
-          this.currentPage == "pages/my/main"
-        ) {
-          this.leftShow = false;
-        }
-        console.log("leftShow--2--", this.leftShow);
-        return true;
-      }
-    }
   },
   beforeMount() {
     const self = this;
     wx.getSystemInfo({
       success(system) {
-        // console.log(`system:`, system);
         self.statusBarHeight = system.statusBarHeight;
         self.platform = system.platform;
         self.model = system.model;
@@ -133,12 +111,9 @@ export default {
           self.titleBarHeight = 48;
         }
         self.navBarHeight = self.statusBarHeight + self.titleBarHeight;
-        wx.setStorageSync('navBar_Height', self.navBarHeight)
+        wx.setStorageSync("navBar_Height", self.navBarHeight);
       }
     });
-  },
-  mounted() {
-    console.log(`this.backVisible:`, this.backVisible);
   },
   methods: {
     backClick() {
@@ -152,17 +127,9 @@ export default {
       //     delta: 1
       //   });
       // }
-      if (this.showBackIcon) {
         wx.navigateBack({
           delta: 1
         });
-      } else {
-        if (this.currentPage !== "pages/community/main") {
-          wx.reLaunch({
-            url: "/pages/community/main"
-          });
-        }
-      }
     },
     homeClick() {
       wx.redirectTo({
@@ -170,10 +137,16 @@ export default {
       });
     },
     publishClick() {
-      console.log("0000");
-      wx.navigateTo({
-        url: "/pages/releaseRealy/main"
-      });
+      console.log("0000--",this.title);
+      if(this.title == '社区'){
+        wx.navigateTo({
+          url: "/pages/releaseRealy/main?publishType=1"
+        });
+      }else{
+        wx.navigateTo({
+          url: "/pages/releaseRealy/main?publishType=2"
+        });
+      }
     }
   }
 };
@@ -187,7 +160,7 @@ export default {
     left: 0;
     top: 0;
     width: 100%;
-    z-index: 99;
+    z-index: 9999999;
     .nav-titlebar {
       width: 100%;
       display: flex;
@@ -229,7 +202,7 @@ export default {
             align-items: center;
           }
           .opt-back {
-            i {
+            .icon-Left {
               font-size: 18px;
             }
           }
@@ -240,12 +213,12 @@ export default {
             background-color: gray;
           }
           .opt-home {
-            i {
+            .icon-faxian {
               font-size: 18px;
             }
           }
           .opt-add {
-            i {
+            .icon-add {
               font-size: 18px;
             }
           }
@@ -259,7 +232,7 @@ export default {
         white-space: nowrap;
         text-align: center;
         position: relative;
-        image {
+        .imgS {
           position: absolute;
           top: 50%;
           left: 50%;

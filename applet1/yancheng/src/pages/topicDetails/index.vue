@@ -1,10 +1,6 @@
 <template>
   <div class="topicDetails" @click.stop="hideInputFun" @touchmove="hideInputFun">
-    <navigation-bar
-      :title="'话题详情'"
-      :navBackgroundColor="'#fff'"
-      :back-visible="true"
-    ></navigation-bar>
+    <navigation-bar :title="'话题详情'" :navBackgroundColor="'#fff'" :back-visible="true"></navigation-bar>
     <!-- 内容列表 -->
     <div class="contentItem w94">
       <div class="headName" @click="goPersonal">
@@ -16,21 +12,25 @@
           <p class="time">2019.12.12 12:12</p>
         </div>
       </div>
-      <div class="content" id="contentInfo" :class="isToggle ?'ellip': ''">{{details.content}}</div>
-      <div v-if="isToggle" class="toggleBox">
+      <div
+        class="content"
+        id="contentInfo"
+        :class="details.showEllip ?'ellip': ''"
+      >{{details.content}}</div>
+      <div v-if="details.showEllip" class="toggleBox">
         <div class="more_txt" @click="requireTxt">
-          <span>{{isToggle ? '展开' : '收起'}}</span>
+          <span>{{details.showEllip ? '展开' : '收起'}}</span>
         </div>
       </div>
       <!-- 图片展示 -->
       <div class="imgsList">
         <div
           class="imgsItem"
-          v-for="(picItem,picIndex) in details.picList"
+          v-for="(picItem,picIndex) in details.images"
           :key="picIndex"
           @click.stop="showImg(picIndex)"
         >
-          <img :src="picItem" mode="aspectFill" />
+          <img v-if="picItem" :src="picItem" mode="aspectFill" />
         </div>
       </div>
       <div class="timeHandle">
@@ -142,6 +142,7 @@
 </template>
 
 <script>
+import { forumContentDetailsGet } from "@/api/home";
 import navigationBar from "@/components/navigationBar";
 export default {
   components: {
@@ -150,7 +151,6 @@ export default {
   data() {
     return {
       maskVal: false,
-      isToggle: false, //是否超过2行？true--超过，false--没有超过
       likeAct: false,
       sixinValue: "", //私信内容
       commentValue: "", //评论内容
@@ -174,16 +174,24 @@ export default {
       }
     };
   },
-  mounted() {
-    if (this.details.content.length > 110) {
-      this.isToggle = true;
-    } else {
-      this.isToggle = false;
-    }
+  onLoad(options) {
+    forumContentDetailsGet(options.forumContentId).then(res => {
+      if (res.status == 200) {
+        let resD = res.result;
+        resD.images = resD.images.split(";");
+        if (resD.content.length > 100) {
+          resD["showEllip"] = true;
+        } else {
+          resD["showEllip"] = false;
+        }
+        this.details = resD;
+        console.log(this.details);
+      }
+    });
   },
   methods: {
     requireTxt() {
-      this.isToggle = !this.isToggle;
+      this.details.showEllip = !this.details.showEllip;
     },
     //点击朋友圈图片,弹出框预览大图
     showImg(imgIndex) {
@@ -229,9 +237,9 @@ export default {
     getSixin(e) {
       this.sixinValue = e.target.value;
     },
-    conBtnPut(){
+    conBtnPut() {
       this.maskVal = false;
-       wx.showToast({
+      wx.showToast({
         title: "发送成功",
         duration: 2000 //停留时间
       });
@@ -393,11 +401,11 @@ export default {
     }
     .imgsList {
       display: flex;
-      justify-content: space-between;
       flex-wrap: wrap;
       margin-top: 10px;
       .imgsItem {
         width: 32%;
+        margin-right: 1.3333%;
         height: 115px;
         margin-bottom: 5px;
         border-radius: 5px;
@@ -572,24 +580,24 @@ export default {
         text-align: justify;
         color: #333;
       }
-      .numSpan{
+      .numSpan {
         position: absolute;
         display: block;
         right: 10px;
         bottom: 5px;
-        color: #B7B7B7;
+        color: #b7b7b7;
         font-size: 15px;
       }
     }
-    .contBtn{
-      background-color: #B1A1A3;
+    .contBtn {
+      background-color: #b1a1a3;
       color: #fff;
       width: 110px;
       height: 26px;
       line-height: 26px;
       margin: 10px auto 0;
       font-size: 15px;
-      &::after{
+      &::after {
         border: none;
       }
     }
