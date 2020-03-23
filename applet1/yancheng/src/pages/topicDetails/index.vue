@@ -5,11 +5,11 @@
     <div class="contentItem w94">
       <div class="headName" @click="goPersonal">
         <div class="headImg">
-          <img :src="headImg" mode="aspectFill" />
+          <img v-if="details.createrAvatar" :src="details.createrAvatar" mode="aspectFill" />
         </div>
         <div class="nameTime">
-          <p class="name">张小凡</p>
-          <p class="time">2019.12.12 12:12</p>
+          <p class="name">{{details.createrName}}</p>
+          <p class="time">{{details.createTime}}</p>
         </div>
       </div>
       <div
@@ -36,46 +36,33 @@
       <div class="timeHandle">
         <div class="reviewNum">
           评论
-          <span>6</span>
+          <span>{{details.commentNum}}</span>
         </div>
         <div class="likeNum">
           喜欢
-          <span>5</span>
+          <span>{{details.likeNum}}</span>
         </div>
       </div>
     </div>
     <!-- 评论列表 -->
-    <div class="reviceList w94">
-      <div class="reviceItem">
+    <div class="reviceList w94" v-if="details.properties">
+      <div
+        class="reviceItem"
+        v-for="comItem in details.properties.forumCommentList"
+        :key="comItem.id"
+      >
         <div class="leftHead">
           <img :src="headImg1" mode="aspectFill" />
         </div>
         <div class="rightCont">
-          <h5 class="name">张小凡</h5>
+          <h5 class="name">{{comItem.replyName ? comItem.replyName : comItem.memberName}}</h5>
           <ul class="reviceCont">
             <li>
-              <div class="cont">这是一段评论，评论</div>
+              <div class="cont" v-if="comItem.replyName">回复&nbsp;&nbsp;{{comItem.memberName}}：{{comItem.comment}}</div>
+              <div class="cont" v-else>{{comItem.comment}}</div>
               <div class="handle">
                 <p>10分钟</p>
-                <p @click.stop="showPinLunFun">回复</p>
-                <p>私聊</p>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="reviceItem">
-        <div class="leftHead" @click="goPersonal">
-          <img :src="headImg2" mode="aspectFill" />
-        </div>
-        <div class="rightCont">
-          <h5 class="name">张小凡</h5>
-          <ul class="reviceCont">
-            <li>
-              <div class="cont">这是一段评论，评论</div>
-              <div class="handle">
-                <p>10分钟</p>
-                <p @click.stop="showPinLunFun">回复</p>
+                <p @click.stop="backPinLunFun(comItem)">回复</p>
                 <p>私聊</p>
               </div>
             </li>
@@ -89,8 +76,8 @@
         <span>分享</span>
       </button>
       <div class="other">
-        <p @click.stop="likeFun">
-          <i class="iconfont icon-aixin" :class="likeAct?'icon-aixin1':'icon-aixin0'"></i>
+        <p @click.stop="likeFun(details.isLike, details.id)">
+          <i class="iconfont" :class="details.isLike == 1 ?'icon-aixin1':'icon-aixin0'"></i>
           <span>喜欢</span>
         </p>
         <p @click.stop="showPinLunFun">
@@ -124,25 +111,26 @@
     </div>
 
     <div v-if="showPinLun" class="pinlunB">
-      <form report-submit="true" @submit="submitComment">
-        <view class="liuyan">
-          <input
-            class="input"
-            auto-focus
-            cursor-spacing="32rpx"
-            :value="commentValue"
-            @input="getcomment"
-            :placeholder="placeholderPL"
-          />
-          <button class="btnPut" form-type="submit">发送</button>
-        </view>
-      </form>
+      <view class="liuyan">
+        <input
+          class="input"
+          auto-focus
+          cursor-spacing="32rpx"
+          v-model="commentContent"
+          :placeholder="placeholderPL"
+        />
+        <button class="btnPut" @click="submitComment">发送</button>
+      </view>
     </div>
   </div>
 </template>
 
 <script>
-import { forumContentDetailsGet } from "@/api/home";
+import {
+  forumContentDetailsGet,
+  forumLike,
+  forumComment
+} from "@/api/home";
 import navigationBar from "@/components/navigationBar";
 export default {
   components: {
@@ -151,7 +139,6 @@ export default {
   data() {
     return {
       maskVal: false,
-      likeAct: false,
       sixinValue: "", //私信内容
       commentValue: "", //评论内容
       showPinLun: false, //是否显示评论
@@ -159,19 +146,10 @@ export default {
       headImg: `${this.$store.state.imgUrlHttp}/head.png`,
       headImg1: `${this.$store.state.imgUrlHttp}/a6.png`,
       headImg2: `${this.$store.state.imgUrlHttp}/a1.png`,
-      details: {
-        showEllip: false,
-        content:
-          "细雨秀江南，江南多雨，尤其是江南春天的烟雨，就像那吴侬软语一般，透着水乡特有的滋润，雨是江南水乡的灵气，在江南，充满浪漫气息的雨，元宵节前后的雨叫灯花雨，灯花雨往往是初春的第一场雨，淅淅沥沥的春雨就飘然而至，莺飞草长，一泓碧水粼粼而起，杨柳拂堤，碧草如丝，繁花似锦，飞泉鸣溅，古寺的梵音在石缝间流淌，雨后的空气溢出清新的芳香。而后是杏花雨，梨花雨，暮春过后，连绵不断的黄梅雨又弥漫江南。夜晚的雨声，清晨的花香，清绝的令人深深沉醉，秀雅的让人不舍离去。纷飞的细雨沾湿了一袭素裙，润透了江南女子的心。两袖的花香，轻舞出江南的独特风韵",
-        picList: [
-          `${this.$store.state.imgUrlHttp}/a1.png`,
-          `${this.$store.state.imgUrlHttp}/a2.png`,
-          `${this.$store.state.imgUrlHttp}/a3.png`,
-          `${this.$store.state.imgUrlHttp}/a4.png`,
-          `${this.$store.state.imgUrlHttp}/a5.png`,
-          `${this.$store.state.imgUrlHttp}/a6.png`
-        ]
-      }
+      details: "",
+      show_back: 1, //1位留言  2为回复
+      comItemData: {}, //点击回复  存储评论人的信息
+      commentContent: ""
     };
   },
   onLoad(options) {
@@ -203,19 +181,32 @@ export default {
         urls: imgArr // 需要预览的图片http链接列表
       });
     },
-    likeFun() {
-      this.likeAct = !this.likeAct;
-      if (this.likeAct) {
-        wx.showToast({
-          title: "关注成功",
-          icon: "none",
-          duration: 1500
+    likeFun(isLike, id) {
+      var _this = this;
+       let data = {
+          forumId: id
+        };
+      if (isLike == 2) {
+        forumLike(data).then(res => {
+          if (res.status == 200) {
+            _this.details.isLike = 2;
+            wx.showToast({
+              title: "关注成功",
+              icon: "none",
+              duration: 1500
+            });
+          }
         });
       } else {
-        wx.showToast({
-          title: "取消关注",
-          icon: "none",
-          duration: 1500
+        forumLike(data).then(res => {
+          if (res.status == 200) {
+            _this.details.isLike = 1;
+            wx.showToast({
+              title: "取消关注",
+              icon: "none",
+              duration: 1500
+            });
+          }
         });
       }
     },
@@ -232,7 +223,17 @@ export default {
     },
     showPinLunFun() {
       this.showZanAndPinglunNum = null;
-      (this.placeholderPL = "留言: " + "飞鱼"), (this.showPinLun = true);
+      this.commentContent = '';
+      this.placeholderPL = "留言: " + this.details.createrName;
+      this.showPinLun = true;
+      this.show_back = 1;
+    },
+    backPinLunFun(comItem) {
+      this.showZanAndPinglunNum = null;
+      this.placeholderPL = "回复: " + comItem.memberName;
+      this.showPinLun = true;
+      this.show_back = 2;
+      this.comItemData = comItem;
     },
     getSixin(e) {
       this.sixinValue = e.target.value;
@@ -248,85 +249,43 @@ export default {
     hideInputFun() {
       this.showPinLun = false;
     },
-    getcomment(e) {
-      this.commentValue = e.target.value;
-    },
-    submitComment(e) {
-      // wx.showToast({
-      //   title: '评论功能暂未开放',
-      //   icon: 'none'
-      // })
-      // return
-
-      // if (!this.data.userInfo) {
-      //   wx.pageScrollTo({
-      //     scrollTop: 200,
-      //   })
-      //   wx.showToast({
-      //     title: '需要授权才能点赞评论,见第一条墙消息.',
-      //     icon: 'none',
-      //     duration: 5000
-      //   })
-      //   return
-      // }
-      if (this.commentValue.length <= 0) {
+    submitComment() {
+      var _this = this;
+      var data;
+      if (this.commentContent.length <= 0) {
         wx.showToast({
           title: "内容为空",
           icon: "none"
         });
         return;
       }
-      // var _id = this.data.wallData[this.data.showZan]._id
-      // var formId = e.detail.formId
-      // var toName = ""
-      // if (this.data.placeholderPL.includes("回复")) {
-      //   toName = this.data.placeholderPL.replace("回复:", "")
-      //   console.log(toName)
-      // }
-
-      // wx.cloud.callFunction({
-      //   name: 'chat',
-      //   data: {
-      //     type: 'comment',
-      //     collectionname: 'circle',
-      //     data: {
-      //       username: this.data.userInfo.nickName,
-      //       userInfo: this.data.userInfo,
-      //       formId: formId,
-      //       _id: _id,
-      //       comment: this.data.commentValue,
-      //       toName: toName
-      //     }
-      //   }
-      // }).then(res => {
-      //   console.log(res)
-
-      //   //更新这条数据
-      //   const db = wx.cloud.database()
-      //   db.collection("circle").doc(_id).get().then(
-      //     res => {
-      //       console.log(res.data)
-      //       var data = this.data.wallData
-      //       console.log(data)
-      //       console.log(e.currentTarget.dataset.indexn)
-      //       data[this.data.showZan] = res.data
-
-      //       for (let i = 0; i < data.length; i++) {
-      //         data[i].time = this.parseTime(data[i].createTime.getTime())
-      //         data[i].zanText = data[i].zans.map(a => {
-      //           return a.name
-      //         }).join(", ")
-      //       }
-      //       this.setData({
-      //         wallData: data,
-      //         showZan: -1,
-      //         placeholderPL: "留言",
-      //         showPinLun: false,
-      //         commentValue: ""
-      //       })
-      //     }
-      //   )
-      // })
+      if (_this.show_back == 1) {
+        data = {
+          comment: _this.commentContent,
+          forumId: _this.details.id,
+          memberId: _this.details.createrId,
+          memberName: _this.details.createrName
+        };
+      } else {
+        data = {
+          comment: _this.commentContent,
+          forumId: _this.details.id,
+          memberId: _this.details.createrId,
+          memberName: _this.details.createrName,
+          replyId: _this.comItemData.memberId,
+          replyName: _this.comItemData.memberName
+        };
+      }
+      console.log('data--',data)
+      forumComment(data).then(res => {
+        if (res.status == 200) {
+          wx.showToast({
+            title: "发送成功",
+            duration: 2000 //停留时间
+          });
+          _this.details.properties.forumCommentList.push(data);
+        }
+      });
     }
   },
   onShareAppMessage: function(res) {

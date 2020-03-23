@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <navigation-bar :title="'城谜'" :navBackgroundColor="'#fff'" :publish-visible="true"></navigation-bar>
+    <navigation-bar :title="'城谜'" :navBackgroundColor="'#fff'" :publish-visible="1"></navigation-bar>
     <!-- 轮播 -->
     <div class="carrousel w94">
       <swiper
@@ -40,10 +40,6 @@
         <div class="navTitle">{{item.name}}</div>
       </div>
     </div>
-    <!-- 广告 -->
-    <!-- <div class="ad w94">
-      <img src="../../../static/images/aaa1.png" mode="aspectFill" />
-    </div>-->
     <!-- 内容列表 -->
     <div class="contentList w94">
       <div class="contentItem" v-for="(item,index) in forumList" :key="index">
@@ -75,7 +71,11 @@
         <div class="timeHandle">
           <div class="time">{{item.createTime}}</div>
           <div class="handle">
-            <i class="iconfont" :class="likeAct?'icon-aixin1':'icon-aixin0'" @click.stop="likeFun"></i>
+            <i
+              class="iconfont"
+              :class="item.isLike == 1 ?'icon-aixin1':'icon-aixin0'"
+              @click.stop="likeFun(item.isLike,item.id,index)"
+            ></i>
             <i class="iconfont icon-pinglun" @click.stop="goTopic(item.id)"></i>
             <i class="iconfont icon-sixin" @click.stop="goTopic(item.id)"></i>
           </div>
@@ -87,7 +87,7 @@
 </template>
 
 <script>
-import { forumContentGet } from "@/api/home";
+import { forumContentGet, forumLike, forumLikeNo } from "@/api/home";
 import { getDateDiff } from "@/utils/getDateDiff";
 import navigationBar from "@/components/navigationBar";
 export default {
@@ -118,7 +118,6 @@ export default {
           jumpPath: "/pages/game_truchOrDare/main"
         }
       ],
-      likeAct: false,
       carrouseList: [
         { imgUrl: `${this.$store.state.imgUrlHttp}/c1.png` },
         { imgUrl: `${this.$store.state.imgUrlHttp}/c1.png` },
@@ -198,19 +197,30 @@ export default {
         urls: imgArr // 需要预览的图片http链接列表
       });
     },
-    likeFun() {
-      this.likeAct = !this.likeAct;
-      if (this.likeAct) {
-        wx.showToast({
-          title: "关注成功",
-          icon: "none",
-          duration: 1500
+    likeFun(isLike, id, index) {
+      var _this = this;
+      if (isLike == 2) {
+        forumLike(id).then(res => {
+          if (res.status == 200) {
+            _this.forumList[index].isLike = 1;
+            wx.showToast({
+              title: "关注成功",
+              icon: "none",
+              duration: 1500
+            });
+          }
         });
       } else {
-        wx.showToast({
-          title: "取消关注",
-          icon: "none",
-          duration: 1500
+        forumLikeNo(id).then(res => {
+          console.log("p----", res);
+          if (res.status == 200) {
+            _this.forumList[index].isLike = 2;
+            wx.showToast({
+              title: "取消关注",
+              icon: "none",
+              duration: 1500
+            });
+          }
         });
       }
     }
@@ -283,16 +293,6 @@ export default {
       .navTitle {
         font-size: 16px;
       }
-    }
-  }
-  // 广告
-  .ad {
-    height: 100px;
-    border-radius: 5px;
-    overflow: hidden;
-    img {
-      width: 100%;
-      height: 100%;
     }
   }
   // 内容列表

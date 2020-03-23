@@ -1,9 +1,9 @@
 {
   "pages": [
+    "pages/home/main",
     "pages/community/main",
     "pages/mallCenter/main",
     "pages/zanList/main",
-    "pages/home/main",
     "pages/my/main",
     "pages/myInfo/main",
     "pages/myPublish/main",
@@ -41,21 +41,25 @@
     "selectedColor": "#333",
     "borderStyle": "white",
     "list": [{
-      "pagePath": "pages/community/main",
-      "iconPath": "static/tabbar/community.png",
-      "selectedIconPath": "static/tabbar/community-avtive.png"
+      "pagePath": "pages/mallCenter/main",
+      "iconPath": "static/tabbar/mall.png",
+      "selectedIconPath": "static/tabbar/mall-active.png",
+      "text": "商城"
     }, {
       "pagePath": "pages/home/main",
       "iconPath": "static/tabbar/home.png",
-      "selectedIconPath": "static/tabbar/home-active.png"
+      "selectedIconPath": "static/tabbar/home-active.png",
+      "text": "首页"
     }, {
-      "pagePath": "pages/mallCenter/main",
-      "iconPath": "static/tabbar/mall.png",
-      "selectedIconPath": "static/tabbar/mall-active.png"
+      "pagePath": "pages/community/main",
+      "iconPath": "static/tabbar/community.png",
+      "selectedIconPath": "static/tabbar/community-avtive.png",
+      "text": "社区"
     }, {
       "pagePath": "pages/my/main",
       "iconPath": "static/tabbar/my.png",
-      "selectedIconPath": "static/tabbar/my-active.png"
+      "selectedIconPath": "static/tabbar/my-active.png",
+      "text": "我的"
     }],
     "position": "bottom"
   }

@@ -1,23 +1,19 @@
 <template>
   <div class="activityDetails">
-    <navigation-bar
-      :title="'活动详情'"
-      :navBackgroundColor="'#fff'"
-      :back-visible="true"
-    ></navigation-bar>
+    <navigation-bar :title="'活动详情'" :navBackgroundColor="'#fff'" :back-visible="true"></navigation-bar>
     <div class="imgB">
-      <img :src="actImg" mode="aspectFill" />
+      <img v-if="acDetails.coverImage" :src="acDetails.coverImage" mode="aspectFill" />
     </div>
     <div class="content w94">
-      <h5 class="title">这个是活动的标题,可以展示两行，两行展示两行展示两行</h5>
-      <p class="price">免费</p>
+      <h5 class="title">{{acDetails.title}}</h5>
+      <p class="price">{{acDetails.activityFee > 0 ? '￥'+acDetails.activityFee : '免费'}}</p>
       <p class="infoLine">
         <i class="iconfont icon-dingwei"></i>
-        <span>江苏省南京市秦淮区</span>
+        <span>{{acDetails.activityAddress}}</span>
       </p>
       <p class="infoLine">
         <i class="iconfont icon-shijian"></i>
-        <span>2019.12.12-12.21</span>
+        <span>{{acDetails.activityTime}}</span>
       </p>
       <p class="infoLine">
         <i class="iconfont icon-shouji"></i>
@@ -26,14 +22,13 @@
       <div class="contentCont">
         <p class="pp">活动详情</p>
         <div class="details">
-          这个是活动详情
-          <img :src="actContImg" mode="widthFix" />
+          <div v-for="(imgItem,imgIndex) in acDetails.content" :key="imgIndex">
+            <img v-if="imgItem" :src="imgItem" mode="widthFix" />
+          </div>
         </div>
         <p class="pp">活动须知</p>
         <div class="needKnow">
-          <p>1. 这里是活动须知</p>
-          <p>1. 这里是活动须知</p>
-          <p>1. 这里是活动须知</p>
+          <p>{{acDetails.subTitle}}</p>
         </div>
       </div>
     </div>
@@ -41,13 +36,9 @@
     <div class="footerBox">
       <div class="other">
         <p @click.stop="likeFun">
-          <i class="iconfont icon-aixin" :class="likeAct?'icon-aixin1':'icon-aixin0'"></i>
-          <span>喜欢</span>
+          <i class="iconfont" :class="likeAct?'icon-aixin1':'icon-aixin0'"></i>
+          <span>关注</span>
         </p>
-        <!-- <p>
-          <i class="iconfont icon-fenxiang"></i>
-          <span>分享</span>
-        </p>-->
         <button class="share" open-type="share">
           <i class="iconfont icon-fenxiang"></i>
           <span>分享</span>
@@ -88,6 +79,7 @@
 </template>
 
 <script>
+import { activityDetailsGet } from "@/api/activity";
 import navigationBar from "@/components/navigationBar";
 export default {
   components: {
@@ -95,11 +87,24 @@ export default {
   },
   data() {
     return {
+      acDetails: {},
       likeAct: false,
       joinMaskShow: false,
-      actImg:  `${this.$store.state.imgUrlHttp}/d1.png`,
-      actContImg:  `${this.$store.state.imgUrlHttp}/dc1.png`,
+      actImg: `${this.$store.state.imgUrlHttp}/d1.png`,
+      actContImg: `${this.$store.state.imgUrlHttp}/dc1.png`
     };
+  },
+  onLoad(options) {
+    activityDetailsGet(options.activityId).then(res => {
+      console.log(res);
+      if (res.status == 200) {
+        var resData = res.result;
+        if (resData.content !== "") {
+          resData.content = resData.content.split(";");
+        }
+        this.acDetails = resData;
+      }
+    });
   },
   methods: {
     goPersonal() {
@@ -193,7 +198,7 @@ export default {
         margin-bottom: 20px;
         font-size: 12px;
         color: #5e5e5e;
-        img{
+        img {
           width: 100%;
           margin: 5px 0;
         }

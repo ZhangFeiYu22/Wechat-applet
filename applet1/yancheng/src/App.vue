@@ -1,6 +1,6 @@
 <script>
 import store from "@/store";
-import { getSessionInfo, getUserInfo } from "@/api/login";
+import { getSessionInfo, getUserInfo, userInfoGet } from "@/api/login";
 export default {
   getSysInfo() {
     const res = wx.getSystemInfoSync();
@@ -65,6 +65,8 @@ export default {
       let authToken = await getUserInfo(data);
       wx.setStorageSync("authToken", authToken.result);
       wx.setStorageSync("isLogin", true);
+      let authInfo = await userInfoGet();
+      wx.setStorageSync("authInfo", authInfo.result);
     }
   }
 };

@@ -15,7 +15,7 @@
 
 <script>
 import globalStore from "@/store/index";
-import { getSessionInfo, getUserInfo } from "@/api/login";
+import { getSessionInfo, getUserInfo, userInfoGet } from "@/api/login";
 export default {
   data() {
     return {
@@ -65,7 +65,13 @@ export default {
                 // 存储token   和  用户信息
                 console.log(loRes);
                 wx.setStorageSync("authToken", res.result);
-                wx.setStorageSync("userInfoAll", loRes);
+                wx.setStorageSync("userInfoAll", loRes); //用户所有信息
+
+                userInfoGet().then(aures => {
+                  if (aures.status == 200) {
+                    wx.setStorageSync("authInfo", aures.result);
+                  }
+                });
 
                 wx.setStorageSync("isLogin", true);
                 //返回上一页并刷新数据

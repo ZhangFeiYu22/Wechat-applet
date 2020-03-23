@@ -83,7 +83,7 @@
       </div>
     </div>
     <div class="logo">
-      <img src="../../../static/images/logo.png" mode="aspectFill" />
+      <img src="../../../static/images/logo.jpg" mode="aspectFill" />
     </div>
   </div>
 </template>
@@ -319,7 +319,7 @@ export default {
   .logo {
     img {
       width: 45px;
-      height: 28px;
+      height: 45px;
       display: block;
       margin: 20px auto 0;
     }

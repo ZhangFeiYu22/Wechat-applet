@@ -1,44 +1,23 @@
 <template>
   <div class="activity">
-    <navigation-bar
-      :title="'活动'"
-      :navBackgroundColor="'#fff'"
-      :back-visible="true"
-    ></navigation-bar>
+    <navigation-bar :title="'活动'" :navBackgroundColor="'#fff'" :back-visible="true"></navigation-bar>
     <div class="activityList">
-      <div class="activityItem" @click="goActivityDetails">
+      <div class="activityItem" @click="goActivityDetails(item.id)" v-for="item in acticityList" :key="item.id">
         <div class="imgBox">
-          <img :src="actImg" mode="aspectFill" />
+          <img v-if="item.coverImage" :src="item.coverImage" mode="aspectFill" />
         </div>
         <div class="wordBox">
-          <p class="title">安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和</p>
+          <p class="title">{{item.title}}</p>
           <p class="address">
             <i class="iconfont icon-dingwei"></i>
-            <span>江苏省南京市大行宫</span>
+            <span>{{item.activityAddress}}</span>
           </p>
           <p class="time">
             <i class="iconfont icon-shijian"></i>
-            <span>2019.09.09-12.21</span>
+            <span>{{item.activityTime}}</span>
           </p>
         </div>
-        <div class="priceBtn">￥20.0</div>
-      </div>
-      <div class="activityItem" @click="goActivityDetails">
-        <div class="imgBox">
-          <img :src="actImg" mode="aspectFill" />
-        </div>
-        <div class="wordBox">
-          <p class="title">安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和</p>
-          <p class="address">
-            <i class="iconfont icon-dingwei"></i>
-            <span>江苏省南京市大行宫</span>
-          </p>
-          <p class="time">
-            <i class="iconfont icon-shijian"></i>
-            <span>2019.09.09-12.21</span>
-          </p>
-        </div>
-        <div class="priceBtn">￥20.0</div>
+        <div class="priceBtn">￥{{item.activityFee}}</div>
       </div>
     </div>
     <text class="btn" @click="goPublishActivity">我要发起</text>
@@ -46,6 +25,7 @@
 </template>
 
 <script>
+import { activitysGet } from "@/api/activity";
 import navigationBar from "@/components/navigationBar";
 export default {
   components: {
@@ -53,16 +33,26 @@ export default {
   },
   data() {
     return {
-      actImg:  `${this.$store.state.imgUrlHttp}/d1.png`,
+      acticityList: []
     };
   },
+  mounted() {
+    this.fetchData();
+  },
   methods: {
-    goActivityDetails() {
-      wx.navigateTo({
-        url: "/pages/activityDetails/main"
+    fetchData() {
+      activitysGet().then(res => {
+        if(res.status == 200){
+          this.acticityList = res.result.data;
+        }
       });
     },
-    goPublishActivity(){
+    goActivityDetails(id) {
+      wx.navigateTo({
+        url: `/pages/activityDetails/main?activityId=${id}`
+      });
+    },
+    goPublishActivity() {
       wx.navigateTo({
         url: "/pages/activityAdd/main"
       });

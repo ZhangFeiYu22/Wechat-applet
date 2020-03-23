@@ -4,7 +4,10 @@ import request from '@/utils/request'
 export const communityFriendsListGet = (data) => request.get(`/communityFriends`,data)
 
 // 社区 动态   点赞
-export const communityLikePost = (data) => request.post(`/communityLike`,data)
+export const communityLike = (id) => request.post(`/communityLike/${id}`)
+
+// 社区 动态   取消点赞
+export const communityLikeNo = (id) => request.delete(`/communityLike/${id}`)
 
 // 社区 动态  评论
 export const communityCommentPost = (data) => request.post(`/communityComment`,data)

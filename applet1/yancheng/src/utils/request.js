@@ -1,7 +1,7 @@
 var Fly = require("flyio/dist/npm/wx.js") //wx.js为flyio的微信小程序入口文件
 const request = new Fly()
 
-const baseUrl = "http://app.allmiss.cn";
+const baseUrl = "https://api.chengmi.club";
 
 request.config.baseURL = baseUrl
 request.config.timeout = 5000

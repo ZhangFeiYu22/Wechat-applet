@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "13579945",
+      "name": "publish1",
+      "font_class": "publish1",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "13579946",
+      "name": "组 99",
+      "font_class": "publish2",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
+    },
+    {
       "icon_id": "11195058",
       "name": "心跳",
       "font_class": "xintiao",
@@ -18,20 +32,6 @@
       "font_class": "huodong",
       "unicode": "e6b0",
       "unicode_decimal": 59056
-    },
-    {
-      "icon_id": "1059244",
-      "name": "商城",
-      "font_class": "mall_active",
-      "unicode": "e67c",
-      "unicode_decimal": 59004
-    },
-    {
-      "icon_id": "10232779",
-      "name": "商城",
-      "font_class": "mall",
-      "unicode": "e78c",
-      "unicode_decimal": 59276
     },
     {
       "icon_id": "1380079",

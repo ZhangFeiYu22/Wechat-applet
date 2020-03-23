@@ -16,7 +16,7 @@
         <div v-if="publishVisible" class="bar-optionsBox">
           <div class="onlyBack">
             <div class="opt opt-add" @click="publishClick()">
-              <i class="iconfont icon-add"></i>
+              <i class="iconfont" :class="publishVisible == 1 ? 'icon-publish1' : 'icon-publish2'"></i>
             </div>
           </div>
         </div>
@@ -75,7 +75,7 @@ export default {
     // 是否显示发布按钮
     publishVisible: {
       required: false,
-      default: false
+      default: 0
     },
     // home按钮的路径
     homePath: {
@@ -214,11 +214,6 @@ export default {
           }
           .opt-home {
             .icon-faxian {
-              font-size: 18px;
-            }
-          }
-          .opt-add {
-            .icon-add {
               font-size: 18px;
             }
           }

@@ -230,7 +230,18 @@ export default {
         this.publishFormData.activityAddress + " " + this.detailAddress;
       console.log("发布", this.publishFormData);
       activitysPost(this.publishFormData).then(res => {
-        console.log(res);
+        if (res.status == 200) {
+          wx.showToast({
+            title: "发布成功",
+            icon: "none",
+            duration: 1500,
+            success: function() {
+              wx.navigateTo({
+                url: "/pages/activity/main"
+              });
+            }
+          });
+        }
       });
     }
   }

@@ -1,6 +1,6 @@
 <template>
   <div class="community" @click.stop="hideZanAndPinglun">
-    <navigation-bar :title="'社区'" :navBackgroundColor="'#fff'" :publish-visible="true"></navigation-bar>
+    <navigation-bar :title="'社区'" :navBackgroundColor="'#fff'" :publish-visible="2"></navigation-bar>
     <div class="contentList w94">
       <div class="contentItem" v-for="(item,index) in communityFriendsList" :key="item.id">
         <!-- 头像 -->
@@ -31,11 +31,11 @@
           <div class="time">{{item.createTime}}</div>
           <div class="handle">
             <div class="zan-pinglun" v-if="showZanAndPinglunNum == item.id">
-              <span @click.stop="zanHandle(item.id)">
+              <span @click.stop="zanHandle(item.id,item.isLike,index)">
                 <!-- <i class="iconfont icon-aixin" @click="dianzan(index)"></i> -->
-                点赞
+                {{item.isLike == 1 ? '取消': '点赞'}}
               </span>
-              <span @click.stop="showPinLunFun">
+              <span @click.stop="showPinLunFun(index)">
                 <!-- <i class="iconfont icon-pinglun"></i> -->
                 评论
               </span>
@@ -44,20 +44,34 @@
           </div>
         </div>
         <!-- 点赞展示 -->
-        <div class="zanShowBox" @click.stop="goZan">
-          <div class="imgLi" v-for="(item,zanIndex) in zanPeopleList" :key="zanIndex">
-            <img v-if="zanIndex<3" :src="item" mode="aspectFill" />
+        <div
+          class="zanShowBox"
+          @click.stop="goZan"
+          v-if="item.properties.communityLikeList.length > 0"
+        >
+          <div
+            class="imgLi"
+            v-for="(comLikeItem,comLikeIndex) in item.properties.communityLikeList"
+            :key="comLikeItem.id"
+          >
+            <img
+              v-if="comLikeItem.avatar && comLikeIndex<3"
+              :src="comLikeItem.avatar"
+              mode="aspectFill"
+            />
           </div>
-          <div class="zanWord">
-            等
-            <span>12</span>次赞
-          </div>
+          <div class="zanWord">等{{item.properties.communityLikeList.length}}次赞</div>
         </div>
         <!-- 评论展示 -->
-        <div class="pinglunBox">
-          <p class="line line0">
-            <span class="s0">谁说的</span>：
-            <span class="s0c">这是评论内容</span>
+        <div class="pinglunBox" v-if="item.properties.communityCommentList.length>0">
+          <p
+            class="line line0"
+            v-for="(comComItem,comComIndex) in item.properties.communityCommentList"
+            :key="comComIndex"
+            @longpress="backPinLunFun(comComItem,index)"
+          >
+            <span class="s0">{{comComItem.memberName}}</span>：
+            <span class="s0c">{{comComItem.comment}}</span>
           </p>
           <p class="line line1">
             <span class="s1">谁回复</span>回复
@@ -90,7 +104,8 @@
 <script>
 import {
   communityFriendsListGet,
-  communityLikePost,
+  communityLike,
+  communityLikeNo,
   communityCommentPost
 } from "@/api/community";
 import navigationBar from "@/components/navigationBar";
@@ -104,17 +119,12 @@ export default {
       topHeight: "",
       showZanAndPinglunNum: null, //点击是那个  将评论点赞显示出来
       zanPingActiveId: null, //点击是那个  将评论点赞显示出来    保存这个ID  评论和点赞使用
-
       communityFriendsList: [],
-      zanPeopleList: [
-        `${this.$store.state.imgUrlHttp}/a6.png`,
-        `${this.$store.state.imgUrlHttp}/a2.png`,
-        `${this.$store.state.imgUrlHttp}/a1.png`,
-        `${this.$store.state.imgUrlHttp}/a3.png`
-      ],
       commentValue: "",
       showPinLun: false,
-      placeholderPL: "评论"
+      pinglunIndex: "",
+      placeholderPL: "评论",
+      show_back: 1 //1位留言  2为回复
     };
   },
   mounted() {
@@ -163,29 +173,63 @@ export default {
         url: "/pages/zanList/main"
       });
     },
-    zanHandle(id) {
-      this.showZanAndPinglunNum = null;
-      console.log(id);
-      let zanD = {
-        communityId: id,
-        memberId: "1"
+    zanHandle(id, isLike, index) {
+      var _this = this;
+      let authInfo = wx.getStorageSync("authInfo");
+      let suData = {
+        avatar: authInfo.avatar,
+        memberId: authInfo.id,
+        memberName: authInfo.nickName
       };
-      communityLikePost(zanD).then(res => {
-        console.log(res);
-        if (res.status == 200) {
-          wx.showToast({
-            title: "点赞成功",
-            icon: "none"
-          });
-        }
-      });
+      if (isLike == 2) {
+        communityLike(id).then(res => {
+          if (res.status == 200) {
+            _this.showZanAndPinglunNum = null;
+            _this.communityFriendsList[index].isLike = 1;
+            _this.communityFriendsList[index].properties.communityLikeList.push(
+              suData
+            );
+            wx.showToast({
+              title: "点赞成功",
+              icon: "none"
+            });
+          }
+        });
+      } else {
+        communityLikeNo(id).then(res => {
+          if (res.status == 200) {
+            _this.showZanAndPinglunNum = null;
+            _this.communityFriendsList[index].isLike = 2;
+            var newArr = _this.communityFriendsList[
+              index
+            ].properties.communityLikeList.filter(item => item.memberId != suData.memberId);
+            _this.communityFriendsList[index].properties.communityLikeList = newArr;
+            wx.showToast({
+              title: "取消点赞",
+              icon: "none"
+            });
+          }
+        });
+      }
     },
 
-    showPinLunFun() {
+    showPinLunFun(index) {
       this.showZanAndPinglunNum = null;
       this.commentValue = "";
       this.placeholderPL = "留言: " + "飞鱼";
       this.showPinLun = true;
+      this.show_back = 1;
+      this.pinglunIndex = index;
+    },
+    // 长安回复
+    backPinLunFun(comItem, index) {
+      console.log(comItem);
+      this.showZanAndPinglunNum = null;
+      this.placeholderPL = "回复: " + comItem.memberName;
+      this.showPinLun = true;
+      this.show_back = 2;
+      this.pinglunIndex = index;
+      this.comItemData = comItem;
     },
     //点击朋友圈图片,弹出框预览大图
     showImg(index, imgIndex) {
@@ -211,37 +255,32 @@ export default {
       this.commentValue = e.target.value;
     },
     submitComment(e) {
-      // wx.showToast({
-      //   title: '评论功能暂未开放',
-      //   icon: 'none'
-      // })
-      // return
-
-      // if (!this.data.userInfo) {
-      //   wx.pageScrollTo({
-      //     scrollTop: 200,
-      //   })
-      //   wx.showToast({
-      //     title: '需要授权才能点赞评论,见第一条墙消息.',
-      //     icon: 'none',
-      //     duration: 5000
-      //   })
-      //   return
-      // }
-      if (this.commentValue.length <= 0) {
+      var _this = this;
+      var pingD;
+      if (_this.commentValue.length <= 0) {
         wx.showToast({
           title: "内容为空",
           icon: "none"
         });
         return;
       }
-      let pingD = {
-        comment: this.commentValue,
-        communityId: this.zanPingActiveId,
-        memberId: "1",
-        memberName: "飞鱼"
-      };
-      console.log(pingD);
+      if (_this.show_back == 1) {
+        pingD = {
+          comment: _this.commentValue,
+          communityId: _this.zanPingActiveId,
+          memberId: "1", ////这两项可以删掉到时候根据token
+          memberName: "飞鱼"
+        };
+      } else {
+        pingD = {
+          comment: _this.commentValue,
+          forumId: _this.comItemData.communityId,
+          memberId: _this.communityFriendsList[_this.pinglunIndex].memberId, //这两项可以删掉到时候根据token
+          memberName: _this.communityFriendsList[_this.pinglunIndex].memberName,
+          replyId: _this.comItemData.memberId,
+          replyName: _this.comItemData.memberName
+        };
+      }
       communityCommentPost(pingD).then(res => {
         console.log(res);
         if (res.status == 200) {
@@ -249,60 +288,11 @@ export default {
             title: "评论成功",
             icon: "none"
           });
+          this.communityFriendsList[
+            this.pinglunIndex
+          ].properties.communityCommentList.push(pingD);
         }
       });
-
-      // var _id = this.data.wallData[this.data.showZan]._id
-      // var formId = e.detail.formId
-      // var toName = ""
-      // if (this.data.placeholderPL.includes("回复")) {
-      //   toName = this.data.placeholderPL.replace("回复:", "")
-      //   console.log(toName)
-      // }
-
-      // wx.cloud.callFunction({
-      //   name: 'chat',
-      //   data: {
-      //     type: 'comment',
-      //     collectionname: 'circle',
-      //     data: {
-      //       username: this.data.userInfo.nickName,
-      //       userInfo: this.data.userInfo,
-      //       formId: formId,
-      //       _id: _id,
-      //       comment: this.data.commentValue,
-      //       toName: toName
-      //     }
-      //   }
-      // }).then(res => {
-      //   console.log(res)
-
-      //   //更新这条数据
-      //   const db = wx.cloud.database()
-      //   db.collection("circle").doc(_id).get().then(
-      //     res => {
-      //       console.log(res.data)
-      //       var data = this.data.wallData
-      //       console.log(data)
-      //       console.log(e.currentTarget.dataset.indexn)
-      //       data[this.data.showZan] = res.data
-
-      //       for (let i = 0; i < data.length; i++) {
-      //         data[i].time = this.parseTime(data[i].createTime.getTime())
-      //         data[i].zanText = data[i].zans.map(a => {
-      //           return a.name
-      //         }).join(", ")
-      //       }
-      //       this.setData({
-      //         wallData: data,
-      //         showZan: -1,
-      //         placeholderPL: "留言",
-      //         showPinLun: false,
-      //         commentValue: ""
-      //       })
-      //     }
-      //   )
-      // })
     }
   }
 };
@@ -312,7 +302,7 @@ export default {
 .community {
   .contentList {
     .contentItem {
-      padding-bottom: 20px;
+      padding-bottom: 10px;
       border-bottom: 1px solid #f1f1f1;
       margin-bottom: 20px;
       .headName {
@@ -418,10 +408,13 @@ export default {
       }
       .zanShowBox {
         height: 34px;
-        position: relative;
-        margin: 5px 0 20px;
+        width: 50%;
+        margin: 5px 0;
+        display: flex;
+        align-items: center;
         .imgLi {
-          position: absolute;
+          // position: absolute;
+          margin-right: 10px;
           img {
             width: 34px;
             height: 34px;
@@ -438,9 +431,6 @@ export default {
           }
         }
         .zanWord {
-          position: absolute;
-          left: 90px;
-          top: 8px;
           font-size: 16px;
           color: #010101;
         }
@@ -450,6 +440,7 @@ export default {
         color: #3a3a3a;
         padding: 10px 5px;
         position: relative;
+        margin-top: 10px;
         &::after {
           display: block;
           content: "";
