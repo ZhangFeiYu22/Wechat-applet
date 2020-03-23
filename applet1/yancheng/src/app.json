@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/myVip/main",
     "pages/home/main",
     "pages/community/main",
     "pages/mallCenter/main",
