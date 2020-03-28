@@ -1,15 +1,12 @@
 <template>
   <div class="my">
-    <navigation-bar
-      :title="'我的'"
-      :navBackgroundColor="'#fff'"
-    ></navigation-bar>
+    <navigation-bar :title="'我的'" :navBackgroundColor="'#fff'"></navigation-bar>
     <div class="head">
       <div class="headImg">
         <img :src="userInfo.avatarUrl" mode="aspectFill" />
         <div class="hierarchy">
-          <img :src="hierarchy" mode="aspectFill" />
-          <p>LV1</p>
+          <img src="../../../static/images/lv5.png" mode="aspectFill" />
+          <p>LV5</p>
         </div>
       </div>
       <div class="rightIcon">
@@ -32,7 +29,6 @@
         <p class="follower">15人关注</p>
         <p class="autonym">已实名</p>
       </div>
-      <!-- <div class="editInfoBtn" @click="goMyInfo">编辑资料</div> -->
     </div>
     <div class="wallet">
       <div class="gold">
@@ -48,6 +44,11 @@
       </div>
     </div>
     <div class="otherList">
+      <div class="otherItem" @click="goMyVip">
+        <i class="iconfont icon-huiyuan iconLeft"></i>
+        <span>我的会员</span>
+        <i class="iconfont icon-right iconRight"></i>
+      </div>
       <div class="otherItem" @click="goPublish">
         <i class="iconfont icon-publish iconLeft"></i>
         <span>我的发布</span>
@@ -100,22 +101,34 @@ export default {
       likeAct: false,
       itemActive: 0,
       headImg: `${this.$store.state.imgUrlHttp}/head.png`,
-      hierarchy: `${this.$store.state.imgUrlHttp}/hierarchy.png`,
+      hierarchy: `${this.$store.state.imgUrlHttp}/hierarchy.png`
     };
   },
-  mounted () {
-    this.userInfo = wx.getStorageSync('userInfoAll').userInfo
-    console.log(wx.getStorageSync('userInfoAll'))
+  onLoad() {
+    if (wx.getStorageSync("isLogin")) {
+      this.userInfo = wx.getStorageSync("userInfoAll").userInfo;
+      console.log(wx.getStorageSync("userInfoAll"));
+    } else {
+      wx.navigateTo({
+        url: "/pages/login/main"
+      });
+    }
   },
   methods: {
+    goMyVip() {
+      wx.navigateTo({
+        url: "/pages/myVip/main"
+      });
+    },
     goMessage() {
       wx.navigateTo({
         url: "/pages/message/main"
       });
     },
     goPublish() {
+      let authInfo = wx.getStorageSync('authInfo')
       wx.navigateTo({
-        url: "/pages/myPublish/main"
+        url: `/pages/myPublish/main?createrId=${authInfo.id}`
       });
     },
     goAttention() {
@@ -185,12 +198,14 @@ export default {
         margin-left: 20px;
         text-align: center;
         img {
-          width: 30px;
-          height: 35px;
+          width: 50px;
+          height: 50px;
         }
         p {
-          color: #e1c582;
+          background: linear-gradient(to bottom, #FFEFAE, #EBA351);
+          color: #fff;
           font-size: 13px;
+          letter-spacing: 2px;
         }
       }
     }

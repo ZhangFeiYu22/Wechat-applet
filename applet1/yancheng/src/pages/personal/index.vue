@@ -1,15 +1,11 @@
 <template>
-  <div class="my">
-    <navigation-bar
-      :title="'个人详情'"
-      :navBackgroundColor="'#fff'"
-      :back-visible="true"
-    ></navigation-bar>
+  <div class="my" @click.stop="hideZanAndPinglun">
+    <navigation-bar :title="'个人详情'" :navBackgroundColor="'#fff'" :back-visible="true"></navigation-bar>
     <div class="head">
       <div class="headImg">
-        <img :src="headImg" mode="aspectFill" />
+        <img v-if="memberInfo.avatar" :src="memberInfo.avatar" mode="aspectFill" />
       </div>
-      <div class="rightIcon" @click="isAttenToggle">
+      <div class="rightIcon" @click="isAttenToggle(memberInfo.id)">
         <p class="attention attentioned" v-if="isAttention">已关注</p>
         <p class="attention" v-else>
           <i class="iconfont icon-jiahao"></i>
@@ -19,87 +15,205 @@
     </div>
     <div class="baseInfo">
       <div class="nameSexPhone">
-        <p class="name">张小凡</p>
+        <p class="name">{{memberInfo.nickName}}</p>
         <p class="sex">
-          <i class="iconfont icon-nan"></i>
+          <i class="iconfont" :class="memberInfo.gender == 1 ? 'icon-nan': 'icon-nv'"></i>
         </p>
         <p class="phone">182****1234</p>
       </div>
-      <div class="inaword">要成为世界第一的梦珂宝训练大师</div>
+      <div class="inaword">{{memberInfo.introduction}}</div>
       <div class="other">
         <p class="constellation">金牛座</p>
-        <p class="address">南京市</p>
-        <p class="follower">15人关注</p>
+        <p class="address">{{memberInfo.city}}</p>
+        <p class="follower">{{memberInfo.followNum > 0 ? memberInfo.followNum + '人关注' : '暂无关注'}}</p>
       </div>
       <div class="editInfoBtn" @click="sixinFun">
         <i class="iconfont icon-sixin"></i>
         <span>私信</span>
       </div>
     </div>
-    <div class="line"></div>
+    <div class="linew"></div>
     <div class="navBox">
-      <div class="navItem" :class="itemActive == '0' ? 'active' : ''" @click="itemToggle('0')">
+      <div class="navItem" :class="navType == '0' ? 'active' : ''" @click="itemToggle('0')">
         <i class="iconfont icon-huati"></i>
         <!-- <p>话题</p> -->
       </div>
-      <div class="navItem" :class="itemActive == '1' ? 'active' : ''" @click="itemToggle('1')">
+      <div class="navItem" :class="navType == '1' ? 'active' : ''" @click="itemToggle('1')">
         <i class="iconfont icon-xiangji"></i>
         <!-- <p>状态</p> -->
       </div>
     </div>
-    <!-- 内容列表 -->
-    <div class="contentList w94">
-      <div class="contentItem" v-for="(item,index) in ItemList" :key="index" @click.stop="goTopic">
-        <!-- <div class="headName" @click.stop="goPersonal">
-          <img src="../../../static/images/aaa1.png" mode="aspectFill" />
-          <span>张小凡</span>
-        </div> -->
-        <div
-          class="content"
-          id="contentInfo"
-          :class="item.showEllip ? 'ellip' : ''"
-        >{{item.content}}</div>
+    <!-- 社区 -->
+    <div class="contentList w94" v-if="navType == '0'">
+      <div class="contentItem" v-for="(item,index) in forumList" :key="index">
+        <div class="content" :class="item.showEllip ? 'ellip' : ''">{{item.content}}</div>
         <div v-if="item.showEllip" class="toggleBox">
           <div class="more_txt" @click.stop="requireTxt(index)">
-            <span>{{item.showEllip ? '展开' : '收起'}}</span>
+            <span>{{item.showEllip ? '展开' : '收起'}}{{item.showEllip}}</span>
           </div>
         </div>
         <!-- 图片展示 -->
         <div class="imgsList">
           <div
             class="imgsItem"
-            v-for="(picItem,picIndex) in item.picList"
+            v-for="(picItem,picIndex) in item.images"
             :key="picIndex"
             @click.stop="showImg(index,picIndex)"
           >
-            <img :src="picItem" mode="aspectFill" />
+            <img v-if="picItem" :src="picItem" mode="aspectFill" />
           </div>
         </div>
         <div class="timeHandle">
-          <div class="time">10分钟前</div>
+          <div class="time">{{item.createTime}}</div>
           <div class="handle">
-            <i class="iconfont" :class="likeAct?'icon-aixin1':'icon-aixin0'" @click.stop="likeFun"></i>
-            <i class="iconfont icon-pinglun" @click.stop="goTopic"></i>
-            <i class="iconfont icon-sixin"></i>
+            <i
+              class="iconfont"
+              :class="item.isLike == 1 ?'icon-aixin1':'icon-aixin0'"
+              @click.stop="likeFun(item.isLike,item.id,index)"
+            ></i>
+            <i class="iconfont icon-pinglun" @click.stop="goTopic(item.id)"></i>
+            <i class="iconfont icon-sixin" @click.stop="goTopic(item.id)"></i>
           </div>
         </div>
       </div>
+    </div>
+    <!-- 动态 -->
+    <div class="contentList contentList_2 w94" v-else>
+      <div class="contentItem" v-for="(item,index) in communityFriendsList" :key="item.id">
+        <!-- 内容 -->
+        <div class="content" id="contentInfo" :class="item.showEllip ?'ellip': ''">{{item.content}}</div>
+        <div v-if="item.showEllip" class="toggleBox">
+          <div class="more_txt" @click="requireTxt(index)">
+            <span>{{item.showEllip ? '展开' : '收起'}}</span>
+          </div>
+        </div>
+        <!-- 图片 -->
+        <div class="imgsList">
+          <div
+            class="imgsItem"
+            @click.stop="showImg(index,imgIndex)"
+            v-for="(imgItem,imgIndex) in item.images"
+            :key="imgIndex"
+          >
+            <img v-if="imgItem" :src="imgItem" mode="aspectFill" />
+          </div>
+        </div>
+        <!-- 时间  点赞 -->
+        <div class="timeHandle">
+          <div class="time">{{item.createTime}}</div>
+          <div class="handle">
+            <div class="zan-pinglun" v-if="showZanAndPinglunNum == item.id">
+              <span
+                @click.stop="zanHandle(item.id,item.isLike,index)"
+              >{{item.isLike == 1 ? '取消': '点赞'}}</span>
+              <span @click.stop="showPinLunFun(index)">评论</span>
+            </div>
+            <div class="iconfont icon-pinglun2" @click.stop="showZanAndPinglun(item.id)"></div>
+          </div>
+        </div>
+        <!-- 点赞展示 -->
+        <div
+          class="zanShowBox"
+          @click.stop="goZan"
+          v-if="item.properties.communityLikeList.length > 0"
+        >
+          <div
+            class="imgLi"
+            v-for="(comLikeItem,comLikeIndex) in item.properties.communityLikeList"
+            :key="comLikeItem.id"
+          >
+            <img
+              v-if="comLikeItem.avatar && comLikeIndex<3"
+              :src="comLikeItem.avatar"
+              mode="aspectFill"
+            />
+          </div>
+          <div class="zanWord">等{{item.properties.communityLikeList.length}}次赞</div>
+        </div>
+        <!-- 评论展示 -->
+        <div class="pinglunBox" v-if="item.properties.communityCommentList.length>0">
+          <div
+            v-for="(comComItem,comComIndex) in item.properties.communityCommentList"
+            :key="comComIndex"
+          >
+            <p
+              class="line line1"
+              @longpress="backPinLunFun(comComItem,index)"
+              v-if="comComItem.replyId"
+            >
+              <span class="s1">{{comComItem.memberName}}</span>回复
+              <span>{{comComItem.replyName}}</span>：
+              <span>{{comComItem.comment}}</span>
+            </p>
+            <p class="line line0" @longpress="backPinLunFun(comComItem,index)" v-else>
+              <span class="s0">{{comComItem.memberName}}</span>：
+              <span class="s0c">{{comComItem.comment}}</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="showPinLun" class="pinlunB">
+      <view class="liuyan">
+        <input
+          class="input"
+          auto-focus
+          cursor-spacing="32rpx"
+          :value="commentValue"
+          @input="getcomment"
+          :placeholder="placeholderPL"
+        />
+        <button class="btnPut" @click="submitComment">发送</button>
+      </view>
+      <!-- </form> -->
     </div>
 
     <div class="mask" @click.stop="closeMask" v-if="maskVal"></div>
     <div class="maskCont" v-if="maskVal">
       <div class="title">
         <img :src="headImg" mode="aspectFill" />
-        <span>张小凡</span>
+        <span>{{memberInfo.nickName}}</span>
       </div>
       <div class="textaCont">
-          <textarea class="textA" auto-focus placeholder="请留下你想说的话，将发送到对方的消息中心" :value="sixinValue" @input="getSixin" placeholder-style="color:#b8b8b8"></textarea>
+        <textarea
+          class="textA"
+          auto-focus
+          placeholder="请留下你想说的话，将发送到对方的消息中心"
+          v-model="sixinValue"
+          placeholder-style="color:#b8b8b8"
+        ></textarea>
+        <span class="numSpan">限100字</span>
       </div>
+      <button class="contBtn" @click="conBtnPut">发送</button>
     </div>
   </div>
 </template>
 
 <script>
+import {
+  forumContentGet,
+  forumContentGetLogin,
+  forumLike,
+  forumLikeNo,
+  messageTo
+} from "@/api/home";
+import {
+  communityFriendsListGet,
+  communityFriendsListGetLogin,
+  communityLike,
+  communityLikeNo,
+  communityCommentPost
+} from "@/api/community";
+import {
+  getMember,
+  getMemberForum,
+  getMemberComm,
+  followMemberPost,
+  followMemberGet,
+  followMemberDel
+} from "@/api/personal";
+import { getDateDiff } from "@/utils/getDateDiff";
 import navigationBar from "@/components/navigationBar";
 export default {
   components: {
@@ -107,94 +221,420 @@ export default {
   },
   data() {
     return {
+      mid: "", // 用户ID
+      sixinValue: "",
       maskVal: false, //私信显示判断
-      isAttention: false,  //关注判断
-      itemActive: 0,  //话题，状态判断
+      isAttention: false, //关注判断
+      navType: 0, //话题，状态判断
       likeAct: false, //喜欢判断
       headImg: `${this.$store.state.imgUrlHttp}/head.png`,
-      ItemList: [
-        {
-          showEllip: false,
-          content:
-            "细雨秀江南，江南多雨，尤其是江南春天的烟雨，就像那吴侬软语一般，透着水乡特有的滋润，雨是江南水乡的灵气，在江南，充满浪漫气息的雨，元宵节前后的雨叫灯花雨，灯花雨往往是初春的第一场雨",
-          picList: [
-            `${this.$store.state.imgUrlHttp}/a1.png`,
-            `${this.$store.state.imgUrlHttp}/a2.png`,
-            `${this.$store.state.imgUrlHttp}/a3.png`,
-            `${this.$store.state.imgUrlHttp}/a4.png`,
-            `${this.$store.state.imgUrlHttp}/a5.png`,
-            `${this.$store.state.imgUrlHttp}/a6.png`,
-          ]
-        },
-        {
-          showEllip: true,
-          content:
-            "细雨秀江南，江南多雨，尤其是江南春天的烟雨，就像那吴侬软语一般，透着水乡特有的滋润，雨是江南水乡的灵气，在江南，充满浪漫气息的雨，元宵节前后的雨叫灯花雨，灯花雨往往是初春的第一场雨，淅淅沥沥的春雨就飘然而至，莺飞草长，一泓碧水粼粼而起，杨柳拂堤，碧草如丝，繁花似锦，飞泉鸣溅，古寺的梵音在石缝间流淌，雨后的空气溢出清新的芳香。而后是杏花雨，梨花雨，暮春过后，连绵不断的黄梅雨又弥漫江南。夜晚的雨声，清晨的花香，清绝的令人深深沉醉，秀雅的让人不舍离去。纷飞的细雨沾湿了一袭素裙，润透了江南女子的心。两袖的花香，轻舞出江南的独特风韵",
-          picList: [
-            `${this.$store.state.imgUrlHttp}/a7.png`,
-            `${this.$store.state.imgUrlHttp}/a8.png`,
-            `${this.$store.state.imgUrlHttp}/a9.png`,
-            `${this.$store.state.imgUrlHttp}/a10.png`
-          ]
-        }
-      ]
+      memberInfo: {},
+      forumList: [],
+      showZanAndPinglunNum: null, //点击是那个  将评论点赞显示出来
+      zanPingActiveId: null, //点击是那个  将评论点赞显示出来    保存这个ID  评论和点赞使用
+      commentValue: "",
+      showPinLun: false,
+      pinglunIndex: "",
+      placeholderPL: "评论",
+      show_back: 1, //1位留言  2为回复
+      communityFriendsList: [],
+      // 话题分页
+      ffPage: {
+        pageSize: 5, //一页显示条数
+        pageIndex: 0, //页码
+        total: 0 //总条数
+      },
+      // 社区分页
+      cfPage: {
+        pageSize: 3, //一页显示条数
+        pageIndex: 0, //页码
+        total: 0 //总条数
+      }
     };
   },
+  onLoad(options) {
+    this.mid = options.createrId;
+    this.fetchMember(options.createrId);
+    this.fetchMemberForum(options.createrId);
+    this.fetchMemberComm(options.createrId);
+  },
   methods: {
-    isAttenToggle() {
-      this.isAttention = !this.isAttention;
-    },
-    itemToggle(num) {
-      this.itemActive = num;
-    },
-    requireTxt(index) {
-      let val = this.ItemList[index].showEllip;
-      if (val) {
-        this.ItemList[index].showEllip = false;
-      } else {
-        this.ItemList[index].showEllip = true;
+    // 个人信息
+    async fetchMember(id) {
+      let memRes = await getMember(id);
+      if (memRes.status == 200) {
+        this.memberInfo = memRes.result;
+        this.folMemberGet(memRes.result.id);
       }
     },
-    goTopic() {
+    // 获取话题列表
+    async fetchMemberForum(id) {
+      let _this = this;
+      let data = {
+        pageSize: _this.ffPage.pageSize,
+        pageIndex: _this.ffPage.pageIndex
+      };
+      let ffRes = await getMemberForum(id, data);
+      if (ffRes.status == 200) {
+        var forumRes = ffRes.result.data;
+        _this.ffPage.total = ffRes.result.total;
+        forumRes.map(item => {
+          if (item.images !== "") {
+            item.images = item.images.split(";");
+          }
+          if (item.content.length > 80) {
+            item["showEllip"] = true;
+          } else {
+            item["showEllip"] = false;
+          }
+          if (item.createTime) {
+            let dateStr = item.createTime;
+            item.createTime = getDateDiff(dateStr);
+          }
+        });
+        if (_this.ffPage.pageIndex > 0) {
+          _this.forumList = _this.forumList.concat(forumRes);
+        } else {
+          // 第一页则直接赋值 （下拉刷新）
+          _this.forumList = forumRes;
+        }
+      }
+    },
+    // 获取社区列表
+    async fetchMemberComm(id) {
+      let _this = this;
+      let data = {
+        pageSize: _this.cfPage.pageSize,
+        pageIndex: _this.cfPage.pageIndex
+      };
+      let cfRes = await getMemberComm(id, data);
+      if (cfRes.status == 200) {
+        var comRes = cfRes.result.data;
+        _this.cfPage.total = cfRes.result.total;
+        comRes.map(item => {
+          if (item.images !== "") {
+            item.images = item.images.split(";");
+          }
+          if (item.content.length > 80) {
+            item["showEllip"] = true;
+          } else {
+            item["showEllip"] = false;
+          }
+          if (item.createTime) {
+            let dateStr = item.createTime;
+            item.createTime = getDateDiff(dateStr);
+          }
+        });
+        if (_this.cfPage.pageIndex > 0) {
+          _this.communityFriendsList = _this.communityFriendsList.concat(
+            comRes
+          );
+        } else {
+          // 第一页则直接赋值 （下拉刷新）
+          _this.communityFriendsList = comRes;
+        }
+        console.log("2---", this.communityFriendsList);
+      }
+    },
+    // 关注 切换
+    isAttenToggle(id) {
+      if (this.isAttention) {
+        this.folMemberDel(id);
+      } else {
+        this.folMemberPost(id);
+      }
+    },
+    // 查看是否关注
+    async folMemberGet(id) {
+      let geRes = await followMemberGet(id);
+      if (geRes.status == 200) {
+        this.isAttention = geRes.result;
+      }
+    },
+    // 关注
+    async folMemberPost(id) {
+      let poRes = await followMemberPost(id);
+      if (poRes.status == 200) {
+        this.isAttention = poRes.result;
+      }
+    },
+    // 取消关注
+    async folMemberDel(id) {
+      let deRes = await followMemberDel(id);
+      if (deRes.status == 200) {
+        this.isAttention = false;
+      }
+    },
+    // 动态，社区切换
+    itemToggle(num) {
+      this.navType = num;
+    },
+    // 展开收起
+    requireTxt(index) {
+      let val = this.forumList[index].showEllip;
+      if (val) {
+        this.forumList[index].showEllip = false;
+      } else {
+        this.forumList[index].showEllip = true;
+      }
+    },
+    // 社区的动态详情
+    goTopic(id) {
       wx.navigateTo({
-        url: "/pages/topicDetails/main"
+        url: `/pages/topicDetails/main?forumContentId=${id}`
       });
     },
     //点击朋友圈图片,弹出框预览大图
     showImg(index, imgIndex) {
       let outIdx = index;
       let inIdx = imgIndex;
-      let imgArr = this.ItemList[outIdx].picList;
-      console.log(imgArr);
+      let imgArr =
+        this.navType == "0"
+          ? this.forumList[outIdx].images
+          : this.communityFriendsList[outIdx].images;
       wx.previewImage({
         current: imgArr[inIdx], // 当前显示图片的http链接
         urls: imgArr // 需要预览的图片http链接列表
       });
     },
-    likeFun() {
-      this.likeAct = !this.likeAct;
-      if (this.likeAct) {
-        wx.showToast({
-          title: "关注成功",
-          icon: "none",
-          duration: 1500
+    zanHandle(id, isLike, index) {
+      var _this = this;
+      let authInfo = wx.getStorageSync("authInfo");
+      let suData = {
+        avatar: authInfo.avatar,
+        memberId: authInfo.id,
+        memberName: authInfo.nickName
+      };
+      if (isLike == 2) {
+        communityLike(id).then(res => {
+          if (res.status == 200) {
+            _this.showZanAndPinglunNum = null;
+            _this.communityFriendsList[index].isLike = 1;
+            _this.communityFriendsList[index].properties.communityLikeList.push(
+              suData
+            );
+            wx.showToast({
+              title: "点赞成功",
+              icon: "none"
+            });
+          }
         });
       } else {
-        wx.showToast({
-          title: "取消关注",
-          icon: "none",
-          duration: 1500
+        communityLikeNo(id).then(res => {
+          if (res.status == 200) {
+            _this.showZanAndPinglunNum = null;
+            _this.communityFriendsList[index].isLike = 2;
+            var newArr = _this.communityFriendsList[
+              index
+            ].properties.communityLikeList.filter(
+              item => item.memberId != suData.memberId
+            );
+            _this.communityFriendsList[
+              index
+            ].properties.communityLikeList = newArr;
+            wx.showToast({
+              title: "取消点赞",
+              icon: "none"
+            });
+          }
         });
       }
     },
+    //点击评论图标,显示点赞和评论按钮
+    showZanAndPinglun(id) {
+      this.showZanAndPinglunNum = id;
+      this.zanPingActiveId = id;
+    },
+    //点选和评论的隐藏通过事件委托到全页面(暂时只实现当条朋友所在区域,全页面和滚动时也隐藏在考虑实现)
+    hideZanAndPinglun() {
+      this.showZanAndPinglunNum = null;
+      this.showPinLun = false;
+    },
+    // 点赞，取消点赞
+    zanHandle(id, isLike, index) {
+      var _this = this;
+      let authInfo = wx.getStorageSync("authInfo");
+      let suData = {
+        avatar: authInfo.avatar,
+        memberId: authInfo.id,
+        memberName: authInfo.nickName
+      };
+      if (isLike == 2) {
+        communityLike(id).then(res => {
+          if (res.status == 200) {
+            _this.showZanAndPinglunNum = null;
+            _this.communityFriendsList[index].isLike = 1;
+            _this.communityFriendsList[index].properties.communityLikeList.push(
+              suData
+            );
+            wx.showToast({
+              title: "点赞成功",
+              icon: "none"
+            });
+          }
+        });
+      } else {
+        communityLikeNo(id).then(res => {
+          if (res.status == 200) {
+            _this.showZanAndPinglunNum = null;
+            _this.communityFriendsList[index].isLike = 2;
+            var newArr = _this.communityFriendsList[
+              index
+            ].properties.communityLikeList.filter(
+              item => item.memberId != suData.memberId
+            );
+            _this.communityFriendsList[
+              index
+            ].properties.communityLikeList = newArr;
+            wx.showToast({
+              title: "取消点赞",
+              icon: "none"
+            });
+          }
+        });
+      }
+    },
+    // 评论
+    showPinLunFun(index) {
+      this.showZanAndPinglunNum = null;
+      this.commentValue = "";
+      this.placeholderPL = "留言: " + "飞鱼";
+      this.showPinLun = true;
+      this.show_back = 1;
+      this.pinglunIndex = index;
+    },
+    // 长按回复
+    backPinLunFun(comItem, index) {
+      console.log(comItem);
+      this.showZanAndPinglunNum = null;
+      this.placeholderPL = "回复: " + comItem.memberName;
+      this.showPinLun = true;
+      this.show_back = 2;
+      this.pinglunIndex = index;
+      this.comItemData = comItem;
+    },
+    // 关注（点赞）
+    likeFun(isLike, id, index) {
+      var _this = this;
+      if (isLike == 2) {
+        forumLike(id).then(res => {
+          if (res.status == 200) {
+            _this.forumList[index].isLike = 1;
+            wx.showToast({
+              title: "关注成功",
+              icon: "none",
+              duration: 1500
+            });
+          }
+        });
+      } else {
+        forumLikeNo(id).then(res => {
+          console.log("p----", res);
+          if (res.status == 200) {
+            _this.forumList[index].isLike = 2;
+            wx.showToast({
+              title: "取消关注",
+              icon: "none",
+              duration: 1500
+            });
+          }
+        });
+      }
+    },
+    // 私信弹窗
     sixinFun() {
       this.maskVal = true;
+      this.sixinValue = "";
     },
+    // 关闭私信弹窗
     closeMask() {
       this.maskVal = false;
     },
+    // 发送私信
+    conBtnPut() {
+      let data = {
+        msg: this.sixinValue,
+        recipient: this.memberInfo.id
+      };
+      messageTo(data).then(res => {
+        if (res.status == 200) {
+          this.maskVal = false;
+          wx.showToast({
+            title: "发送成功",
+            duration: 2000 //停留时间
+          });
+        }
+      });
+    },
+    // 评论内容赋值
+    getcomment(e) {
+      this.commentValue = e.target.value;
+    },
+    // 动态的评论
+    submitComment(e) {
+      var _this = this;
+      var pingD;
+      if (_this.commentValue.length <= 0) {
+        wx.showToast({
+          title: "内容为空",
+          icon: "none"
+        });
+        return;
+      }
+      if (_this.show_back == 1) {
+        pingD = {
+          comment: _this.commentValue,
+          communityId: _this.zanPingActiveId,
+          memberName: "飞鱼"
+        };
+      } else {
+        pingD = {
+          comment: _this.commentValue,
+          communityId: _this.comItemData.communityId,
+          memberName: _this.communityFriendsList[_this.pinglunIndex].memberName,
+          replyId: _this.comItemData.memberId,
+          replyName: _this.comItemData.memberName
+        };
+      }
+      communityCommentPost(pingD).then(res => {
+        console.log(res);
+        if (res.status == 200) {
+          wx.showToast({
+            title: "评论成功",
+            icon: "none"
+          });
+          this.communityFriendsList[
+            this.pinglunIndex
+          ].properties.communityCommentList.push(pingD);
+        }
+      });
+    }
   },
-  moubted() {}
+  onReachBottom: function() {
+    if (this.navType == 0) {
+      if (this.forumList.length >= this.ffPage.total) {
+        wx.showToast({
+          title: "到底了",
+          icon: "none",
+          duration: 2000
+        });
+      } else {
+        this.ffPage.pageIndex++;
+        this.fetchMemberForum(this.mid);
+      }
+    } else {
+      if (this.communityFriendsList.length >= this.cfPage.total) {
+        wx.showToast({
+          title: "到底了",
+          icon: "none",
+          duration: 2000
+        });
+      } else {
+        this.cfPage.pageIndex++;
+        this.fetchMemberComm(this.mid);
+      }
+    }
+  }
 };
 </script>
 
@@ -308,7 +748,7 @@ export default {
       }
     }
   }
-  .line {
+  .linew {
     width: 100%;
     height: 8px;
     background-color: #eee;
@@ -343,26 +783,13 @@ export default {
     }
   }
   // 内容列表
+  // 社区
   .contentList {
     margin-top: 20px;
     .contentItem {
       padding-bottom: 20px;
       border-bottom: 1px solid #f1f1f1;
       margin-bottom: 20px;
-      .headName {
-        margin-bottom: 10px;
-        img {
-          width: 28px;
-          height: 28px;
-          vertical-align: middle;
-          margin-right: 5px;
-          border-radius: 100%;
-        }
-        span {
-          font-size: 18px;
-          vertical-align: middle;
-        }
-      }
       .content {
         line-height: 20px;
         color: #6f6d6d;
@@ -379,19 +806,19 @@ export default {
       .toggleBox {
         font-size: 16px;
         color: #6f6d6d;
-        .more_txt{
-          span{
+        .more_txt {
+          span {
             border-bottom: 1px solid #6f6d6d;
           }
         }
       }
       .imgsList {
         display: flex;
-        justify-content: space-between;
         flex-wrap: wrap;
         margin-top: 10px;
         .imgsItem {
           width: 32%;
+          margin-right: 1.3333%;
           height: 115px;
           margin-bottom: 5px;
           border-radius: 5px;
@@ -422,7 +849,153 @@ export default {
       }
     }
   }
-    // 私信弹窗
+  // 动态
+  .contentList_2 {
+    .contentItem {
+      .timeHandle {
+        position: relative;
+        .handle {
+          display: flex;
+          justify-content: space-between;
+          width: 20px;
+          .zan-pinglun {
+            position: absolute;
+            bottom: -5px;
+            right: 30px;
+            display: block;
+            background-color: #4c5154;
+            height: 30px;
+            border-radius: 10rpx;
+            color: white;
+            line-height: 30px;
+            text-align: center;
+            font-size: 12px;
+            span {
+              display: inline-block;
+              width: 60px;
+              &:first-child {
+                position: relative;
+                &::after {
+                  position: absolute;
+                  right: 0;
+                  top: 8px;
+                  display: block;
+                  content: "";
+                  width: 1px;
+                  height: 15px;
+                  background-color: #fff;
+                }
+              }
+            }
+          }
+          .icon-pinglun2 {
+            font-size: 20px;
+            color: #8b8b8b;
+          }
+        }
+      }
+      .zanShowBox {
+        height: 34px;
+        width: 50%;
+        margin: 5px 0;
+        display: flex;
+        align-items: center;
+        .imgLi {
+          // position: absolute;
+          margin-right: 10px;
+          img {
+            width: 34px;
+            height: 34px;
+            border-radius: 34px;
+          }
+          &:nth-child(1) {
+            left: 0;
+          }
+          &:nth-child(2) {
+            left: 20px;
+          }
+          &:nth-child(3) {
+            left: 40px;
+          }
+        }
+        .zanWord {
+          font-size: 16px;
+          color: #010101;
+        }
+      }
+      .pinglunBox {
+        background-color: #eaeaea;
+        color: #3a3a3a;
+        padding: 10px 5px;
+        position: relative;
+        margin-top: 10px;
+        &::after {
+          display: block;
+          content: "";
+          position: absolute;
+          width: 0;
+          height: 0;
+          border-width: 10px;
+          border-style: solid;
+          border-color: transparent transparent #eaeaea transparent;
+          top: -18px;
+        }
+        .line {
+          font-size: 14px;
+          line-height: 20px;
+          // &.line0{
+
+          // }
+          &.line1 {
+            .s1 {
+              color: #096fc7;
+              margin-right: 5px;
+            }
+          }
+        }
+      }
+    }
+  }
+  .pinlunB {
+    .liuyan {
+      display: flex;
+      background: #fafafa;
+      border-top: 1px solid #ddd;
+      width: 100%;
+      bottom: 0;
+      position: fixed;
+      z-index: 4;
+      height: 50px;
+      justify-content: center;
+      align-items: center;
+      padding: 10px 5px;
+      .input {
+        background-color: #fff;
+        flex: 1;
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 14px;
+        padding-left: 10px;
+      }
+      .btnPut {
+        font-size: 10px;
+        width: 50px;
+        background: #00c161;
+        color: #fff;
+        height: 40px;
+        line-height: 40px;
+        border-radius: 0;
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+        &::after {
+          border: none;
+        }
+      }
+    }
+  }
+  // 私信弹窗
   .mask {
     position: fixed;
     top: 0;
@@ -436,7 +1009,7 @@ export default {
     position: absolute;
     z-index: 4;
     width: 80%;
-    height: 30%;
+    // height: 35%;
     background-color: #fff;
     padding: 5px;
     top: 50%;
@@ -457,14 +1030,35 @@ export default {
     }
     .textaCont {
       background-color: #e8e8e8;
-      height: 60%;
+      height: 127px;
       padding: 10px;
-      .textA{
+      position: relative;
+      .textA {
         font-size: 14px;
         width: 100%;
         height: 100%;
         text-align: justify;
         color: #333;
+      }
+      .numSpan {
+        position: absolute;
+        display: block;
+        right: 10px;
+        bottom: 5px;
+        color: #b7b7b7;
+        font-size: 15px;
+      }
+    }
+    .contBtn {
+      background-color: #b1a1a3;
+      color: #fff;
+      width: 110px;
+      height: 26px;
+      line-height: 26px;
+      margin: 10px auto 0;
+      font-size: 15px;
+      &::after {
+        border: none;
       }
     }
   }

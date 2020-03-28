@@ -1,11 +1,10 @@
 {
   "pages": [
-    "pages/myVip/main",
     "pages/home/main",
     "pages/community/main",
     "pages/mallCenter/main",
-    "pages/zanList/main",
     "pages/my/main",
+    "pages/myVip/main",
     "pages/myInfo/main",
     "pages/myPublish/main",
     "pages/myAttention/main",

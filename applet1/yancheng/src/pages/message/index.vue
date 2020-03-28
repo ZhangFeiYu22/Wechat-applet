@@ -6,7 +6,7 @@
       :back-visible="true"
     ></navigation-bar>
     <div class="friendsList">
-      <div class="friendsItem" @click="goMessageDetail">
+      <div class="friendsItem" v-for="(item,index) in messageList" :key="index" @click="goMessageDetail(item.id)">
         <div class="imgBox">
           <img :src="headImg1" mode="aspectFill" />
         </div>
@@ -17,22 +17,7 @@
           </p>
           <p class="info">
             对你说：
-            <span>你就是个棒槌</span>
-          </p>
-        </div>
-      </div>
-      <div class="friendsItem" @click="goMessageDetail">
-        <div class="imgBox">
-          <img :src="headImg2" mode="aspectFill" />
-        </div>
-        <div class="wordBox">
-          <p class="name">
-            <span>张大凡</span>
-            <i class="iconfont icon-nv"></i>
-          </p>
-          <p class="info">
-            对你说：
-            <span>棒槌你个大头鬼，你就是个棒槌，大棒槌</span>
+            <span>{{item.msg}}</span>
           </p>
         </div>
       </div>
@@ -41,6 +26,7 @@
 </template>
 
 <script>
+import { myMessageList } from "@/api/my.js";
 import navigationBar from "@/components/navigationBar";
 export default {
   components: {
@@ -48,14 +34,25 @@ export default {
   },
   data() {
     return {
+      messageList: [],
       headImg1: `${this.$store.state.imgUrlHttp}/a6.png`,
       headImg2: `${this.$store.state.imgUrlHttp}/a2.png`
     };
   },
+  mounted () {
+    this.fetchMyMessage()
+  },
   methods: {
-    goMessageDetail() {
+    async fetchMyMessage(){
+      let mesRes = await myMessageList();
+      console.log(mesRes)
+      if(mesRes.status == 200){
+        this.messageList = mesRes.result
+      }
+    },
+    goMessageDetail(id) {
       wx.navigateTo({
-        url: "/pages/messageDetails/main"
+        url: `/pages/messageDetails/main?msgId=${id}`
       });
     }
   }

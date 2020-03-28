@@ -7,7 +7,7 @@
       </div>
       <div class="nameTime">
         <p class="name">张小凡</p>
-        <p class="time">2019.12.12 12:12</p>
+        <p class="time">{{msgOne.createTime}}</p>
       </div>
     </div>
     <div class="content">
@@ -15,7 +15,7 @@
         <p v-if="item.type == 'from'" class="fromStyle">
           <span class="fff">{{item.fff}}</span>对
           <span class="ttt">{{item.ttt}}</span>说：
-          <span class="say">{{item.say}}</span>
+          <span class="say">{{msgOne.msg}}</span>
         </p>
         <p v-else class="toStyle">
           <span class="fff">{{item.fff}}</span>回复
@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import { messageOne } from "@/api/my.js";
 import navigationBar from "@/components/navigationBar";
 export default {
   components: {
@@ -57,10 +58,20 @@ export default {
       commentValue: "",
       messageList: [
         { fff: "张小凡", ttt: "你", say: "你就是个棒槌！！", type: "from" }
-      ]
+      ],
+      msgOne: {}
     };
   },
+  onLoad(options) {
+    this.fetchMessageOne(options.msgId)
+  },
   methods: {
+    async fetchMessageOne(id) {
+      let mRes = await messageOne(id);
+      if(mRes.status == 200){
+        this.msgOne = mRes.result
+      }
+    },
     backMessage() {
       this.commentValue = "";
       this.placeholderPL = "回复: " + "张小凡";

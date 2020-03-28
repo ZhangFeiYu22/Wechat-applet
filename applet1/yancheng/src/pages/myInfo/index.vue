@@ -1,38 +1,41 @@
 <template>
   <div class="myInfo">
-     <navigation-bar
-      :title="'设置'"
-      :navBackgroundColor="'#fff'"
-      :back-visible="true"
-    ></navigation-bar>
+    <navigation-bar :title="'设置'" :navBackgroundColor="'#fff'" :back-visible="true"></navigation-bar>
     <div class="headImg">
-      <img :src="headImg" mode="aspectFill" />
+      <img v-if="myInfo.avatar" :src="myInfo.avatar" mode="aspectFill" />
     </div>
     <div class="infoList">
-      <div class="infoItem" @click="changeName">
+      <div class="infoItem" @click="changeName(myInfo.nickName)">
         <p class="ll">昵称</p>
-        <p class="cc">{{name}}</p>
+        <p class="cc">{{myInfo.nickName}}</p>
       </div>
-      <div class="infoItem" @click="changeIntro">
+      <div class="infoItem" @click="changeIntro(myInfo.introduction)">
         <p class="ll">简介</p>
-        <p class="cc">{{intro}}</p>
+        <p class="cc">{{myInfo.introduction}}</p>
       </div>
       <div class="infoItem" @click="changeSex">
         <p class="ll">性别</p>
-        <p class="cc">{{sex}}</p>
+        <p class="cc" v-if="myInfo.gender == 0">保密</p>
+        <p class="cc" v-else-if="myInfo.gender == 1">男</p>
+        <p class="cc" v-else>女</p>
       </div>
       <div class="infoItem">
         <p class="ll">生日</p>
-        <!-- <p class="cc">2019-01-01</p> -->
         <picker class="cc" mode="date" :value="date" @change="bindDateChange" placeholder="请输入日期">
-          <input name="date" :value="date" placeholder="请输入日期" />
+          <input name="date" :value="myInfo.birthday ? myInfo.birthday : ''" placeholder="请输入日期" />
         </picker>
       </div>
       <div class="infoItem">
         <p class="ll">城市</p>
-        <!-- <p class="cc">江苏 南京</p> -->
-        <picker class="cc" mode="region" @change="bindRegionChange" :value="region">
-          <view class="picker">{{region[0]}}，{{region[1]}}，{{region[2]}}</view>
+        <picker
+          class="cc"
+          mode="region"
+          @change="bindRegionChange"
+          :value="region"
+          placeholder="请选择城市"
+        >
+          <view class="picker" v-if="region.length == 0" style="color: #ccc;">请选择城市</view>
+          <view class="picker" v-else>{{region[0]}}&nbsp;{{region[1]}}&nbsp;{{region[2]}}</view>
         </picker>
       </div>
     </div>
@@ -57,6 +60,7 @@
 </template>
 
 <script>
+import { userInfoGet, userInfoPost } from "@/api/my";
 import navigationBar from "@/components/navigationBar";
 export default {
   components: {
@@ -64,31 +68,50 @@ export default {
   },
   data() {
     return {
-      headImg: `${this.$store.state.imgUrlHttp}/head.png`,
-      name: "张小凡",
-      intro: "这厮不错，简介可以",
-      sex: "男",
+      myInfo: {},
       date: "",
-      region: ["江苏省", "南京市", "秦淮区"],
+      region: [],
       nameVal: "",
       introVal: "",
       bgMask: false,
-      // bgMask: true,
       nameMask: false,
       introMask: false
     };
   },
+  mounted() {
+    this.fetchInfo();
+  },
   methods: {
+    // 获取信息
+    async fetchInfo() {
+      let inRes = await userInfoGet();
+      if (inRes.status == 200) {
+        this.myInfo = inRes.result;
+        if (inRes.result.province && inRes.result.province !== "") {
+          console.log(0);
+          this.region[0] = inRes.result.province;
+        }
+        if (inRes.result.city && inRes.result.city !== "") {
+          console.log(1);
+          this.region[1] = inRes.result.city;
+        }
+        if (inRes.result.district && inRes.result.district !== "") {
+          console.log(2);
+          this.region[2] = inRes.result.district;
+        }
+      }
+    },
     closeMask() {
       this.bgMask = false;
       this.nameMask = false;
       this.introMask = false;
     },
-    changeName() {
+    changeName(name) {
       this.bgMask = true;
       this.nameMask = true;
-      this.nameVal = "";
+      this.nameVal = name;
     },
+    // 名字修改
     nameChange() {
       var that = this;
       wx.showModal({
@@ -96,20 +119,28 @@ export default {
         content: "确认修改名字吗？",
         success: function(res) {
           if (res.confirm) {
-            that.name = that.nameVal;
-            that.closeMask();
-            that.handelSuccess();
+            let data = {
+              nickName: that.nameVal
+            };
+            userInfoPost(data).then(res => {
+              if (res.status == 200) {
+                that.myInfo.nickName = that.nameVal;
+                that.closeMask();
+                that.handelSuccess();
+              }
+            });
           } else {
             console.log("点击取消回调");
           }
         }
       });
     },
-    changeIntro() {
+    changeIntro(intro) {
       this.bgMask = true;
       this.introMask = true;
-      this.introVal = "";
+      this.introVal = intro;
     },
+    // 个人简介修改
     introChange() {
       var that = this;
       wx.showModal({
@@ -117,42 +148,63 @@ export default {
         content: "确认修改简介吗？",
         success: function(res) {
           if (res.confirm) {
-            that.intro = that.introVal;
-            that.closeMask();
-            that.handelSuccess();
+            let data = {
+              introduction: that.introVal
+            };
+            userInfoPost(data).then(res => {
+              if (res.status == 200) {
+                that.myInfo.introduction = that.introVal;
+                that.closeMask();
+                that.handelSuccess();
+              }
+            });
           } else {
             console.log("点击取消回调");
           }
         }
       });
     },
+    // 性别修改
     changeSex() {
       var that = this;
       wx.showActionSheet({
         itemList: ["保密", "男", "女"],
         success: function(res) {
-          console.log(res.tapIndex);
-          switch (res.tapIndex) {
-            case 1:
-              that.sex = "男";
-              break;
-            case 2:
-              that.sex = "女";
-              break;
-            default:
-              that.sex = "保密";
-              break;
-          }
+          let data = {
+            gender: res.tapIndex
+          };
+          userInfoPost(data).then(res => {
+            if (res.status == 200) {
+              that.myInfo.gender = res.result.gender;
+            }
+          });
         }
       });
     },
+    // 日期修改
     bindDateChange(e) {
-      console.log("picker发送选择改变，携带值为", e.mp.detail.value);
-      this.date = e.mp.detail.value;
+      let data = {
+        birthday: e.mp.detail.value
+      };
+      userInfoPost(data).then(res => {
+        if (res.status == 200) {
+          this.myInfo.birthday = res.result.birthday;
+        }
+      });
     },
+    // 城市修改
     bindRegionChange: function(e) {
-      console.log("picker发送选择改变，携带值为", e.mp.detail.value);
-      this.region = e.mp.detail.value;
+      let regData = e.mp.detail.value;
+      let data = {
+        city: regData[1],
+        district: regData[2],
+        province: regData[0]
+      };
+      userInfoPost(data).then(res => {
+        if (res.status == 200) {
+          this.region = regData;
+        }
+      });
     },
     handelSuccess() {
       wx.showToast({

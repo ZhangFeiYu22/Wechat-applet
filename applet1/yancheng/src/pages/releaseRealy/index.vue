@@ -38,7 +38,7 @@ import {
   forumContentPost
 } from "@/api/release";
 import navigationBar from "@/components/navigationBar";
-import {imgsUpload} from '@/utils/imgsUpload'
+import { imgsUpload } from "@/utils/imgsUpload";
 export default {
   components: {
     navigationBar
@@ -61,32 +61,14 @@ export default {
     };
   },
   onLoad(options) {
+    Object.assign(this.$data, this.$options.data())
     this.publishType = options.publishType;
-    console.log("publishType--", this.publishType);
   },
   mounted() {
     let systemInfo = wx.getSystemInfoSync();
     this.navBar_Height = wx.getStorageSync("navBar_Height") + "px";
   },
   methods: {
-    // saveEditOrNot() {
-    //   wx.showModal({
-    //     title: "将此次编辑保留",
-    //     content: "",
-    //     cancelText: "不保留",
-    //     confirmText: "保留",
-    //     success(res) {
-    //       if (res.confirm) {
-    //         console.log("用户点击确定");
-    //       } else if (res.cancel) {
-    //         wx.navigateBack({
-    //           delta: 1
-    //         });
-    //       }
-    //     }
-    //   });
-    // },
-
     changeTextStatus() {
       this.realTextValue = "";
       this.textStatus = true;
@@ -143,7 +125,12 @@ export default {
               success: function() {
                 setTimeout(function() {
                   wx.switchTab({
-                    url: "/pages/community/main"
+                    url: "/pages/community/main",
+                    success: function(e) {
+                      var page = getCurrentPages().pop();
+                      if (page == undefined || page == null) return;
+                      page.onLoad();
+                    }
                   });
                 }, 1000);
               }
@@ -160,7 +147,12 @@ export default {
               success: function() {
                 setTimeout(function() {
                   wx.switchTab({
-                    url: "/pages/home/main"
+                    url: "/pages/home/main",
+                    success: function(e) {
+                      var page = getCurrentPages().pop();
+                      if (page == undefined || page == null) return;
+                      page.onLoad();
+                    }
                   });
                 }, 1000);
               }

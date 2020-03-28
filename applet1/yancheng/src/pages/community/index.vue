@@ -31,24 +31,16 @@
           <div class="time">{{item.createTime}}</div>
           <div class="handle">
             <div class="zan-pinglun" v-if="showZanAndPinglunNum == item.id">
-              <span @click.stop="zanHandle(item.id,item.isLike,index)">
-                <!-- <i class="iconfont icon-aixin" @click="dianzan(index)"></i> -->
-                {{item.isLike == 1 ? '取消': '点赞'}}
-              </span>
-              <span @click.stop="showPinLunFun(index)">
-                <!-- <i class="iconfont icon-pinglun"></i> -->
-                评论
-              </span>
+              <span
+                @click.stop="zanHandle(item.id,item.isLike,index)"
+              >{{item.isLike == 1 ? '取消': '点赞'}}</span>
+              <span @click.stop="showPinLunFun(index,item.memberName)">评论</span>
             </div>
             <div class="iconfont icon-pinglun2" @click.stop="showZanAndPinglun(item.id)"></div>
           </div>
         </div>
         <!-- 点赞展示 -->
-        <div
-          class="zanShowBox"
-          @click.stop="goZan"
-          v-if="item.properties.communityLikeList.length > 0"
-        >
+        <div class="zanShowBox" v-if="item.properties.communityLikeList.length > 0">
           <div
             class="imgLi"
             v-for="(comLikeItem,comLikeIndex) in item.properties.communityLikeList"
@@ -64,26 +56,29 @@
         </div>
         <!-- 评论展示 -->
         <div class="pinglunBox" v-if="item.properties.communityCommentList.length>0">
-          <p
-            class="line line0"
+          <div
             v-for="(comComItem,comComIndex) in item.properties.communityCommentList"
             :key="comComIndex"
-            @longpress="backPinLunFun(comComItem,index)"
           >
-            <span class="s0">{{comComItem.memberName}}</span>：
-            <span class="s0c">{{comComItem.comment}}</span>
-          </p>
-          <p class="line line1">
-            <span class="s1">谁回复</span>回复
-            <span>谁说的</span>：
-            <span>这是评论内容</span>
-          </p>
+            <p
+              class="line line1"
+              @longpress="backPinLunFun(comComItem,index)"
+              v-if="comComItem.replyName"
+            >
+              <span class="s1">{{comComItem.memberName}}</span>回复
+              <span>{{comComItem.replyName}}</span>：
+              <span>{{comComItem.comment}}</span>
+            </p>
+            <p class="line line0" @longpress="backPinLunFun(comComItem,index)" v-else>
+              <span class="s0">{{comComItem.memberName}}</span>：
+              <span class="s0c">{{comComItem.comment}}</span>
+            </p>
+          </div>
         </div>
       </div>
     </div>
 
     <div v-if="showPinLun" class="pinlunB">
-      <!-- <form report-submit="true" @submit="submitComment"> -->
       <view class="liuyan">
         <input
           class="input"
@@ -104,9 +99,11 @@
 <script>
 import {
   communityFriendsListGet,
+  communityFriendsListGetLogin,
   communityLike,
   communityLikeNo,
-  communityCommentPost
+  communityCommentPost,
+  communityCommentDel
 } from "@/api/community";
 import navigationBar from "@/components/navigationBar";
 import { getDateDiff } from "@/utils/getDateDiff";
@@ -116,44 +113,69 @@ export default {
   },
   data() {
     return {
-      topHeight: "",
       showZanAndPinglunNum: null, //点击是那个  将评论点赞显示出来
       zanPingActiveId: null, //点击是那个  将评论点赞显示出来    保存这个ID  评论和点赞使用
-      communityFriendsList: [],
       commentValue: "",
       showPinLun: false,
       pinglunIndex: "",
       placeholderPL: "评论",
-      show_back: 1 //1位留言  2为回复
+      show_back: 1, //1位留言  2为回复
+      communityFriendsList: [],
+      pageSize: 5, //一页显示条数
+      pageIndex: 0, //页码
+      total: 0 //总条数
     };
   },
-  mounted() {
-    this.topHeight = wx.getStorageSync("topHeight");
-    this.fetchData();
+  onLoad() {
+    if (wx.getStorageSync("isLogin")) {
+      this.fetchData();
+    } else {
+      wx.navigateTo({
+        url: "/pages/login/main"
+      });
+    }
   },
   methods: {
     fetchData() {
-      communityFriendsListGet().then(res => {
-        if (res.status == 200) {
-          var resData = res.result.data;
-          resData.map(item => {
-            if (item.images !== "") {
-              item.images = item.images.split(";");
-            }
-            if (item.content.length > 80) {
-              item["showEllip"] = true;
-            } else {
-              item["showEllip"] = false;
-            }
-            if (item.createTime) {
-              let dateStr = item.createTime;
-              item.createTime = getDateDiff(dateStr);
-            }
-          });
+      var data = {
+        pageSize: this.pageSize,
+        pageIndex: this.pageIndex
+      };
+      this.fetchCommunituContent(data);
+    },
+    async fetchCommunituContent(data) {
+      var comRes;
+      if (wx.getStorageSync("isLogin")) {
+        comRes = await communityFriendsListGetLogin(data);
+      } else {
+        comRes = await communityFriendsListGet(data);
+      }
+      if (comRes.status == 200) {
+        var resData = comRes.result.data;
+        this.total = comRes.result.total;
+        resData.map(item => {
+          if (item.images !== "") {
+            item.images = item.images.split(";");
+          }
+          if (item.content.length > 80) {
+            item["showEllip"] = true;
+          } else {
+            item["showEllip"] = false;
+          }
+          item.properties.communityCommentList.reverse();
+          if (item.createTime) {
+            let dateStr = item.createTime;
+            item.createTime = getDateDiff(dateStr);
+          }
+        });
+        // 如果不是第一页，追加数据
+        if (this.pageIndex > 0) {
+          this.communityFriendsList = this.communityFriendsList.concat(resData);
+        } else {
+          // 第一页则直接赋值 （下拉刷新）
           this.communityFriendsList = resData;
         }
-        console.log(this.communityFriendsList);
-      });
+      }
     },
     requireTxt(index) {
       let val = this.communityFriendsList[index].showEllip;
@@ -166,11 +188,6 @@ export default {
     goPersonal() {
       wx.navigateTo({
         url: "/pages/personal/main"
-      });
-    },
-    goZan() {
-      wx.navigateTo({
-        url: "/pages/zanList/main"
       });
     },
     zanHandle(id, isLike, index) {
@@ -202,8 +219,12 @@ export default {
             _this.communityFriendsList[index].isLike = 2;
             var newArr = _this.communityFriendsList[
               index
-            ].properties.communityLikeList.filter(item => item.memberId != suData.memberId);
-            _this.communityFriendsList[index].properties.communityLikeList = newArr;
+            ].properties.communityLikeList.filter(
+              item => item.memberId != suData.memberId
+            );
+            _this.communityFriendsList[
+              index
+            ].properties.communityLikeList = newArr;
             wx.showToast({
               title: "取消点赞",
               icon: "none"
@@ -212,24 +233,54 @@ export default {
         });
       }
     },
-
-    showPinLunFun(index) {
+    showPinLunFun(index, name) {
       this.showZanAndPinglunNum = null;
       this.commentValue = "";
-      this.placeholderPL = "留言: " + "飞鱼";
+      this.placeholderPL = "留言: " + name;
       this.showPinLun = true;
       this.show_back = 1;
       this.pinglunIndex = index;
     },
-    // 长安回复
+    // 长按回复
     backPinLunFun(comItem, index) {
-      console.log(comItem);
-      this.showZanAndPinglunNum = null;
-      this.placeholderPL = "回复: " + comItem.memberName;
-      this.showPinLun = true;
-      this.show_back = 2;
-      this.pinglunIndex = index;
-      this.comItemData = comItem;
+      var _this = this;
+      let authInfo = wx.getStorageSync("authInfo");
+      if (comItem.memberName == authInfo.nickName) {
+        wx.showModal({
+          title: "提示",
+          content: "是否删除改评论",
+          success(res) {
+            if (res.confirm) {
+              communityCommentDel(comItem.id).then(delRes => {
+                if (delRes.status == 200) {
+                  var newArr = _this.communityFriendsList[
+                    index
+                  ].properties.communityCommentList.filter(
+                    item => item.id != comItem.id
+                  );
+                  _this.communityFriendsList[
+                    index
+                  ].properties.communityCommentList = newArr;
+                  wx.showToast({
+                    title: "删除成功",
+                    icon: "none"
+                  });
+                }
+              });
+            } else if (res.cancel) {
+              console.log("用户点击取消");
+            }
+          }
+        });
+      } else {
+        _this.showZanAndPinglunNum = null;
+        _this.commentValue = "";
+        _this.placeholderPL = "回复: " + comItem.memberName;
+        _this.showPinLun = true;
+        _this.show_back = 2;
+        _this.pinglunIndex = index;
+        _this.comItemData = comItem;
+      }
     },
     //点击朋友圈图片,弹出框预览大图
     showImg(index, imgIndex) {
@@ -267,15 +318,12 @@ export default {
       if (_this.show_back == 1) {
         pingD = {
           comment: _this.commentValue,
-          communityId: _this.zanPingActiveId,
-          memberId: "1", ////这两项可以删掉到时候根据token
-          memberName: "飞鱼"
+          communityId: _this.zanPingActiveId
         };
       } else {
         pingD = {
           comment: _this.commentValue,
-          forumId: _this.comItemData.communityId,
-          memberId: _this.communityFriendsList[_this.pinglunIndex].memberId, //这两项可以删掉到时候根据token
+          communityId: _this.comItemData.communityId,
           memberName: _this.communityFriendsList[_this.pinglunIndex].memberName,
           replyId: _this.comItemData.memberId,
           replyName: _this.comItemData.memberName
@@ -288,12 +336,45 @@ export default {
             title: "评论成功",
             icon: "none"
           });
+          if (_this.show_back == 1) {
+            pingD = {
+              comment: res.result.comment,
+              memberName: res.result.memberName,
+              createTime: res.result.createTime,
+              id: res.result.id
+            };
+          } else {
+            pingD = {
+              comment: res.result.comment,
+              memberName: res.result.memberName,
+              replyName: res.result.replyName,
+              createTime: res.result.createTime,
+              id: res.result.id
+            };
+          }
           this.communityFriendsList[
             this.pinglunIndex
           ].properties.communityCommentList.push(pingD);
         }
       });
     }
+  },
+  onReachBottom: function() {
+    if (this.communityFriendsList.length >= this.total) {
+      wx.showToast({
+        title: "到底了",
+        icon: "none",
+        duration: 2000
+      });
+    } else {
+      this.pageIndex++; //获取现在页码
+      this.fetchData();
+    }
+  },
+  //下拉刷新
+  onPullDownRefresh: function() {
+    this.pageIndex = 0;
+    this.fetchData();
   }
 };
 </script>
@@ -307,6 +388,7 @@ export default {
       margin-bottom: 20px;
       .headName {
         margin-bottom: 10px;
+        display: inline-block;
         img {
           width: 28px;
           height: 28px;

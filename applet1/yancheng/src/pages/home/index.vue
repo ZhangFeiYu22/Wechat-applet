@@ -11,17 +11,17 @@
         circular
         class="swiper-box"
         @change="swiperChange"
-        v-if="carrouseList.length != 0"
+        v-if="adList.length != 0"
       >
-        <block v-for="(item,index) in carrouseList" :key="index">
+        <block v-for="(item,index) in adList" :key="index">
           <swiper-item>
             <image :src="item.imgUrl" class="slide-image" mode="aspectFill" />
           </swiper-item>
         </block>
       </swiper>
-      <!-- <img v-else class="default-image" src="/static/images/default_ad.jpg" mode="aspectFill" /> -->
+      <img v-else class="default-image" src="/static/images/default_ad.jpg" mode="aspectFill" />
       <view class="dots">
-        <block v-for="(item,index) in carrouseList" :key="index">
+        <block v-for="(item,index) in adList" :key="index">
           <view :class="index == current ? ' active' : ''" class="dot"></view>
         </block>
       </view>
@@ -43,15 +43,11 @@
     <!-- 内容列表 -->
     <div class="contentList w94">
       <div class="contentItem" v-for="(item,index) in forumList" :key="index">
-        <div class="headName" @click.stop="goPersonal">
+        <div class="headName" @click.stop="goPersonal(item.createrId)">
           <img v-if="item.createrAvatar" :src="item.createrAvatar" mode="aspectFill" />
           <span>{{item.createrName}}</span>
         </div>
-        <div
-          class="content"
-          id="contentInfo"
-          :class="item.showEllip ? 'ellip' : ''"
-        >{{item.content}}</div>
+        <div class="content" :class="item.showEllip ? 'ellip' : ''">{{item.content}}</div>
         <div v-if="item.showEllip" class="toggleBox">
           <div class="more_txt" @click.stop="requireTxt(index)">
             <span>{{item.showEllip ? '展开' : '收起'}}</span>
@@ -87,7 +83,13 @@
 </template>
 
 <script>
-import { forumContentGet, forumLike, forumLikeNo } from "@/api/home";
+import {
+  adGet,
+  forumContentGet,
+  forumContentGetLogin,
+  forumLike,
+  forumLikeNo
+} from "@/api/home";
 import { getDateDiff } from "@/utils/getDateDiff";
 import navigationBar from "@/components/navigationBar";
 export default {
@@ -118,51 +120,78 @@ export default {
           jumpPath: "/pages/game_truchOrDare/main"
         }
       ],
-      carrouseList: [
-        { imgUrl: `${this.$store.state.imgUrlHttp}/c1.png` },
-        { imgUrl: `${this.$store.state.imgUrlHttp}/c1.png` },
-        { imgUrl: `${this.$store.state.imgUrlHttp}/c1.png` },
-        { imgUrl: `${this.$store.state.imgUrlHttp}/c1.png` }
-      ],
+      adList: [],
       indicatorDots: false,
       autoplay: true,
       interval: 3000,
       duration: 1000,
       current: 0,
-      headImg: `${this.$store.state.imgUrlHttp}/head.png`,
-      forumList: []
+      forumList: [],
+      pageSize: 5, //一页显示条数
+      pageIndex: 0, //页码
+      total: 0 //总条数
     };
   },
   mounted() {
     this.fetchForumContentList();
+    this.fetchAd();
   },
   methods: {
     fetchForumContentList() {
-      forumContentGet().then(res => {
-        if (res.status == 200) {
-          var resData = res.result.data;
-          resData.map(item => {
-            if (item.images !== "") {
-              item.images = item.images.split(";");
-            }
-            if (item.content.length > 80) {
-              item["showEllip"] = true;
-            } else {
-              item["showEllip"] = false;
-            }
-            if (item.createTime) {
-              let dateStr = item.createTime;
-              item.createTime = getDateDiff(dateStr);
-            }
-          });
+      var data = {
+        pageSize: this.pageSize,
+        pageIndex: this.pageIndex
+      };
+      this.fetchForumContent(data);
+    },
+    // 获取列表数据
+    async fetchForumContent(data) {
+      var forumRes;
+      if (wx.getStorageSync("isLogin")) {
+        forumRes = await forumContentGetLogin(data);
+      } else {
+        forumRes = await forumContentGet(data);
+      }
+      if (forumRes.status == 200) {
+        var resData = forumRes.result.data;
+        this.total = forumRes.result.total;
+        resData.map(item => {
+          if (item.images !== "") {
+            item.images = item.images.split(";");
+          }
+          if (item.content.length > 80) {
+            item["showEllip"] = true;
+          } else {
+            item["showEllip"] = false;
+          }
+          if (item.createTime) {
+            let dateStr = item.createTime;
+            item.createTime = getDateDiff(dateStr);
+          }
+        });
+        // 如果不是第一页，追加数据
+        if (this.pageIndex > 0) {
+          this.forumList = this.forumList.concat(resData);
+        } else {
+          // 第一页则直接赋值 （下拉刷新）
           this.forumList = resData;
         }
-      });
+        wx.stopPullDownRefresh();  //停止下拉刷新
+      }
+    },
+    // 获取广告位
+    async fetchAd() {
+      let adres = await adGet();
+      if (adres.status == 200) {
+        this.adList = adres.result.data;
+      }
+      console.log("ad--", adres);
     },
     // 轮播切换时控制指示点切换
     swiperChange: function(e) {
       this.current = e.mp.detail.current;
     },
+    // 折叠展开
     requireTxt(index) {
       let val = this.forumList[index].showEllip;
       if (val) {
@@ -171,20 +200,40 @@ export default {
         this.forumList[index].showEllip = true;
       }
     },
+    //小菜单跳转
     navJump(path) {
-      wx.navigateTo({
-        url: path
-      });
+      if (wx.getStorageSync("isLogin")) {
+        wx.navigateTo({
+          url: path
+        });
+      } else {
+        wx.navigateTo({
+          url: "/pages/login/main"
+        });
+      }
     },
-    goPersonal() {
-      wx.navigateTo({
-        url: "/pages/personal/main"
-      });
+    //跳转个人中心
+    goPersonal(creatId) {
+      if (wx.getStorageSync("isLogin")) {
+        wx.navigateTo({
+          url: `/pages/personal/main?createrId=${creatId}`
+        });
+      } else {
+        wx.navigateTo({
+          url: `/pages/login/main`
+        });
+      }
     },
     goTopic(id) {
-      wx.navigateTo({
-        url: `/pages/topicDetails/main?forumContentId=${id}`
-      });
+      if (wx.getStorageSync("isLogin")) {
+        wx.navigateTo({
+          url: `/pages/topicDetails/main?forumContentId=${id}`
+        });
+      } else {
+        wx.navigateTo({
+          url: "/pages/login/main"
+        });
+      }
     },
     //点击朋友圈图片,弹出框预览大图
     showImg(index, imgIndex) {
@@ -198,32 +247,55 @@ export default {
       });
     },
     likeFun(isLike, id, index) {
-      var _this = this;
-      if (isLike == 2) {
-        forumLike(id).then(res => {
-          if (res.status == 200) {
-            _this.forumList[index].isLike = 1;
-            wx.showToast({
-              title: "关注成功",
-              icon: "none",
-              duration: 1500
-            });
-          }
-        });
+      if (wx.getStorageSync("isLogin")) {
+        var _this = this;
+        if (isLike == 2) {
+          forumLike(id).then(res => {
+            if (res.status == 200) {
+              _this.forumList[index].isLike = 1;
+              wx.showToast({
+                title: "关注成功",
+                icon: "none",
+                duration: 1500
+              });
+            }
+          });
+        } else {
+          forumLikeNo(id).then(res => {
+            console.log("p----", res);
+            if (res.status == 200) {
+              _this.forumList[index].isLike = 2;
+              wx.showToast({
+                title: "取消关注",
+                icon: "none",
+                duration: 1500
+              });
+            }
+          });
+        }
       } else {
-        forumLikeNo(id).then(res => {
-          console.log("p----", res);
-          if (res.status == 200) {
-            _this.forumList[index].isLike = 2;
-            wx.showToast({
-              title: "取消关注",
-              icon: "none",
-              duration: 1500
-            });
-          }
+        wx.navigateTo({
+          url: "/pages/login/main"
         });
       }
     }
+  },
+  onReachBottom: function() {
+    if (this.forumList.length >= this.total) {
+      wx.showToast({
+        title: "到底了",
+        icon: "none",
+        duration: 2000
+      });
+    } else {
+      this.pageIndex++; //获取现在页码
+      this.fetchForumContentList();
+    }
+  },
+  //下拉刷新
+  onPullDownRefresh: function() {
+    this.pageIndex = 0;
+    this.fetchForumContentList();
   }
 };
 </script>

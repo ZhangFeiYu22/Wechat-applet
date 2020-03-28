@@ -67,6 +67,16 @@ export default {
       wx.setStorageSync("isLogin", true);
       let authInfo = await userInfoGet();
       wx.setStorageSync("authInfo", authInfo.result);
+      this.globalData.isLoun = true;
+      // wx.switchTab({
+      //   url: "/pages/home/main"
+      // });
+      var pages = getCurrentPages();
+      var beforePage = pages[pages.length - 2];
+      beforePage.onLoad();
+      wx.navigateBack({
+        delta: 1
+      });
     }
   }
 };

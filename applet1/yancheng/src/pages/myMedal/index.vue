@@ -6,35 +6,26 @@
       :back-visible="true"
     ></navigation-bar>
     <div class="headImg">
-      <img :src="headImg" mode="aspectFill" />
-      <p class="name">碧瑶</p>
+      <img v-if="myInfo.avatar" :src="myInfo.avatar" mode="aspectFill" />
+      <p class="name">{{myInfo.nickName}}</p>
       <div class="medalNum">
         <i class="iconDot left"></i>
-        <p>
-          共获得
-          <span>3</span>枚勋章
-        </p>
+        <p v-if="medalNum == 0">暂未获得勋章</p>
+        <p v-else>共获得<span>{{medalNum}}</span>枚勋章</p>
         <i class="iconDot right"></i>
       </div>
     </div>
     <div class="medalList">
-      <div class="medalItem">
-        <img :src="medalImg" mode="aspectFill">
-        <p class="info">连续登陆一周</p>
-      </div>
-      <div class="medalItem">
-        <img :src="medalImg" mode="aspectFill">
-        <p class="info">连续登陆一个月</p>
-      </div>
-      <div class="medalItem">
-        <img :src="medalImg" mode="aspectFill">
-        <p class="info">连续登陆一年</p>
+      <div class="medalItem" v-for="(item,index) in myMedal" :key="index">
+        <img v-if="item.image" :src="item.image" mode="aspectFill">
+        <p class="info">{{item.status}}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { myMedalGet } from "@/api/my.js";
 import navigationBar from "@/components/navigationBar";
 export default {
   components: {
@@ -42,11 +33,25 @@ export default {
   },
   data() {
     return {
-      headImg: `${this.$store.state.imgUrlHttp}/head.png`,
-      medalImg: `${this.$store.state.imgUrlHttp}/medal.png`
+      myInfo: '',
+      medalNum: 0,
+      myMedal: []
     };
   },
-  methods: {}
+  mounted () {
+    this.myInfo = wx.getStorageSync('authInfo');
+    this.fetchMyMedal();
+  },
+  methods: {
+    async fetchMyMedal(){
+      let mRes = await myMedalGet();
+      if(mRes.status == 200){
+        this.myMedal = mRes.result.data;
+        this.medalNum = this.myMedal.length;
+      }
+      
+    }
+  }
 };
 </script>
 
@@ -100,6 +105,8 @@ export default {
     width: 85%;
     margin: 0 auto;
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     .medalItem {
       text-align: center;
       img{

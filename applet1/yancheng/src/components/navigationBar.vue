@@ -178,6 +178,11 @@ export default {
           font-weight: 600;
           position: absolute;
           left: 7px;
+          .opt-add{
+            .iconfont{
+              font-size: 20px;
+            }
+          }
         }
         .back_home {
           width: 146rpx;

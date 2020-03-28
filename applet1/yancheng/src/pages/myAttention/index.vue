@@ -1,10 +1,6 @@
 <template>
   <div class="attention">
-    <navigation-bar
-      :title="'关注'"
-      :navBackgroundColor="'#fff'"
-      :back-visible="true"
-    ></navigation-bar>
+    <navigation-bar :title="'关注'" :navBackgroundColor="'#fff'" :back-visible="true"></navigation-bar>
     <div class="navToggle">
       <div class="navI" :class="itemActive == '0' ? 'active' : ''" @click="itemToggle('0')">谜友</div>
       <div class="navI" :class="itemActive == '1' ? 'active' : ''" @click="itemToggle('1')">活动</div>
@@ -12,19 +8,25 @@
     <div class="friendsList list" v-if="itemActive == 0">
       <div class="friendsItem item" @click="goPersonal">
         <div class="imgBox">
-          <img :src="headImg1" mode="aspectFill">
+          <img :src="headImg1" mode="aspectFill" />
         </div>
         <div class="wordBox">
-          <p class="name"><span>张小凡</span><i class="iconfont icon-nan"></i></p>
+          <p class="name">
+            <span>张小凡</span>
+            <i class="iconfont icon-nan"></i>
+          </p>
           <p class="info">要成为世界第一的梦珂宝训练大师大师大师要成为世界第一的梦珂宝训练大师大师大师</p>
         </div>
       </div>
       <div class="friendsItem item" @click="goPersonal">
         <div class="imgBox">
-          <img :src="headImg2" mode="aspectFill">
+          <img :src="headImg2" mode="aspectFill" />
         </div>
         <div class="wordBox">
-          <p class="name"><span>张小凡</span><i class="iconfont icon-nan"></i></p>
+          <p class="name">
+            <span>张小凡</span>
+            <i class="iconfont icon-nan"></i>
+          </p>
           <p class="info">要成为世界第一的梦珂宝训练大师大师大师要成为世界第一的梦珂宝训练大师大师大师</p>
         </div>
       </div>
@@ -36,8 +38,14 @@
         </div>
         <div class="wordBox">
           <p class="title">安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和</p>
-          <p class="address"><i class="iconfont icon-dingwei"></i><span>江苏省南京市大行宫</span></p>
-          <p class="time"><i class="iconfont icon-shijian"></i><span>2019.09.09-12.21</span></p>
+          <p class="address">
+            <i class="iconfont icon-dingwei"></i>
+            <span>江苏省南京市大行宫</span>
+          </p>
+          <p class="time">
+            <i class="iconfont icon-shijian"></i>
+            <span>2019.09.09-12.21</span>
+          </p>
         </div>
       </div>
       <div class="activityItem item" @click="goActivityDetails">
@@ -46,8 +54,14 @@
         </div>
         <div class="wordBox">
           <p class="title">安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和</p>
-          <p class="address"><i class="iconfont icon-dingwei"></i><span>江苏省南京市大行宫</span></p>
-          <p class="time"><i class="iconfont icon-shijian"></i><span>2019.09.09-12.21</span></p>
+          <p class="address">
+            <i class="iconfont icon-dingwei"></i>
+            <span>江苏省南京市大行宫</span>
+          </p>
+          <p class="time">
+            <i class="iconfont icon-shijian"></i>
+            <span>2019.09.09-12.21</span>
+          </p>
         </div>
       </div>
     </div>
@@ -55,6 +69,7 @@
 </template>
 
 <script>
+import { myFollow } from "@/api/my.js";
 import navigationBar from "@/components/navigationBar";
 export default {
   components: {
@@ -66,12 +81,26 @@ export default {
       headImg1: `${this.$store.state.imgUrlHttp}/a6.png`,
       headImg2: `${this.$store.state.imgUrlHttp}/a5.png`,
       actImg1: `${this.$store.state.imgUrlHttp}/d1.png`,
-      actImg2: `${this.$store.state.imgUrlHttp}/d1.png`
+      actImg2: `${this.$store.state.imgUrlHttp}/d1.png`,
+      pageSize: 3, //一页显示条数
+      pageIndex: 1, //页码
+      total: 0 //总条数
     };
   },
+  mounted() {
+    this.fetchFollow();
+  },
   methods: {
-    itemToggle(num){
-      this.itemActive = num
+    async fetchFollow() {
+      var data = {
+        pageSize: this.pageSize,
+        pageIndex: this.pageIndex
+      };
+      let mfRes = await myFollow();
+      console.log(mfRes);
+    },
+    itemToggle(num) {
+      this.itemActive = num;
     },
     goPersonal() {
       wx.navigateTo({
@@ -117,10 +146,10 @@ export default {
       }
     }
   }
-  .list{
+  .list {
     width: 90%;
     margin: 0 auto;
-    .item{
+    .item {
       font-size: 13px;
       display: flex;
       color: #525151;
@@ -131,36 +160,36 @@ export default {
     }
   }
   // 谜友
-  .friendsList{
-    .friendsItem{
-      .imgBox{
+  .friendsList {
+    .friendsItem {
+      .imgBox {
         width: 46px;
         height: 46px;
         margin-right: 15px;
         border-radius: 100%;
         overflow: hidden;
-        img{
+        img {
           width: 100%;
           height: 100%;
         }
       }
-      .wordBox{
+      .wordBox {
         flex: 1;
-        .name{
+        .name {
           line-height: 26px;
-          span{
+          span {
             font-size: 16px;
             color: #333;
             vertical-align: middle;
           }
-          i{
+          i {
             font-size: 18px;
             margin-left: 10px;
             display: inline-block;
             vertical-align: middle;
           }
         }
-        .info{
+        .info {
           height: 14px;
           line-height: 14px;
           color: #797979;
@@ -199,25 +228,25 @@ export default {
           line-clamp: 2; //显示的行
           font-size: 16px;
         }
-        .address{
+        .address {
           font-size: 12px;
           color: #8e8e8e;
           line-height: 20px;
           margin-top: 5px;
         }
-        .time{
+        .time {
           font-size: 12px;
           color: #8e8e8e;
           line-height: 20px;
         }
-        i{
+        i {
           display: inline-block;
           margin-right: 5px;
           vertical-align: middle;
           font-size: 14px;
           color: #8e8e8e;
         }
-        span{
+        span {
           vertical-align: middle;
           color: #8e8e8e;
         }

@@ -15,15 +15,20 @@
     </div>
 
     <div class="containerMain">
-      <swiper class="swiperBox" duration="500" previous-margin="20px" next-margin="20px">
-        <block v-for="(item,index) in background" :key="index">
+      <swiper
+        class="swiperBox"
+        duration="500"
+        previous-margin="20px"
+        next-margin="20px"
+        @change="swiperChange"
+      >
+        <block v-for="(item,index) in levList" :key="index">
           <swiper-item class="swiperItemBox">
             <div class="swiperViewBox">
               <div class="topDiv">
                 <div class="left">
                   <p class="p1">
-                    LV
-                    <span class="p1_num">1</span>
+                    Lv<span class="p1_num">{{item}}</span>
                     <span class="p1_after">等级权益说明</span>
                   </p>
                   <p class="p2">
@@ -35,7 +40,9 @@
                     <span class="p3_num">300</span>天了
                   </p>
                 </div>
-                <div class="right"></div>
+                <div class="right">
+                  <img src="../../../static/images/lv1.png" mode="adpectFill" />
+                </div>
               </div>
               <div class="bottomDiv">
                 <ul>
@@ -82,6 +89,13 @@
           </swiper-item>
         </block>
       </swiper>
+      <swiper class="swiperNum" :current="currentNum">
+        <block v-for="(item,index) in levList" :key="index">
+          <swiper-item class="swiperItemNumBox">
+            <div class="dot"></div>
+          </swiper-item>
+        </block>
+      </swiper>
     </div>
   </div>
 </template>
@@ -94,11 +108,17 @@ export default {
   },
   data() {
     return {
-      background: ["1", "2", "3"]
+      levList: ["1", "2", "3", "4", "5", "6", "7"],
+      currentNum: 0
     };
   },
   mounted() {},
-  methods: {}
+  methods: {
+    swiperChange(e) {
+      console.log(e.target.current);
+      this.currentNum = e.target.current;
+    }
+  }
 };
 </script>
 
@@ -162,61 +182,73 @@ export default {
           padding: 10px 15px;
           .topDiv {
             color: #fff;
-            .p1 {
-              font-size: 42px;
-              .p1_num {
-                // font-size: 42px;
-                margin-right: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            .left {
+              .p1 {
+                font-size: 42px;
+                font-weight: 600;
+                .p1_num {
+                  margin-right: 5px;
+                }
+                .p1_after {
+                  font-size: 13px;
+                  font-weight: normal;
+                  &::after {
+                    display: inline-block;
+                    content: "";
+                    width: 5px;
+                    height: 5px;
+                    border-right: 1px solid #fff;
+                    border-bottom: 1px solid #fff;
+                    transform: rotate(-45deg);
+                    position: relative;
+                    top: -1px;
+                    right: -5px;
+                  }
+                }
               }
-              .p1_after {
-                font-size: 13px;
-                &::after {
+              .p2 {
+                font-size: 12px;
+                padding-left: 10px;
+                line-height: 30px;
+                &::before {
                   display: inline-block;
                   content: "";
                   width: 5px;
                   height: 5px;
-                  border-right: 1px solid #fff;
-                  border-bottom: 1px solid #fff;
-                  transform: rotate(-45deg);
                   position: relative;
+                  background-color: #fff;
+                  border-radius: 5px;
                   top: -3px;
-                  right: -5px;
+                  right: 5px;
+                }
+                .p2_num {
+                  font-size: 25px;
+                }
+              }
+              .p3 {
+                font-size: 12px;
+                padding-left: 10px;
+                line-height: 30px;
+                &::before {
+                  display: inline-block;
+                  content: "";
+                  width: 5px;
+                  height: 5px;
+                  position: relative;
+                  background-color: #fff;
+                  border-radius: 5px;
+                  top: -3px;
+                  right: 5px;
                 }
               }
             }
-            .p2 {
-              font-size: 12px;
-              padding-left: 10px;
-              line-height: 30px;
-              &::before {
-                display: inline-block;
-                content: "";
-                width: 5px;
-                height: 5px;
-                position: relative;
-                background-color: #fff;
-                border-radius: 5px;
-                top: -3px;
-                right: 5px;
-              }
-              .p2_num {
-                font-size: 25px;
-              }
-            }
-            .p3 {
-              font-size: 12px;
-              padding-left: 10px;
-              line-height: 30px;
-              &::before {
-                display: inline-block;
-                content: "";
-                width: 5px;
-                height: 5px;
-                position: relative;
-                background-color: #fff;
-                border-radius: 5px;
-                top: -3px;
-                right: 5px;
+            .right {
+              img {
+                width: 100px;
+                height: 100px;
               }
             }
           }
@@ -252,10 +284,58 @@ export default {
             border-top: 13px solid #eddcbe;
             border-left: 8px solid transparent;
             border-right: 8px solid transparent;
-            border-bottom : 13px solid transparent;
+            border-bottom: 13px solid transparent;
             left: 50%;
             transform: translateX(-50%);
             bottom: -26px;
+          }
+        }
+      }
+    }
+    .swiperNum {
+      margin-top: 10px;
+      height: 30px;
+      .swiperItemNumBox {
+        display: flex;
+        justify-content: center;
+        margin-left: 49%;
+        .dot {
+          height: 2px;
+          width: 100%;
+          margin-top: 15px;
+          background-color: skyblue;
+          position: relative;
+          &::before {
+            display: inline-block;
+            content: "";
+            width: 7px;
+            height: 7px;
+            background-color: #ff8000;
+            border: 2px solid #fff;
+            border-radius: 100%;
+            position: absolute;
+            top: -4px;
+            left: 0;
+          }
+        }
+        &:last-child {
+          width: 86.1% !important;
+          .dot {
+            &::before {
+              display: none;
+            }
+            &::after {
+              display: inline-block;
+              content: "";
+              width: 7px;
+              height: 7px;
+              background-color: #ff8000;
+              border: 2px solid #fff;
+              border-radius: 100%;
+              position: absolute;
+              top: -4px;
+              right: 0;
+            }
           }
         }
       }

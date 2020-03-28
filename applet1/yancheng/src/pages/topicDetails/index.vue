@@ -52,16 +52,19 @@
         :key="comItem.id"
       >
         <div class="leftHead">
-          <img :src="headImg1" mode="aspectFill" />
+          <img v-if="comItem.memberAvatar" :src="comItem.memberAvatar" mode="aspectFill" />
         </div>
         <div class="rightCont">
           <h5 class="name">{{comItem.replyName ? comItem.replyName : comItem.memberName}}</h5>
           <ul class="reviceCont">
             <li>
-              <div class="cont" v-if="comItem.replyName">回复&nbsp;&nbsp;{{comItem.memberName}}：{{comItem.comment}}</div>
+              <div
+                class="cont"
+                v-if="comItem.replyName"
+              >回复&nbsp;&nbsp;{{comItem.memberName}}：{{comItem.comment}}</div>
               <div class="cont" v-else>{{comItem.comment}}</div>
               <div class="handle">
-                <p>10分钟</p>
+                <p>{{comItem.createTime}}</p>
                 <p @click.stop="backPinLunFun(comItem)">回复</p>
                 <p>私聊</p>
               </div>
@@ -93,17 +96,17 @@
     <div class="mask" @click.stop="closeMask" v-if="maskVal"></div>
     <div class="maskCont" v-if="maskVal">
       <div class="title">
-        <img :src="headImg" mode="aspectFill" />
-        <span>张小凡</span>
+        <img v-if="details.createrAvatar" :src="details.createrAvatar" mode="aspectFill" />
+        <span>{{details.createrName}}</span>
       </div>
       <div class="textaCont">
         <textarea
           class="textA"
           auto-focus
           placeholder="请留下你想说的话，将发送到对方的消息中心"
-          :value="sixinValue"
-          @input="getSixin"
+          v-model="sixinValue"
           placeholder-style="color:#b8b8b8"
+          maxlength="100"
         ></textarea>
         <span class="numSpan">限100字</span>
       </div>
@@ -129,8 +132,11 @@
 import {
   forumContentDetailsGet,
   forumLike,
-  forumComment
+  forumLikeNo,
+  forumComment,
+  messageTo
 } from "@/api/home";
+import { getDateDiff } from "@/utils/getDateDiff";
 import navigationBar from "@/components/navigationBar";
 export default {
   components: {
@@ -143,7 +149,6 @@ export default {
       commentValue: "", //评论内容
       showPinLun: false, //是否显示评论
       placeholderPL: "评论", //评论默认显示的字
-      headImg: `${this.$store.state.imgUrlHttp}/head.png`,
       headImg1: `${this.$store.state.imgUrlHttp}/a6.png`,
       headImg2: `${this.$store.state.imgUrlHttp}/a1.png`,
       details: "",
@@ -156,7 +161,9 @@ export default {
     forumContentDetailsGet(options.forumContentId).then(res => {
       if (res.status == 200) {
         let resD = res.result;
-        resD.images = resD.images.split(";");
+        if (resD.images !== "") {
+          resD.images = resD.images.split(";");
+        }
         if (resD.content.length > 100) {
           resD["showEllip"] = true;
         } else {
@@ -183,13 +190,10 @@ export default {
     },
     likeFun(isLike, id) {
       var _this = this;
-       let data = {
-          forumId: id
-        };
       if (isLike == 2) {
-        forumLike(data).then(res => {
+        forumLike(id).then(res => {
           if (res.status == 200) {
-            _this.details.isLike = 2;
+            _this.details.isLike = 1;
             wx.showToast({
               title: "关注成功",
               icon: "none",
@@ -198,9 +202,9 @@ export default {
           }
         });
       } else {
-        forumLike(data).then(res => {
+        forumLikeNo(id).then(res => {
           if (res.status == 200) {
-            _this.details.isLike = 1;
+            _this.details.isLike = 2;
             wx.showToast({
               title: "取消关注",
               icon: "none",
@@ -216,6 +220,7 @@ export default {
       });
     },
     openMask() {
+      this.sixinValue = '';
       this.maskVal = true;
     },
     closeMask() {
@@ -223,7 +228,7 @@ export default {
     },
     showPinLunFun() {
       this.showZanAndPinglunNum = null;
-      this.commentContent = '';
+      this.commentContent = "";
       this.placeholderPL = "留言: " + this.details.createrName;
       this.showPinLun = true;
       this.show_back = 1;
@@ -235,14 +240,19 @@ export default {
       this.show_back = 2;
       this.comItemData = comItem;
     },
-    getSixin(e) {
-      this.sixinValue = e.target.value;
-    },
     conBtnPut() {
-      this.maskVal = false;
-      wx.showToast({
-        title: "发送成功",
-        duration: 2000 //停留时间
+      let data = {
+        msg: this.sixinValue,
+        recipient: this.details.createrId
+      };
+      messageTo(data).then(res => {
+        if (res.status == 200) {
+          this.maskVal = false;
+          wx.showToast({
+            title: "发送成功",
+            duration: 2000 //停留时间
+          });
+        }
       });
     },
     //点选和评论的隐藏通过事件委托到全页面(暂时只实现当条朋友所在区域,全页面和滚动时也隐藏在考虑实现)
@@ -262,28 +272,37 @@ export default {
       if (_this.show_back == 1) {
         data = {
           comment: _this.commentContent,
-          forumId: _this.details.id,
-          memberId: _this.details.createrId,
-          memberName: _this.details.createrName
+          forumId: _this.details.id
         };
       } else {
         data = {
           comment: _this.commentContent,
           forumId: _this.details.id,
-          memberId: _this.details.createrId,
-          memberName: _this.details.createrName,
           replyId: _this.comItemData.memberId,
           replyName: _this.comItemData.memberName
         };
       }
-      console.log('data--',data)
       forumComment(data).then(res => {
         if (res.status == 200) {
           wx.showToast({
             title: "发送成功",
             duration: 2000 //停留时间
           });
-          _this.details.properties.forumCommentList.push(data);
+          if (_this.show_back == 1) {
+            data = {
+              comment: res.result.comment,
+              memberName: res.result.memberName,
+              createTime: res.result.createTime
+            };
+          } else {
+            data = {
+              comment: res.result.comment,
+              memberName: res.result.memberName,
+              replyName: res.result.replyName,
+              createTime: res.result.createTime
+            };
+          }
+          _this.details.properties.forumCommentList.push(data);  //成功，则丢进数组
         }
       });
     }
@@ -429,15 +448,15 @@ export default {
             .handle {
               font-size: 10px;
               color: #737373;
-              width: 60%;
               display: flex;
+              width: 70%;
               p {
-                width: 25%;
+                width: 20%;
                 line-height: 24px;
                 font-size: 10px;
                 color: #b1a1a3;
                 &:first-child {
-                  width: 40%;
+                  flex: 1;
                   color: #737373;
                 }
               }

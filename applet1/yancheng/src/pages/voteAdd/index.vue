@@ -119,6 +119,7 @@ export default {
     },
     chooseImage() {
       let self = this;
+      self.$store.dispatch("getOssData", { dir: "city/voteContent" });
       wx.chooseImage({
         count: 9,
         sizeType: "compressed",

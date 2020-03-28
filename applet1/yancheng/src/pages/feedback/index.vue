@@ -1,33 +1,46 @@
 <template>
   <div class="feedback">
-     <navigation-bar
-      :title="'反馈与建议'"
-      :navBackgroundColor="'#fff'"
-      :back-visible="true"
-    ></navigation-bar>
-    <form @submit="bindFormSubmit" class="formBox">
+    <navigation-bar :title="'反馈与建议'" :navBackgroundColor="'#fff'" :back-visible="true"></navigation-bar>
+    <div class="formBox">
       <textarea
         placeholder="请留下你的宝贵意见或者建议，我们将努力改进"
-        placeholder-style="color:#ECECEC;font-size:18px;"
+        placeholder-style="color:#ECECEC;font-size:16px;"
+        v-model="msg"
         name="textarea"
       />
-      <button form-type="submit">提交</button>
-    </form>
+      <button @click="bindFormSubmit">提交</button>
+    </div>
   </div>
 </template>
 
 <script>
+import { suggestionPost } from "@/api/my.js";
 import navigationBar from "@/components/navigationBar";
 export default {
   components: {
     navigationBar
   },
   data() {
-    return {};
+    return {
+      msg: ""
+    };
   },
   methods: {
-    bindFormSubmit: function(e) {
-      console.log(e.mp.detail.value.textarea);
+    async bindFormSubmit() {
+      let authInfo = wx.getStorageSync("authInfo");
+      let data = {
+        content: this.msg,
+        creator: authInfo.id
+      };
+      let suRes = await suggestionPost(data);
+      if (suRes.status == 200) {
+        wx.showToast({
+          title: "感谢您的反馈，谢谢",
+          icon: "none",
+          duration: 2000
+        });
+        this.msg = ''
+      }
     }
   }
 };
