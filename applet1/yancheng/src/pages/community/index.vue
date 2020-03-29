@@ -4,7 +4,7 @@
     <div class="contentList w94">
       <div class="contentItem" v-for="(item,index) in communityFriendsList" :key="item.id">
         <!-- 头像 -->
-        <div class="headName" @click.stop="goPersonal">
+        <div class="headName" @click.stop="goPersonal(item.memberId)">
           <img v-if="item.memberAvatar" :src="item.memberAvatar" mode="aspectFill" />
           <span>{{item.memberName}}</span>
         </div>
@@ -175,6 +175,7 @@ export default {
           // 第一页则直接赋值 （下拉刷新）
           this.communityFriendsList = resData;
         }
+        wx.stopPullDownRefresh();  //停止下拉刷新
       }
     },
     requireTxt(index) {
@@ -185,9 +186,9 @@ export default {
         this.communityFriendsList[index].showEllip = true;
       }
     },
-    goPersonal() {
+    goPersonal(id) {
       wx.navigateTo({
-        url: "/pages/personal/main"
+        url: `/pages/personal/main?createrId=${id}`
       });
     },
     zanHandle(id, isLike, index) {
@@ -394,7 +395,7 @@ export default {
           height: 28px;
           vertical-align: middle;
           margin-right: 5px;
-          border-radius: 100%;
+          border-radius: 5px;
         }
         span {
           font-size: 18px;

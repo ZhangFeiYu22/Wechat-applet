@@ -6,14 +6,16 @@
       :back-visible="true"
     ></navigation-bar>
     <div class="friendsList">
-      <div class="friendsItem" v-for="(item,index) in messageList" :key="index" @click="goMessageDetail(item.id)">
+      <div class="friendsItem" v-for="(item,index) in messageList" :key="index" @click="goMessageDetail(item)">
         <div class="imgBox">
-          <img :src="headImg1" mode="aspectFill" />
+          <img v-if="item.properties.creatorAvatar" :src="item.properties.creatorAvatar" mode="aspectFill" />
         </div>
         <div class="wordBox">
           <p class="name">
-            <span>张小凡</span>
-            <i class="iconfont icon-nan"></i>
+            <span>{{item.properties.creatorName}}</span>
+            <i class="iconfont icon-nan" v-if="item.properties.creatorGender == 1"></i>
+            <i class="iconfont icon-nv" v-else-if="item.properties.creatorGender == 2"></i>
+            <i class="iconfont" v-else></i>
           </p>
           <p class="info">
             对你说：
@@ -50,9 +52,10 @@ export default {
         this.messageList = mesRes.result
       }
     },
-    goMessageDetail(id) {
+    goMessageDetail(data) {
+      let dd = JSON.stringify(data)
       wx.navigateTo({
-        url: `/pages/messageDetails/main?msgId=${id}`
+        url: `/pages/messageDetails/main?msgData=${dd}`
       });
     }
   }

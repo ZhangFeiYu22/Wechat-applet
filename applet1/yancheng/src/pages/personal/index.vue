@@ -43,13 +43,14 @@
         <!-- <p>状态</p> -->
       </div>
     </div>
-    <!-- 社区 -->
+    <!-- 话题 -->
     <div class="contentList w94" v-if="navType == '0'">
+      <div class="lengthNo" v-if="forumList.length == 0">该用户暂无话题动态</div>
       <div class="contentItem" v-for="(item,index) in forumList" :key="index">
         <div class="content" :class="item.showEllip ? 'ellip' : ''">{{item.content}}</div>
         <div v-if="item.showEllip" class="toggleBox">
           <div class="more_txt" @click.stop="requireTxt(index)">
-            <span>{{item.showEllip ? '展开' : '收起'}}{{item.showEllip}}</span>
+            <span>{{item.showEllip ? '展开' : '收起'}}</span>
           </div>
         </div>
         <!-- 图片展示 -->
@@ -79,6 +80,7 @@
     </div>
     <!-- 动态 -->
     <div class="contentList contentList_2 w94" v-else>
+      <div class="lengthNo" v-if="communityFriendsList.length == 0">该用户暂无社区动态</div>
       <div class="contentItem" v-for="(item,index) in communityFriendsList" :key="item.id">
         <!-- 内容 -->
         <div class="content" id="contentInfo" :class="item.showEllip ?'ellip': ''">{{item.content}}</div>
@@ -253,6 +255,7 @@ export default {
     };
   },
   onLoad(options) {
+    Object.assign(this.$data, this.$options.data());
     this.mid = options.createrId;
     this.fetchMember(options.createrId);
     this.fetchMemberForum(options.createrId);
@@ -279,8 +282,10 @@ export default {
         var forumRes = ffRes.result.data;
         _this.ffPage.total = ffRes.result.total;
         forumRes.map(item => {
-          if (item.images !== "") {
+          if (item.images !== "" && item.images) {
             item.images = item.images.split(";");
+          } else {
+            item.images = [];
           }
           if (item.content.length > 80) {
             item["showEllip"] = true;
@@ -849,6 +854,12 @@ export default {
       }
     }
   }
+  .lengthNo {
+      font-size: 14px;
+      text-align: center;
+      color: #999;
+      margin-top: 30%;
+    }
   // 动态
   .contentList_2 {
     .contentItem {

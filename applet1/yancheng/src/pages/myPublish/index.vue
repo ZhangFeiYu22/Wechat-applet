@@ -218,8 +218,10 @@ export default {
         var forumRes = ffRes.result.data;
         _this.ffPage.total = ffRes.result.total;
         forumRes.map(item => {
-          if (item.images !== "") {
+          if (item.images !== "" && item.images) {
             item.images = item.images.split(";");
+          } else {
+            item.images = [];
           }
           if (item.content.length > 80) {
             item["showEllip"] = true;

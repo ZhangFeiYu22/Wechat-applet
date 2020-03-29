@@ -3,12 +3,14 @@
     <navigation-bar :title="'会员等级'" :navBackgroundColor="'#fff'" :back-visible="true"></navigation-bar>
     <div class="head">
       <div class="headImg">
-        <img src="../../../static/images/plate.png" mode="aspectFill" />
+        <img v-if="myInfo.avatar" :src="myInfo.avatar" mode="aspectFill" />
       </div>
       <div class="headName">
-        <p class="name">张小凡</p>
+        <p class="name">{{myInfo.nickName}}</p>
         <p class="phone">
-          <i class="iconfont icon-nan"></i>
+          <i class="iconfont icon-nan" v-if="myInfo.gender == 1"></i>
+          <i class="iconfont icon-nv" v-else-if="myInfo.gender == 2"></i>
+          <i class="iconfont" v-else></i>
           <span>18211112222</span>
         </p>
       </div>
@@ -28,7 +30,8 @@
               <div class="topDiv">
                 <div class="left">
                   <p class="p1">
-                    Lv<span class="p1_num">{{item}}</span>
+                    Lv
+                    <span class="p1_num">{{item}}</span>
                     <span class="p1_after">等级权益说明</span>
                   </p>
                   <p class="p2">
@@ -46,41 +49,9 @@
               </div>
               <div class="bottomDiv">
                 <ul>
-                  <li>
-                    <img src="../../../static/images/plate.png" mode="aspectFill" />
-                    <p>发布状态</p>
-                  </li>
-                  <li>
-                    <img src="../../../static/images/plate.png" mode="aspectFill" />
-                    <p>发布状态</p>
-                  </li>
-                  <li>
-                    <img src="../../../static/images/plate.png" mode="aspectFill" />
-                    <p>发布状态</p>
-                  </li>
-                  <li>
-                    <img src="../../../static/images/plate.png" mode="aspectFill" />
-                    <p>发布状态</p>
-                  </li>
-                  <li>
-                    <img src="../../../static/images/plate.png" mode="aspectFill" />
-                    <p>发布状态</p>
-                  </li>
-                  <li>
-                    <img src="../../../static/images/plate.png" mode="aspectFill" />
-                    <p>发布状态</p>
-                  </li>
-                  <li>
-                    <img src="../../../static/images/plate.png" mode="aspectFill" />
-                    <p>发布状态</p>
-                  </li>
-                  <li>
-                    <img src="../../../static/images/plate.png" mode="aspectFill" />
-                    <p>发布状态</p>
-                  </li>
-                  <li>
-                    <img src="../../../static/images/plate.png" mode="aspectFill" />
-                    <p>发布状态</p>
+                  <li v-for="(ictem,icdex) in lvIconList" :key="icdex">
+                    <i class="iconfont" :class="[ictem.isHas ? 'has' : 'no' , ictem.icon ]"></i>
+                    <p>{{ictem.name}}</p>
                   </li>
                 </ul>
               </div>
@@ -109,10 +80,25 @@ export default {
   data() {
     return {
       levList: ["1", "2", "3", "4", "5", "6", "7"],
-      currentNum: 0
+      currentNum: 0,
+      myInfo: {},
+      lvIconList: [
+        { icon: "icon-lv_icon_1", name: "发布状态", isHas: true },
+        { icon: "icon-lv_icon_2", name: "常规购买", isHas: true },
+        { icon: "icon-lv_icon_3", name: "参加活动", isHas: true },
+        { icon: "icon-lv_icon_4", name: "发布投票", isHas: true },
+        { icon: "icon-lv_icon_5", name: "限定兑换", isHas: false },
+        { icon: "icon-lv_icon_6", name: "定制会员卡", isHas: false },
+        { icon: "icon-lv_icon_7", name: "活动邀请", isHas: false },
+        { icon: "icon-lv_icon_8", name: "定制礼品", isHas: false },
+        { icon: "icon-lv_icon_9", name: "俱乐部", isHas: false }
+      ]
     };
   },
-  mounted() {},
+  mounted() {
+    this.myInfo = wx.getStorageSync("authInfo");
+    console.log(this.myInfo);
+  },
   methods: {
     swiperChange(e) {
       console.log(e.target.current);
@@ -266,6 +252,21 @@ export default {
                 width: 25%;
                 text-align: center;
                 margin-bottom: 20px;
+                i {
+                  width: 44px;
+                  height: 44px;
+                  line-height: 44px;
+                  display: inline-block;
+                  border-radius: 44px;
+                  color: #d4be9e;
+                  font-size: 30px;
+                  &.has {
+                    background-color: #444444;
+                  }
+                  &.no {
+                    background-color: #baac9d;
+                  }
+                }
                 img {
                   width: 44px;
                   height: 44px;
@@ -273,6 +274,7 @@ export default {
                 }
                 p {
                   font-size: 12px;
+                  margin-top: 2px;
                 }
               }
             }

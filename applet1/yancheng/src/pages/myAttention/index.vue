@@ -6,28 +6,18 @@
       <div class="navI" :class="itemActive == '1' ? 'active' : ''" @click="itemToggle('1')">活动</div>
     </div>
     <div class="friendsList list" v-if="itemActive == 0">
-      <div class="friendsItem item" @click="goPersonal">
+      <div class="friendsItem item" v-for="item in mfDataList" :key="item.id" @click="goPersonal(item.followId)">
         <div class="imgBox">
-          <img :src="headImg1" mode="aspectFill" />
+          <img v-if="item.properties.avatar" :src="item.properties.avatar" mode="aspectFill" />
         </div>
         <div class="wordBox">
           <p class="name">
-            <span>张小凡</span>
-            <i class="iconfont icon-nan"></i>
+            <span>{{item.properties.nickName}}</span>
+            <i class="iconfont icon-nan" v-if="item.properties.gender == 1"></i>
+            <i class="iconfont icon-nv" v-else-if="item.properties.gender == 2"></i>
+            <i class="iconfont" v-else></i>
           </p>
-          <p class="info">要成为世界第一的梦珂宝训练大师大师大师要成为世界第一的梦珂宝训练大师大师大师</p>
-        </div>
-      </div>
-      <div class="friendsItem item" @click="goPersonal">
-        <div class="imgBox">
-          <img :src="headImg2" mode="aspectFill" />
-        </div>
-        <div class="wordBox">
-          <p class="name">
-            <span>张小凡</span>
-            <i class="iconfont icon-nan"></i>
-          </p>
-          <p class="info">要成为世界第一的梦珂宝训练大师大师大师要成为世界第一的梦珂宝训练大师大师大师</p>
+          <p class="info">{{item.properties.introduction}}</p>
         </div>
       </div>
     </div>
@@ -84,7 +74,8 @@ export default {
       actImg2: `${this.$store.state.imgUrlHttp}/d1.png`,
       pageSize: 3, //一页显示条数
       pageIndex: 1, //页码
-      total: 0 //总条数
+      total: 0, //总条数
+      mfDataList: []
     };
   },
   mounted() {
@@ -98,13 +89,16 @@ export default {
       };
       let mfRes = await myFollow();
       console.log(mfRes);
+      if (mfRes.status == 200) {
+        this.mfDataList = mfRes.result.data;
+      }
     },
     itemToggle(num) {
       this.itemActive = num;
     },
-    goPersonal() {
+    goPersonal(id) {
       wx.navigateTo({
-        url: "/pages/personal/main"
+        url: `/pages/personal/main?createrId=${id}`
       });
     },
     goActivityDetails() {

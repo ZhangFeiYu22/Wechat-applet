@@ -6,6 +6,83 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "755558",
+      "name": "设置",
+      "font_class": "settings",
+      "unicode": "e633",
+      "unicode_decimal": 58931
+    },
+    {
+      "icon_id": "354566",
+      "name": "关闭",
+      "font_class": "close",
+      "unicode": "e621",
+      "unicode_decimal": 58913
+    },
+    {
+      "icon_id": "700810",
+      "name": "钱",
+      "font_class": "lv_icon_5",
+      "unicode": "e632",
+      "unicode_decimal": 58930
+    },
+    {
+      "icon_id": "781571",
+      "name": "盒子3-01",
+      "font_class": "lv_icon_2",
+      "unicode": "e67f",
+      "unicode_decimal": 59007
+    },
+    {
+      "icon_id": "1092128",
+      "name": "定位",
+      "font_class": "lv_icon_1",
+      "unicode": "e61f",
+      "unicode_decimal": 58911
+    },
+    {
+      "icon_id": "4437590",
+      "name": "导航",
+      "font_class": "lv_icon_3",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
+      "icon_id": "4539906",
+      "name": "礼物",
+      "font_class": "lv_icon_8",
+      "unicode": "e620",
+      "unicode_decimal": 58912
+    },
+    {
+      "icon_id": "6486524",
+      "name": "相机",
+      "font_class": "lv_icon_4",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "6888846",
+      "name": "VIP",
+      "font_class": "lv_icon_9",
+      "unicode": "e652",
+      "unicode_decimal": 58962
+    },
+    {
+      "icon_id": "6893318",
+      "name": "卡",
+      "font_class": "lv_icon_6",
+      "unicode": "e6c6",
+      "unicode_decimal": 59078
+    },
+    {
+      "icon_id": "8423774",
+      "name": "唱歌话筒",
+      "font_class": "lv_icon_7",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
       "icon_id": "7192327",
       "name": "会员",
       "font_class": "huiyuan",
@@ -181,13 +258,6 @@
       "unicode_decimal": 58938
     },
     {
-      "icon_id": "11594378",
-      "name": "点赞",
-      "font_class": "dianzan",
-      "unicode": "e6ac",
-      "unicode_decimal": 59052
-    },
-    {
       "icon_id": "1071050",
       "name": "评论1",
       "font_class": "pinglun1",
@@ -242,13 +312,6 @@
       "font_class": "faxian",
       "unicode": "e6b8",
       "unicode_decimal": 59064
-    },
-    {
-      "icon_id": "8763649",
-      "name": "皇冠",
-      "font_class": "huangguan",
-      "unicode": "e6c9",
-      "unicode_decimal": 59081
     },
     {
       "icon_id": "1506313",

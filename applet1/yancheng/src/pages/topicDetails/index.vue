@@ -1,5 +1,5 @@
 <template>
-  <div class="topicDetails" @click.stop="hideInputFun" @touchmove="hideInputFun">
+  <div class="topicDetails" @touchmove="hideInputFun">
     <navigation-bar :title="'话题详情'" :navBackgroundColor="'#fff'" :back-visible="true"></navigation-bar>
     <!-- 内容列表 -->
     <div class="contentItem w94">
@@ -66,7 +66,8 @@
               <div class="handle">
                 <p>{{comItem.createTime}}</p>
                 <p @click.stop="backPinLunFun(comItem)">回复</p>
-                <p>私聊</p>
+                <p></p>
+                <!-- <p>私聊</p> -->
               </div>
             </li>
           </ul>
@@ -113,6 +114,7 @@
       <button class="contBtn" @click="conBtnPut">发送</button>
     </div>
 
+    <div class="pinglunMask" @click.stop="hideInputFun" v-if="showPinLun"></div>
     <div v-if="showPinLun" class="pinlunB">
       <view class="liuyan">
         <input
@@ -220,7 +222,7 @@ export default {
       });
     },
     openMask() {
-      this.sixinValue = '';
+      this.sixinValue = "";
       this.maskVal = true;
     },
     closeMask() {
@@ -235,6 +237,7 @@ export default {
     },
     backPinLunFun(comItem) {
       this.showZanAndPinglunNum = null;
+      this.commentContent = '';
       this.placeholderPL = "回复: " + comItem.memberName;
       this.showPinLun = true;
       this.show_back = 2;
@@ -288,6 +291,7 @@ export default {
             title: "发送成功",
             duration: 2000 //停留时间
           });
+          _this.showPinLun = false;
           if (_this.show_back == 1) {
             data = {
               comment: res.result.comment,
@@ -302,7 +306,7 @@ export default {
               createTime: res.result.createTime
             };
           }
-          _this.details.properties.forumCommentList.push(data);  //成功，则丢进数组
+          _this.details.properties.forumCommentList.push(data); //成功，则丢进数组
         }
       });
     }
@@ -469,6 +473,7 @@ export default {
   // 底部
   .footerBox {
     position: fixed;
+    z-index: 3;
     width: 100%;
     bottom: 0;
     background-color: #fff;
@@ -580,16 +585,26 @@ export default {
       }
     }
   }
+  .pinglunMask {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    // background-color: rgba(0, 0, 0, 0.5);
+    background-color: transparent;
+    z-index: 2;
+  }
   // 评论框
   .pinlunB {
+    position: fixed;
+    bottom: 0;
+    z-index: 4;
+    width: 100%;
     .liuyan {
       display: flex;
       background: #fafafa;
       border-top: 1px solid #ddd;
-      width: 100%;
-      bottom: 0;
-      position: fixed;
-      z-index: 4;
       height: 50px;
       justify-content: center;
       align-items: center;

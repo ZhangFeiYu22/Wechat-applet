@@ -156,8 +156,10 @@ export default {
         var resData = forumRes.result.data;
         this.total = forumRes.result.total;
         resData.map(item => {
-          if (item.images !== "") {
+          if (item.images !== "" && item.images) {
             item.images = item.images.split(";");
+          } else {
+            item.images = [];
           }
           if (item.content.length > 80) {
             item["showEllip"] = true;
@@ -176,7 +178,7 @@ export default {
           // 第一页则直接赋值 （下拉刷新）
           this.forumList = resData;
         }
-        wx.stopPullDownRefresh();  //停止下拉刷新
+        wx.stopPullDownRefresh(); //停止下拉刷新
       }
     },
     // 获取广告位

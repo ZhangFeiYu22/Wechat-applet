@@ -35,7 +35,7 @@
 
     <div class="footerBox">
       <div class="other">
-        <p @click.stop="likeFun">
+        <p @click.stop="likeFun(acDetails.id)">
           <i class="iconfont" :class="likeAct?'icon-aixin1':'icon-aixin0'"></i>
           <span>关注</span>
         </p>
@@ -79,7 +79,7 @@
 </template>
 
 <script>
-import { activityDetailsGet } from "@/api/activity";
+import { activityDetailsGet, activitysFollow,activitysFollowNo } from "@/api/activity";
 import navigationBar from "@/components/navigationBar";
 export default {
   components: {
@@ -116,6 +116,30 @@ export default {
       this.joinMaskShow = !this.joinMaskShow;
     },
     likeFun() {
+      // var _this = this;
+      // if (isLike == 2) {
+      //   activitysFollow(id).then(res => {
+      //     if (res.status == 200) {
+      //       acDetails.isLike = 1;
+      //       wx.showToast({
+      //         title: "关注成功",
+      //         icon: "none",
+      //         duration: 1500
+      //       });
+      //     }
+      //   });
+      // } else {
+      //   activitysFollowNo(id).then(res => {
+      //     if (res.status == 200) {
+      //       acDetails.isLike = 2;
+      //       wx.showToast({
+      //         title: "取消关注",
+      //         icon: "none",
+      //         duration: 1500
+      //       });
+      //     }
+      //   });
+      // }
       this.likeAct = !this.likeAct;
       if (this.likeAct) {
         wx.showToast({

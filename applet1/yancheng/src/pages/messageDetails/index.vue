@@ -3,28 +3,27 @@
     <navigation-bar :title="'消息'" :navBackgroundColor="'#fff'" :back-visible="true"></navigation-bar>
     <div class="head">
       <div class="headImg">
-        <img :src="headImg1" mode="aspectFill" />
+        <img
+          v-if="msgOne.properties.creatorAvatar"
+          :src="msgOne.properties.creatorAvatar"
+          mode="aspectFill"
+        />
       </div>
       <div class="nameTime">
-        <p class="name">张小凡</p>
+        <p class="name">{{msgOne.properties.creatorName}}</p>
         <p class="time">{{msgOne.createTime}}</p>
       </div>
     </div>
     <div class="content">
-      <div class="list" v-for="(item,index) in messageList" :key="index">
-        <p v-if="item.type == 'from'" class="fromStyle">
-          <span class="fff">{{item.fff}}</span>对
-          <span class="ttt">{{item.ttt}}</span>说：
+      <div class="list">
+        <p class="fromStyle">
+          <span class="fff">{{msgOne.properties.creatorName}}</span>对你说：
           <span class="say">{{msgOne.msg}}</span>
-        </p>
-        <p v-else class="toStyle">
-          <span class="fff">{{item.fff}}</span>回复
-          <span class="ttt">{{item.ttt}}</span>：
-          <span class="say">{{item.say}}</span>
         </p>
       </div>
     </div>
     <div class="returnBtn" @click="backMessage">回发消息</div>
+    <div class="mask" @click.stop="closeMask" v-if="showPinLun"></div>
     <div v-if="showPinLun" class="pinlunB">
       <form report-submit="true" @submit="submitComment">
         <view class="liuyan">
@@ -44,7 +43,7 @@
 </template>
 
 <script>
-import { messageOne } from "@/api/my.js";
+import { messageOne, messageTo } from "@/api/my.js";
 import navigationBar from "@/components/navigationBar";
 export default {
   components: {
@@ -52,43 +51,49 @@ export default {
   },
   data() {
     return {
-      headImg1: `${this.$store.state.imgUrlHttp}/a6.png`,
       showPinLun: false,
       placeholderPL: " 回复",
       commentValue: "",
-      messageList: [
-        { fff: "张小凡", ttt: "你", say: "你就是个棒槌！！", type: "from" }
-      ],
       msgOne: {}
     };
   },
   onLoad(options) {
-    this.fetchMessageOne(options.msgId)
+    this.msgOne = JSON.parse(options.msgData);
+    console.log(this.msgOne);
   },
   methods: {
     async fetchMessageOne(id) {
       let mRes = await messageOne(id);
-      if(mRes.status == 200){
-        this.msgOne = mRes.result
+      if (mRes.status == 200) {
+        this.msgOne = mRes.result;
       }
     },
     backMessage() {
       this.commentValue = "";
-      this.placeholderPL = "回复: " + "张小凡";
+      this.placeholderPL = "回复: " + this.msgOne.properties.creatorName;
       this.showPinLun = true;
     },
     getcomment(e) {
       this.commentValue = e.target.value;
     },
-    submitComment() {
-      let msgs = {
-        fff: "你",
-        ttt: "张小凡",
-        say: this.commentValue,
-        type: "to"
-      };
-      this.messageList.push(msgs);
+    closeMask() {
       this.showPinLun = false;
+    },
+    submitComment() {
+      let authinfo = wx.getStorageSync('authInfo');
+      let data = {
+        msg: this.commentValue,
+        recipient: authinfo.id
+      };
+      messageTo(data).then(res => {
+        if (res.status == 200) {
+          this.showPinLun = false;
+          wx.showToast({
+            title: "发送成功",
+            duration: 2000 //停留时间
+          });
+        }
+      });
     }
   }
 };
@@ -162,6 +167,15 @@ export default {
     border-radius: 5px;
     left: 20%;
     letter-spacing: 2px;
+  }
+  .mask {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2;
   }
   .pinlunB {
     .liuyan {

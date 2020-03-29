@@ -9,6 +9,9 @@ export const myMessageList = () => request.get(`/message/no-paging`)
 //  单独一条消息详情
 export const messageOne = (id) => request.get(`/message/${id}`)
 
+// 私信  回复
+export const messageTo = (data) => request.post(`/message`,data)
+
 // 建议与反馈
 export const suggestionPost = (data) => request.post(`/suggestion`,data)
 

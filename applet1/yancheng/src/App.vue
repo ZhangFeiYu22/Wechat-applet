@@ -2,10 +2,6 @@
 import store from "@/store";
 import { getSessionInfo, getUserInfo, userInfoGet } from "@/api/login";
 export default {
-  getSysInfo() {
-    const res = wx.getSystemInfoSync();
-    return res;
-  },
   created() {
     // 调用store里面的getSystemInfo，获取手机信息
     store.dispatch("getSystemInfo");
@@ -68,9 +64,9 @@ export default {
       let authInfo = await userInfoGet();
       wx.setStorageSync("authInfo", authInfo.result);
       this.globalData.isLoun = true;
-      // wx.switchTab({
-      //   url: "/pages/home/main"
-      // });
+      wx.switchTab({
+        url: "/pages/home/main"
+      });
       var pages = getCurrentPages();
       var beforePage = pages[pages.length - 2];
       beforePage.onLoad();
