@@ -65,7 +65,14 @@
           </div>
         </div>
         <div class="timeHandle">
-          <div class="time">{{item.createTime}}</div>
+          <div class="time">
+            {{item.createTime}}
+            <span
+              class="del"
+              @click="delOneSelf(item.id,index)"
+              v-if="item.createrId == delId"
+            >删除</span>
+          </div>
           <div class="handle">
             <i
               class="iconfont"
@@ -102,7 +109,14 @@
         </div>
         <!-- 时间  点赞 -->
         <div class="timeHandle">
-          <div class="time">{{item.createTime}}</div>
+          <div class="time">
+            {{item.createTime}}
+            <span
+              class="del"
+              @click.stop="delOneSelf(item.id,index)"
+              v-if="item.memberId == delId"
+            >删除</span>
+          </div>
           <div class="handle">
             <div class="zan-pinglun" v-if="showZanAndPinglunNum == item.id">
               <span
@@ -195,6 +209,7 @@
 <script>
 import {
   forumContentGet,
+  forumContentDel,
   forumContentGetLogin,
   forumLike,
   forumLikeNo,
@@ -202,6 +217,7 @@ import {
 } from "@/api/home";
 import {
   communityFriendsListGet,
+  communityFriendsListDel,
   communityFriendsListGetLogin,
   communityLike,
   communityLikeNo,
@@ -223,6 +239,7 @@ export default {
   },
   data() {
     return {
+      delId: "",
       mid: "", // 用户ID
       sixinValue: "",
       maskVal: false, //私信显示判断
@@ -260,6 +277,9 @@ export default {
     this.fetchMember(options.createrId);
     this.fetchMemberForum(options.createrId);
     this.fetchMemberComm(options.createrId);
+  },
+  mounted() {
+    this.delId = this.globalData.delId;
   },
   methods: {
     // 个人信息
@@ -304,6 +324,41 @@ export default {
           _this.forumList = forumRes;
         }
       }
+    },
+    delOneSelf(id, index) {
+      var _this = this;
+      wx.showModal({
+        content: "确定删除吗？",
+        success(res) {
+          if (res.confirm) {
+            if (_this.navType == "0") {
+              forumContentDel(id).then(delRes => {
+                if (delRes.status == 200) {
+                  wx.showToast({
+                    title: "删除成功",
+                    icon: "none",
+                    duration: 2000
+                  });
+                  _this.forumList.splice(index, 1);
+                }
+              });
+            }else{
+              communityFriendsListDel(id).then(delRes => {
+                if (delRes.status == 200) {
+                  wx.showToast({
+                    title: "删除成功",
+                    icon: "none",
+                    duration: 2000
+                  });
+                  _this.communityFriendsList.splice(index, 1);
+                }
+              });
+            }
+          } else if (res.cancel) {
+            console.log("用户点击取消");
+          }
+        }
+      });
     },
     // 获取社区列表
     async fetchMemberComm(id) {
@@ -797,7 +852,7 @@ export default {
       margin-bottom: 20px;
       .content {
         line-height: 20px;
-        color: #6f6d6d;
+        color: #333;
         font-size: 16px;
         text-align: justify;
         &.ellip {
@@ -842,6 +897,11 @@ export default {
           width: 40%;
           font-size: 14px;
           color: #8b8b8b;
+          .del {
+            color: #5d7394;
+            font-size: 13px;
+            margin-left: 10px;
+          }
         }
         .handle {
           width: 25%;
@@ -855,11 +915,11 @@ export default {
     }
   }
   .lengthNo {
-      font-size: 14px;
-      text-align: center;
-      color: #999;
-      margin-top: 30%;
-    }
+    font-size: 14px;
+    text-align: center;
+    color: #999;
+    margin-top: 30%;
+  }
   // 动态
   .contentList_2 {
     .contentItem {
@@ -912,26 +972,17 @@ export default {
         display: flex;
         align-items: center;
         .imgLi {
-          // position: absolute;
-          margin-right: 10px;
           img {
-            width: 34px;
-            height: 34px;
-            border-radius: 34px;
-          }
-          &:nth-child(1) {
-            left: 0;
-          }
-          &:nth-child(2) {
-            left: 20px;
-          }
-          &:nth-child(3) {
-            left: 40px;
+            width: 28px;
+            height: 28px;
+            border-radius: 28px;
           }
         }
         .zanWord {
-          font-size: 16px;
+          margin-left: 10px;
+          font-size: 14px;
           color: #010101;
+          color: #666;
         }
       }
       .pinglunBox {

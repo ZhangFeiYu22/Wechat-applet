@@ -65,7 +65,14 @@
           </div>
         </div>
         <div class="timeHandle">
-          <div class="time">{{item.createTime}}</div>
+          <div class="time">
+            {{item.createTime}}
+            <span
+              class="del"
+              @click="delOneSelf(item.id,index)"
+              v-if="item.createrId == delId"
+            >删除</span>
+          </div>
           <div class="handle">
             <i
               class="iconfont"
@@ -86,6 +93,7 @@
 import {
   adGet,
   forumContentGet,
+  forumContentDel,
   forumContentGetLogin,
   forumLike,
   forumLikeNo
@@ -98,6 +106,7 @@ export default {
   },
   data() {
     return {
+      delId: "",
       navItemList: [
         {
           name: "活动",
@@ -132,9 +141,12 @@ export default {
       total: 0 //总条数
     };
   },
-  mounted() {
+  onLoad() {
     this.fetchForumContentList();
+  },
+  mounted() {
     this.fetchAd();
+    this.delId = this.globalData.delId;
   },
   methods: {
     fetchForumContentList() {
@@ -143,6 +155,27 @@ export default {
         pageIndex: this.pageIndex
       };
       this.fetchForumContent(data);
+    },
+    delOneSelf(id, index) {
+      wx.showModal({
+        content: "确定删除吗？",
+        success(res) {
+          if (res.confirm) {
+            forumContentDel(id).then(delRes => {
+              if (delRes.status == 200) {
+                wx.showToast({
+                  title: "删除成功",
+                  icon: "none",
+                  duration: 2000
+                });
+                this.forumList.splice(index, 1);
+              }
+            });
+          } else if (res.cancel) {
+            console.log("用户点击取消");
+          }
+        }
+      });
     },
     // 获取列表数据
     async fetchForumContent(data) {
@@ -187,7 +220,6 @@ export default {
       if (adres.status == 200) {
         this.adList = adres.result.data;
       }
-      console.log("ad--", adres);
     },
     // 轮播切换时控制指示点切换
     swiperChange: function(e) {
@@ -437,6 +469,11 @@ export default {
           width: 40%;
           font-size: 14px;
           color: #8b8b8b;
+          .del {
+            color: #5d7394;
+            font-size: 13px;
+            margin-left: 10px;
+          }
         }
         .handle {
           width: 25%;

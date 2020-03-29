@@ -62,16 +62,16 @@ export default new Vuex.Store({
       state
     }, obj) {
       return new Promise((resolve, reject) => {
-        if (state.ossData) {
-          resolve(state.ossData)
-        } else {
+        // if (state.ossData) {
+        //   resolve(state.ossData)
+        // } else {
           getOssParamsGet(obj).then(res => {
             commit('GET_OSS_DATA', res.result)
             resolve(res)
           }).catch(err => {
             reject(err)
           })
-        }
+        // }
       })
     }
   },

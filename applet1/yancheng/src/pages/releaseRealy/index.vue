@@ -2,7 +2,6 @@
   <scroll-view class="scrollView" scroll-y="true">
     <navigation-bar :title="'发布'" :navBackgroundColor="'#fff'" :back-visible="true"></navigation-bar>
     <div class="release" :style="{'top': navBar_Height}">
-      <!-- <text bindtap="saveEditOrNot">取消</text> -->
       <div class="edit-main">
         <textarea
           v-if="textStatus"
@@ -18,8 +17,9 @@
           @click="changeTextStatus"
         >{{realTextValue}}</div>
         <div class="edit-img">
-          <div v-for="(item,index) in imgArr" :key="index">
+          <div class="imgbox" v-for="(item,index) in imgArr" :key="index">
             <image :src="item" mode="aspectFill" />
+            <i class="close iconfont icon-iconless" @click.stop="closeFun(item,index)"></i>
           </div>
           <div class="iconfont icon-jiahao" @click.stop="chooseImage"></div>
         </div>
@@ -61,7 +61,7 @@ export default {
     };
   },
   onLoad(options) {
-    Object.assign(this.$data, this.$options.data())
+    Object.assign(this.$data, this.$options.data());
     this.publishType = options.publishType;
   },
   mounted() {
@@ -83,6 +83,11 @@ export default {
       }
       this.textStatus = false;
     },
+    closeFun(item, index) {
+      console.log(index, "--", item);
+      console.log(this.imgArr);
+      this.imgArr.splice(index, 1);
+    },
     chooseImage() {
       let self = this;
       store.dispatch("getOssData", { dir: "city/release" });
@@ -91,27 +96,36 @@ export default {
         sizeType: "compressed",
         sourceType: ["album", "camera"],
         success(res) {
-          self.imgArr = imgsUpload(res.tempFilePaths);
+          for (var i = 0; i < res.tempFilePaths.length; i++) {
+            imgsUpload(res.tempFilePaths[i]).then(rere => {
+              self.imgArr.push(rere);
+            });
+          }
         }
       });
     },
     postData() {
       let _this = this;
-      _this.cfpData.images = _this.imgArr.join(";");
-      wx.showModal({
-        title: "发布提示",
-        content: "确定发布？",
-        showCancel: true, //是否显示取消按钮
-        success: function(res) {
-          if (res.cancel) {
-            return;
-          } else {
-            _this.publishTypeFun(_this.publishType);
+      if (_this.cfpData.content.length == 0) {
+        wx.showToast({
+          title: "请先填写内容",
+          icon: "none",
+          duration: 2000
+        });
+      } else {
+        _this.cfpData.images = _this.imgArr.join(";");
+        wx.showModal({
+          content: "确定发布？",
+          showCancel: true, //是否显示取消按钮
+          success: function(res) {
+            if (res.cancel) {
+              return;
+            } else {
+              _this.publishTypeFun(_this.publishType);
+            }
           }
-        },
-        fail: function(res) {}, //接口调用失败的回调函数
-        complete: function(res) {} //接口调用结束的回调函数（调用成功、失败都会执行）
-      });
+        });
+      }
     },
     publishTypeFun(type) {
       var _this = this;
@@ -205,6 +219,21 @@ export default {
       flex-wrap: wrap;
       justify-content: flex-start;
       align-content: space-between;
+      .imgbox {
+        position: relative;
+        .close {
+          position: absolute;
+          border-radius: 15px;
+          width: 18px;
+          height: 18px;
+          font-size: 16px;
+          line-height: 16px;
+          text-align: center;
+          color: #da4b47;
+          right: 14px;
+          top: 0px;
+        }
+      }
       image {
         width: 90px;
         height: 90px;

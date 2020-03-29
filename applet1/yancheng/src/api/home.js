@@ -1,10 +1,13 @@
 import request from '@/utils/request'
 
-// 获取  社区  动态列表   没有登录的数据（不可以点赞）
+// 话题 动态列表   没有登录的数据（不可以点赞）
 export const forumContentGet = (data) => request.get(`/forumContent`,data)
 
-// 获取  社区  动态列表   登录的数据（可以点赞）
+// 话题  动态列表   登录的数据（可以点赞）
 export const forumContentGetLogin = (data) => request.get(`/forumContent/getList`,data)
+
+// 话题  动态  删除
+export const forumContentDel = (id) => request.delete(`/forumContent/${id}`)
 
 // 关注     动态  
 export const forumLike = (id) => request.post(`/forumLike/${id}`)

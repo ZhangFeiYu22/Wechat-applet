@@ -9,7 +9,7 @@
           <span>{{item.memberName}}</span>
         </div>
         <!-- 内容 -->
-        <div class="content" id="contentInfo" :class="item.showEllip ?'ellip': ''">{{item.content}}</div>
+        <div class="content" :class="item.showEllip ?'ellip': ''">{{item.content}}</div>
         <div v-if="item.showEllip" class="toggleBox">
           <div class="more_txt" @click="requireTxt(index)">
             <span>{{item.showEllip ? '展开' : '收起'}}</span>
@@ -28,7 +28,14 @@
         </div>
         <!-- 时间  点赞 -->
         <div class="timeHandle">
-          <div class="time">{{item.createTime}}</div>
+          <div class="time">
+            {{item.createTime}}
+            <span
+              class="del"
+              @click="delOneSelf(item.id,index)"
+              v-if="item.memberId == delId"
+            >删除</span>
+          </div>
           <div class="handle">
             <div class="zan-pinglun" v-if="showZanAndPinglunNum == item.id">
               <span
@@ -99,6 +106,7 @@
 <script>
 import {
   communityFriendsListGet,
+  communityFriendsListDel,
   communityFriendsListGetLogin,
   communityLike,
   communityLikeNo,
@@ -113,6 +121,7 @@ export default {
   },
   data() {
     return {
+      delId: "",
       showZanAndPinglunNum: null, //点击是那个  将评论点赞显示出来
       zanPingActiveId: null, //点击是那个  将评论点赞显示出来    保存这个ID  评论和点赞使用
       commentValue: "",
@@ -134,6 +143,9 @@ export default {
         url: "/pages/login/main"
       });
     }
+  },
+  mounted() {
+    this.delId = this.globalData.delId;
   },
   methods: {
     fetchData() {
@@ -175,8 +187,29 @@ export default {
           // 第一页则直接赋值 （下拉刷新）
           this.communityFriendsList = resData;
         }
-        wx.stopPullDownRefresh();  //停止下拉刷新
+        wx.stopPullDownRefresh(); //停止下拉刷新
       }
+    },
+    delOneSelf(id, index) {
+      wx.showModal({
+        content: "确定删除吗？",
+        success(res) {
+          if (res.confirm) {
+            communityFriendsListDel(id).then(delRes => {
+              if (delRes.status == 200) {
+                wx.showToast({
+                  title: "删除成功",
+                  icon: "none",
+                  duration: 2000
+                });
+                this.communityFriendsList.splice(index, 1);
+              }
+            });
+          } else if (res.cancel) {
+            console.log("用户点击取消");
+          }
+        }
+      });
     },
     requireTxt(index) {
       let val = this.communityFriendsList[index].showEllip;
@@ -248,8 +281,7 @@ export default {
       let authInfo = wx.getStorageSync("authInfo");
       if (comItem.memberName == authInfo.nickName) {
         wx.showModal({
-          title: "提示",
-          content: "是否删除改评论",
+          content: "是否删除该评论",
           success(res) {
             if (res.confirm) {
               communityCommentDel(comItem.id).then(delRes => {
@@ -404,7 +436,7 @@ export default {
       }
       .content {
         line-height: 20px;
-        color: #6f6d6d;
+        color: #333;
         font-size: 16px;
         text-align: justify;
         &.ellip {
@@ -449,6 +481,11 @@ export default {
         .time {
           font-size: 14px;
           color: #8b8b8b;
+          .del {
+            color: #5d7394;
+            font-size: 13px;
+            margin-left: 10px;
+          }
         }
         .handle {
           display: flex;
@@ -496,26 +533,17 @@ export default {
         display: flex;
         align-items: center;
         .imgLi {
-          // position: absolute;
-          margin-right: 10px;
           img {
-            width: 34px;
-            height: 34px;
-            border-radius: 34px;
-          }
-          &:nth-child(1) {
-            left: 0;
-          }
-          &:nth-child(2) {
-            left: 20px;
-          }
-          &:nth-child(3) {
-            left: 40px;
+            width: 28px;
+            height: 28px;
+            border-radius: 28px;
           }
         }
         .zanWord {
-          font-size: 16px;
+          margin-left: 10px;
+          font-size: 14px;
           color: #010101;
+          color: #666;
         }
       }
       .pinglunBox {

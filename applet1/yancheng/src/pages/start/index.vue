@@ -1,11 +1,26 @@
+<template>
+  <div class="welcome">
+    <navigation-bar :title="'欢迎使用'" :navBackgroundColor="'#fff'" :back-visible="false"></navigation-bar>
+    <!-- <div class="formBox">加载中...</div> -->
+  </div>
+</template>
+
 <script>
 import store from "@/store";
 import { getSessionInfo, getUserInfo, userInfoGet } from "@/api/login";
+import navigationBar from "@/components/navigationBar";
 export default {
-  mounted() {
-    // 调用store里面的getSystemInfo，获取手机信息
-    // store.dispatch("getSystemInfo");
-    // this.getLogin();
+  components: {
+    navigationBar
+  },
+  data() {
+    return {
+      msg: ""
+    };
+  },
+  onLoad() {
+    store.dispatch("getSystemInfo");
+    this.getLogin();
   },
   methods: {
     getLogin() {
@@ -45,6 +60,9 @@ export default {
             });
           } else {
             console.log("用户没有授权");
+            wx.switchTab({
+              url: "/pages/home/main"
+            });
           }
         }
       });
@@ -63,10 +81,11 @@ export default {
       wx.setStorageSync("isLogin", true);
       let authInfo = await userInfoGet();
       wx.setStorageSync("authInfo", authInfo.result);
+      this.globalData.delId = authInfo.result.id; //   用于判断是否显示删除
 
-      // wx.switchTab({
-      //   url: "/pages/home/main"
-      // });
+      wx.switchTab({
+        url: "/pages/home/main"
+      });
 
       var pages = getCurrentPages();
       var beforePage = pages[pages.length - 2];
@@ -79,33 +98,13 @@ export default {
 };
 </script>
 
-<style>
-@import "./../static/iconfont/iconfont.css";
-.container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding: 200rpx 0;
-  box-sizing: border-box;
-}
-div,
-view {
-  box-sizing: border-box;
-}
-/* this rule will be remove */
-* {
-  transition: width 2s;
-  -moz-transition: width 2s;
-  -webkit-transition: width 2s;
-  -o-transition: width 2s;
-}
-.w94 {
-  width: 94%;
-  margin: 0 auto;
-}
-.icon-aixin1 {
-  color: #f00 !important;
+<style lang="less" scoped>
+.welcome {
+  .formBox {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 }
 </style>

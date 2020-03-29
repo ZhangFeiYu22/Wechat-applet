@@ -1,10 +1,13 @@
 import request from '@/utils/request'
 
-// 获取  社区  动态列表   没有登录的数据（不可以点赞）
+// 社区  动态列表   没有登录的数据（不可以点赞）
 export const communityFriendsListGet = (data) => request.get(`/communityFriends`,data)
 
-// 获取  社区  动态列表    登录的数据（可以点赞）
+// 社区  动态列表    登录的数据（可以点赞）
 export const communityFriendsListGetLogin = (data) => request.get(`/communityFriends/getList`,data)
+
+//  动态  删除
+export const communityFriendsListDel = (id) => request.delete(`/communityFriends/${id}`)
 
 // 社区 动态   点赞
 export const communityLike = (id) => request.post(`/communityLike/${id}`)

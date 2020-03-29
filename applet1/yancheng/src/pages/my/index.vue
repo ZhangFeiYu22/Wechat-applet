@@ -3,7 +3,7 @@
     <navigation-bar :title="'我的'" :navBackgroundColor="'#fff'"></navigation-bar>
     <div class="head">
       <div class="headImg">
-        <img :src="userInfo.avatarUrl" mode="aspectFill" />
+        <img :src="userInfo.avatar" mode="aspectFill" />
         <div class="hierarchy">
           <img src="../../../static/images/lv5.png" mode="aspectFill" />
           <p>LV5</p>
@@ -18,14 +18,16 @@
       <div class="nameSexPhone">
         <p class="name">{{userInfo.nickName}}</p>
         <p class="sex">
-          <i class="iconfont" :class="userInfo.gender == 1 ? 'icon-nan': 'icon-nv'"></i>
+          <i class="iconfont icon-nan" v-if="userInfo.gender==1"></i>
+          <i class="iconfont icon-nv" v-else-if="userInfo.gender==2"></i>
+          <i class="iconfont" v-else></i>
         </p>
         <p class="phone">182****1234</p>
       </div>
-      <div class="inaword">要成为世界第一的梦珂宝训练大师</div>
+      <div class="inaword">{{userInfo.introduction}}</div>
       <div class="other">
         <p class="constellation">金牛座</p>
-        <p class="address">南京市</p>
+        <p class="address">{{userInfo.city}}</p>
         <p class="follower">15人关注</p>
         <p class="autonym">已实名</p>
       </div>
@@ -106,8 +108,7 @@ export default {
   },
   onLoad() {
     if (wx.getStorageSync("isLogin")) {
-      this.userInfo = wx.getStorageSync("userInfoAll").userInfo;
-      console.log(wx.getStorageSync("userInfoAll"));
+      this.userInfo = wx.getStorageSync("authInfo");
     } else {
       wx.navigateTo({
         url: "/pages/login/main"
@@ -126,7 +127,7 @@ export default {
       });
     },
     goPublish() {
-      let authInfo = wx.getStorageSync('authInfo')
+      let authInfo = wx.getStorageSync("authInfo");
       wx.navigateTo({
         url: `/pages/myPublish/main?createrId=${authInfo.id}`
       });
@@ -202,7 +203,7 @@ export default {
           height: 50px;
         }
         p {
-          background: linear-gradient(to bottom, #FFEFAE, #EBA351);
+          background: linear-gradient(to bottom, #ffefae, #eba351);
           color: #fff;
           font-size: 13px;
           letter-spacing: 2px;

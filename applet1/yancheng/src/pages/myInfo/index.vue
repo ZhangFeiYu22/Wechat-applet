@@ -21,8 +21,15 @@
       </div>
       <div class="infoItem">
         <p class="ll">生日</p>
-        <picker class="cc" mode="date" :value="date" @change="bindDateChange" placeholder="请输入日期">
-          <input name="date" :value="myInfo.birthday ? myInfo.birthday : ''" placeholder="请输入日期" />
+        <picker
+          class="cc"
+          mode="date"
+          :value="myInfo.birthday"
+          @change="bindDateChange"
+          placeholder="请输入日期"
+        >
+          <view class="picker" v-if="myInfo.birthday">{{myInfo.birthday}}</view>
+          <view class="picker" v-else style="color: #ccc;">请选择城市</view>
         </picker>
       </div>
       <div class="infoItem">
@@ -69,7 +76,6 @@ export default {
   data() {
     return {
       myInfo: {},
-      date: "",
       region: [],
       nameVal: "",
       introVal: "",
@@ -115,7 +121,6 @@ export default {
     nameChange() {
       var that = this;
       wx.showModal({
-        title: "提示",
         content: "确认修改名字吗？",
         success: function(res) {
           if (res.confirm) {
@@ -144,7 +149,6 @@ export default {
     introChange() {
       var that = this;
       wx.showModal({
-        title: "提示",
         content: "确认修改简介吗？",
         success: function(res) {
           if (res.confirm) {
