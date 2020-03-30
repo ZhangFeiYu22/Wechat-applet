@@ -448,13 +448,11 @@ export default {
         that.animationData3 = null;
         that.animationData4 = null;
         that.animationData5 = null;
-        // console.log("wwww");
         that.blurTimeInto = setInterval(() => {
           if (that.blurNum > 5) {
             clearInterval(that.blurTimeInto);
           } else {
             that.blurNum++;
-            // console.log(that.blurNum);
           }
         }, 50);
       }, 1000);
@@ -464,7 +462,6 @@ export default {
       clearInterval(that.blurTimeInto);
       that.blurTimeFade = setInterval(() => {
         that.blurNum--;
-        // console.log(that.blurNum);
         if (that.blurNum < 1) {
           clearInterval(that.blurTimeFade);
         }
@@ -475,7 +472,6 @@ export default {
       clearInterval(that.blurTimeFade);
       that.blurTimeInto = setInterval(() => {
         that.blurNum++;
-        // console.log(that.blurNum);
         if (that.blurNum > 5) {
           clearInterval(that.blurTimeInto);
         }

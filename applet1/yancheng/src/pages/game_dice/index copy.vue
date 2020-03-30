@@ -333,7 +333,6 @@ export default {
           that.determination = true;
           that.num = 0;
           that.timeNum = 0;
-          console.log("2--", that.numtotal);
           var newArr = [];
           for (let i = 1; i <= that.diceNum; i++) {
             let aa = that["pic" + i];
@@ -362,7 +361,6 @@ export default {
       }
     },
     yaoyiyao() {
-      console.log();
       var that = this;
       if (that.yaoyiyaoControl) {
         if (that.openOrclose) {
@@ -426,8 +424,7 @@ export default {
           diffTime *
           10000;
         if (speed > 60 && determination && openOrclose && that.isShow) {
-          (that.determination = false),
-            console.log("开关处于什么状态==" + openOrclose);
+          that.determination = false;
           that.snakeOne();
         }
         that.last_update = curTime;

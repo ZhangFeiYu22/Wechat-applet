@@ -84,8 +84,6 @@ export default {
       this.textStatus = false;
     },
     closeFun(item, index) {
-      console.log(index, "--", item);
-      console.log(this.imgArr);
       this.imgArr.splice(index, 1);
     },
     chooseImage() {

@@ -59,7 +59,6 @@ export default {
   },
   onLoad(options) {
     this.msgOne = JSON.parse(options.msgData);
-    console.log(this.msgOne);
   },
   methods: {
     async fetchMessageOne(id) {

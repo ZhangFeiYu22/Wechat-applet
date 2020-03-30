@@ -56,23 +56,23 @@
     <!-- 遮罩层 -->
     <div class="shadow" v-if="joinMaskShow" @click="joinMaskToggle"></div>
     <div class="joinMask" v-if="joinMaskShow">
-      <i class="iconfont icon-iconless close" @click="joinMaskToggle"></i>
+      <i class="iconfont icon-close close" @click="joinMaskToggle"></i>
       <p class="topTitle">参与方式</p>
       <div class="cont">
         <p class="ppp">该线上活动不需要报名，请牢记活动信息，及时到场参加。如有疑问可咨询举办方</p>
         <p class="infoLine">
           <i class="iconfont icon-dingwei"></i>
-          <span>江苏省南京市秦淮区</span>
+          <span>{{acDetails.activityAddress}}</span>
         </p>
         <p class="infoLine">
           <i class="iconfont icon-shijian"></i>
-          <span>2019.12.12-12.21</span>
+          <span>{{acDetails.activityTime}}</span>
         </p>
         <p class="infoLine">
           <i class="iconfont icon-shouji"></i>
           <span>18512341234</span>
         </p>
-        <p class="btn">关注活动</p>
+        <p class="btn" :class="likeAct?'btnH':''" @click.stop="likeFun(acDetails.id)">{{likeAct ? '取消关注' : '关注活动'}}</p>
       </div>
     </div>
   </div>
@@ -116,6 +116,7 @@ export default {
       this.joinMaskShow = !this.joinMaskShow;
     },
     likeFun() {
+      this.joinMaskShow = !this.joinMaskShow;
       // var _this = this;
       // if (isLike == 2) {
       //   activitysFollow(id).then(res => {
@@ -344,6 +345,10 @@ export default {
         text-align: center;
         letter-spacing: 2px;
         border-radius: 5px;
+        &.btnH{
+          background-color: #ccc;
+          color: #fff;
+        }
       }
     }
   }

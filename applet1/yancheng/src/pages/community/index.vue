@@ -138,14 +138,12 @@ export default {
   onLoad() {
     if (wx.getStorageSync("isLogin")) {
       this.fetchData();
+      this.delId = this.$store.state.authId;
     } else {
       wx.navigateTo({
         url: "/pages/login/main"
       });
     }
-  },
-  mounted() {
-    this.delId = this.globalData.delId;
   },
   methods: {
     fetchData() {
@@ -191,6 +189,7 @@ export default {
       }
     },
     delOneSelf(id, index) {
+      var _this = this;
       wx.showModal({
         content: "确定删除吗？",
         success(res) {
@@ -202,7 +201,7 @@ export default {
                   icon: "none",
                   duration: 2000
                 });
-                this.communityFriendsList.splice(index, 1);
+                _this.communityFriendsList.splice(index, 1);
               }
             });
           } else if (res.cancel) {

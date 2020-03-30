@@ -88,7 +88,6 @@ export default {
         pageIndex: this.pageIndex
       };
       let mfRes = await myFollow();
-      console.log(mfRes);
       if (mfRes.status == 200) {
         this.mfDataList = mfRes.result.data;
       }

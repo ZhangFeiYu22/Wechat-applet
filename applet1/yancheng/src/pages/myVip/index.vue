@@ -97,11 +97,9 @@ export default {
   },
   mounted() {
     this.myInfo = wx.getStorageSync("authInfo");
-    console.log(this.myInfo);
   },
   methods: {
     swiperChange(e) {
-      console.log(e.target.current);
       this.currentNum = e.target.current;
     }
   }

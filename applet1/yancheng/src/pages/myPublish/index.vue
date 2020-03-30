@@ -17,7 +17,7 @@
         <div class="content" :class="item.showEllip ? 'ellip' : ''">{{item.content}}</div>
         <div v-if="item.showEllip" class="toggleBox">
           <div class="more_txt" @click.stop="requireTxt(index)">
-            <span>{{item.showEllip ? '展开' : '收起'}}{{item.showEllip}}</span>
+            <span>{{item.showEllip ? '展开' : '收起'}}</span>
           </div>
         </div>
         <!-- 图片展示 -->
@@ -210,12 +210,10 @@ export default {
   },
   onLoad(options) {
     this.mid = options.createrId;
+    this.delId = this.$store.state.authId;
     this.fetchMember(options.createrId);
     this.fetchMemberForum(options.createrId);
     this.fetchMemberComm(options.createrId);
-  },
-  mounted() {
-    this.delId = this.globalData.delId;
   },
   methods: {
     // 个人信息

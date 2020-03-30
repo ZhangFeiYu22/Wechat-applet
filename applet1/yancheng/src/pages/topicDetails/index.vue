@@ -172,7 +172,6 @@ export default {
           resD["showEllip"] = false;
         }
         this.details = resD;
-        console.log(this.details);
       }
     });
   },
@@ -184,7 +183,6 @@ export default {
     showImg(imgIndex) {
       let inIdx = imgIndex;
       let imgArr = this.details.picList;
-      console.log(imgArr);
       wx.previewImage({
         current: imgArr[inIdx], // 当前显示图片的http链接
         urls: imgArr // 需要预览的图片http链接列表

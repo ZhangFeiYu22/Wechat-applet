@@ -47,7 +47,7 @@
           <img v-if="item.createrAvatar" :src="item.createrAvatar" mode="aspectFill" />
           <span>{{item.createrName}}</span>
         </div>
-        <div class="content" :class="item.showEllip ? 'ellip' : ''">{{item.content}}</div>
+        <div class="content" :class="item.showEllip ? 'ellip' : ''">{{item.content}}{{delId}}</div>
         <div v-if="item.showEllip" class="toggleBox">
           <div class="more_txt" @click.stop="requireTxt(index)">
             <span>{{item.showEllip ? '展开' : '收起'}}</span>
@@ -143,10 +143,7 @@ export default {
   },
   onLoad() {
     this.fetchForumContentList();
-  },
-  mounted() {
-    this.fetchAd();
-    this.delId = this.globalData.delId;
+    this.delId = this.$store.state.authId;
   },
   methods: {
     fetchForumContentList() {
@@ -157,6 +154,7 @@ export default {
       this.fetchForumContent(data);
     },
     delOneSelf(id, index) {
+      var _this = this;
       wx.showModal({
         content: "确定删除吗？",
         success(res) {
@@ -168,7 +166,7 @@ export default {
                   icon: "none",
                   duration: 2000
                 });
-                this.forumList.splice(index, 1);
+                _this.forumList.splice(index, 1);
               }
             });
           } else if (res.cancel) {
@@ -274,7 +272,6 @@ export default {
       let outIdx = index;
       let inIdx = imgIndex;
       let imgArr = this.forumList[outIdx].images;
-      console.log(imgArr);
       wx.previewImage({
         current: imgArr[inIdx], // 当前显示图片的http链接
         urls: imgArr // 需要预览的图片http链接列表
@@ -296,7 +293,6 @@ export default {
           });
         } else {
           forumLikeNo(id).then(res => {
-            console.log("p----", res);
             if (res.status == 200) {
               _this.forumList[index].isLike = 2;
               wx.showToast({

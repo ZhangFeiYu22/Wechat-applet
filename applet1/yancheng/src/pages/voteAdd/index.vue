@@ -38,8 +38,9 @@
         </div>
 
         <div class="edit-img">
-          <div v-for="(item,index) in imgArr" :key="index">
+          <div class="imgbox" v-for="(item,index) in imgArr" :key="index">
             <image :src="item" mode="aspectFill" />
+            <i class="close iconfont icon-iconless" @click.stop="closeFun(item,index)"></i>
           </div>
           <div class="iconfont icon-jiahao" @click.stop="chooseImage"></div>
         </div>
@@ -125,9 +126,16 @@ export default {
         sizeType: "compressed",
         sourceType: ["album", "camera"],
         success(res) {
-          self.imgArr = imgsUpload(res.tempFilePaths);
+          for (var i = 0; i < res.tempFilePaths.length; i++) {
+            imgsUpload(res.tempFilePaths[i]).then(rere => {
+              self.imgArr.push(rere);
+            });
+          }
         }
       });
+    },
+    closeFun(item, index) {
+      this.imgArr.splice(index, 1);
     },
     publishFun() {
       var _this = this;
@@ -213,6 +221,21 @@ export default {
       flex-wrap: wrap;
       justify-content: flex-start;
       align-content: space-between;
+      .imgbox {
+        position: relative;
+        .close {
+          position: absolute;
+          border-radius: 15px;
+          width: 18px;
+          height: 18px;
+          font-size: 16px;
+          line-height: 16px;
+          text-align: center;
+          color: #da4b47;
+          right: 14px;
+          top: 0px;
+        }
+      }
       image {
         width: 90px;
         height: 90px;

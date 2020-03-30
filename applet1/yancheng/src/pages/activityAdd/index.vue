@@ -18,8 +18,9 @@
           @click="changeTextStatus"
         >{{realTextValue}}</div>
         <div class="edit-img">
-          <div v-for="(item,index) in imgArr1" :key="index">
+          <div class="imgbox" v-for="(item,index) in imgArr1" :key="index">
             <image v-if="item" :src="item" mode="aspectFill" />
+            <i class="close iconfont icon-iconless" @click.stop="closeFunOne(item,index)"></i>
           </div>
           <div class="iconfont icon-jiahao" @click.stop="chooseImageOne"></div>
         </div>
@@ -79,15 +80,10 @@
         <div class="linebg"></div>
         <div class="bb">
           <p class="tt">活动详情</p>
-          <!-- <textarea
-            class="edit-text"
-            placeholder="文字描述"
-            placeholder-style="color:#dcdcdc"
-            v-model="publishFormData.content"
-          ></textarea>-->
           <div class="edit-img">
-            <div v-for="(item,index) in imgArr2" :key="index">
+            <div class="imgbox" v-for="(item,index) in imgArr2" :key="index">
               <image :src="item" mode="aspectFill" />
+              <i class="close iconfont icon-iconless" @click.stop="closeFunTwo(item,index)"></i>
             </div>
             <div class="iconfont icon-jiahao" @click.stop="chooseImageTwo"></div>
           </div>
@@ -190,9 +186,18 @@ export default {
         sizeType: "compressed",
         sourceType: ["album", "camera"],
         success(res) {
-          self.imgArr1 = imgsUpload(res.tempFilePaths);
+          let newArr = [];
+          for (var i = 0; i < res.tempFilePaths.length; i++) {
+            imgsUpload(res.tempFilePaths[i]).then(rere => {
+              newArr.push(rere);
+              self.imgArr1 = newArr;
+            });
+          }
         }
       });
+    },
+    closeFunOne(item, index) {
+      this.imgArr1.splice(index, 1);
     },
     chooseImageTwo() {
       let self = this;
@@ -202,9 +207,16 @@ export default {
         sizeType: "compressed",
         sourceType: ["album", "camera"],
         success(res) {
-          self.imgArr2 = imgsUpload(res.tempFilePaths);
+          for (var i = 0; i < res.tempFilePaths.length; i++) {
+            imgsUpload(res.tempFilePaths[i]).then(rere => {
+              self.imgArr2.push(rere);
+            });
+          }
         }
       });
+    },
+    closeFunTwo(item, index) {
+      this.imgArr2.splice(index, 1);
     },
     toggleBag(num) {
       if (num == "1") {
@@ -223,26 +235,41 @@ export default {
       this.publishFormData.activityAddress = regionString;
     },
     publishFun() {
-      this.publishFormData.coverImage = this.imgArr1[0];
-      let content = this.imgArr2.join(";");
-      this.publishFormData.content = content;
-      this.publishFormData.activityAddress =
-        this.publishFormData.activityAddress + " " + this.detailAddress;
-      console.log("发布", this.publishFormData);
-      activitysPost(this.publishFormData).then(res => {
-        if (res.status == 200) {
-          wx.showToast({
-            title: "发布成功",
-            icon: "none",
-            duration: 1500,
-            success: function() {
-              wx.navigateTo({
-                url: "/pages/activity/main"
-              });
-            }
-          });
-        }
-      });
+      if (
+        this.publishFormData.title == "" ||
+        this.imgArr1.length == 0 ||
+        this.imgArr2.length == 0 ||
+        this.publishFormData.activityTime == "" ||
+        this.publishFormData.activityAddress == "" ||
+        this.publishFormData.subTitle == ""
+      ) {
+        wx.showToast({
+          title: "请检查信息是否填写完整",
+          icon: "none",
+          duration: 2000
+        });
+        return;
+      } else {
+        this.publishFormData.coverImage = this.imgArr1[0];
+        let content = this.imgArr2.join(";");
+        this.publishFormData.content = content;
+        this.publishFormData.activityAddress =
+          this.publishFormData.activityAddress + " " + this.detailAddress;
+        activitysPost(this.publishFormData).then(res => {
+          if (res.status == 200) {
+            wx.showToast({
+              title: "发布成功",
+              icon: "none",
+              duration: 1500,
+              success: function() {
+                wx.navigateTo({
+                  url: "/pages/activity/main"
+                });
+              }
+            });
+          }
+        });
+      }
     }
   }
 };
@@ -276,6 +303,21 @@ export default {
       justify-content: flex-start;
       align-content: space-between;
       margin-bottom: 20px;
+      .imgbox {
+        position: relative;
+        .close {
+          position: absolute;
+          border-radius: 15px;
+          width: 18px;
+          height: 18px;
+          font-size: 16px;
+          line-height: 16px;
+          text-align: center;
+          color: #da4b47;
+          right: 14px;
+          top: 0px;
+        }
+      }
       image {
         width: 75px;
         height: 75px;

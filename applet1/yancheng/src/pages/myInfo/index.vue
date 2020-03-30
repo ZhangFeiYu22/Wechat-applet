@@ -94,15 +94,12 @@ export default {
       if (inRes.status == 200) {
         this.myInfo = inRes.result;
         if (inRes.result.province && inRes.result.province !== "") {
-          console.log(0);
           this.region[0] = inRes.result.province;
         }
         if (inRes.result.city && inRes.result.city !== "") {
-          console.log(1);
           this.region[1] = inRes.result.city;
         }
         if (inRes.result.district && inRes.result.district !== "") {
-          console.log(2);
           this.region[2] = inRes.result.district;
         }
       }

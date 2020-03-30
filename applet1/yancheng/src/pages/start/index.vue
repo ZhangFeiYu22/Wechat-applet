@@ -80,19 +80,22 @@ export default {
       wx.setStorageSync("authToken", authToken.result);
       wx.setStorageSync("isLogin", true);
       let authInfo = await userInfoGet();
-      wx.setStorageSync("authInfo", authInfo.result);
-      this.globalData.delId = authInfo.result.id; //   用于判断是否显示删除
+      if (authInfo.status == 200) {
+        wx.setStorageSync("authInfo", authInfo.result);
 
-      wx.switchTab({
-        url: "/pages/home/main"
-      });
+        store.commit("changeAuthId", authInfo.result.id); //   用于判断是否显示删除
 
-      var pages = getCurrentPages();
-      var beforePage = pages[pages.length - 2];
-      beforePage.onLoad();
-      wx.navigateBack({
-        delta: 1
-      });
+        wx.switchTab({
+          url: "/pages/home/main"
+        });
+
+        var pages = getCurrentPages();
+        var beforePage = pages[pages.length - 2];
+        beforePage.onLoad();
+        wx.navigateBack({
+          delta: 1
+        });
+      }
     }
   }
 };

@@ -274,12 +274,10 @@ export default {
   onLoad(options) {
     Object.assign(this.$data, this.$options.data());
     this.mid = options.createrId;
+    this.delId = this.$store.state.authId;
     this.fetchMember(options.createrId);
     this.fetchMemberForum(options.createrId);
     this.fetchMemberComm(options.createrId);
-  },
-  mounted() {
-    this.delId = this.globalData.delId;
   },
   methods: {
     // 个人信息

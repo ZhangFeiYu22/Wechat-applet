@@ -63,23 +63,23 @@ export default {
               icon: "success", //图标，支持"success"、"loading"
               success: function() {
                 // 存储token   和  用户信息
-                console.log(loRes);
                 wx.setStorageSync("authToken", res.result);
                 wx.setStorageSync("userInfoAll", loRes); //用户所有信息
 
                 userInfoGet().then(aures => {
                   if (aures.status == 200) {
                     wx.setStorageSync("authInfo", aures.result);
-                  }
-                });
+                    globalStore.commit("changeAuthId", aures.result.id); //   用于判断是否显示删除
 
-                wx.setStorageSync("isLogin", true);
-                //返回上一页并刷新数据
-                var pages = getCurrentPages();
-                var beforePage = pages[pages.length - 2];
-                beforePage.onLoad();
-                wx.navigateBack({
-                  delta: 1
+                    wx.setStorageSync("isLogin", true);
+                    //返回上一页并刷新数据
+                    var pages = getCurrentPages();
+                    var beforePage = pages[pages.length - 2];
+                    beforePage.onLoad();
+                    wx.navigateBack({
+                      delta: 1
+                    });
+                  }
                 });
               }, //接口调用成功
               fail: function() {}, //接口调用失败的回调函数

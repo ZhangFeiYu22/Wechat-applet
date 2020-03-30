@@ -70,7 +70,7 @@ export default {
       this.attForm.card = e.mp.detail.value;
     },
     bindFormSubmit() {
-      console.log(this.attForm);
+
       this.attForm.url1 = this.images1[0];
       this.attForm.url2 = this.images2[0];
       let isCard = this.regCodeFun(this.attForm.card);
