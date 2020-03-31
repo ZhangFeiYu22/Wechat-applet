@@ -55,7 +55,7 @@
       "pagePath": "pages/community/main",
       "iconPath": "static/tabbar/community.png",
       "selectedIconPath": "static/tabbar/community-avtive.png",
-      "text": "社区"
+      "text": "话题"
     }, {
       "pagePath": "pages/my/main",
       "iconPath": "static/tabbar/my.png",

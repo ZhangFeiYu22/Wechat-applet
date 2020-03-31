@@ -47,7 +47,7 @@
           <img v-if="item.createrAvatar" :src="item.createrAvatar" mode="aspectFill" />
           <span>{{item.createrName}}</span>
         </div>
-        <div class="content" :class="item.showEllip ? 'ellip' : ''">{{item.content}}{{delId}}</div>
+        <div class="content" :class="item.showEllip ? 'ellip' : ''">{{item.content}}</div>
         <div v-if="item.showEllip" class="toggleBox">
           <div class="more_txt" @click.stop="requireTxt(index)">
             <span>{{item.showEllip ? '展开' : '收起'}}</span>
@@ -143,7 +143,12 @@ export default {
   },
   onLoad() {
     this.fetchForumContentList();
-    this.delId = this.$store.state.authId;
+  },
+  mounted() {
+    this.fetchAd();
+  },
+  onShow() {
+    this.delId = wx.getStorageSync("authId");
   },
   methods: {
     fetchForumContentList() {

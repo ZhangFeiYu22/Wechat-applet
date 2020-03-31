@@ -8,8 +8,7 @@ import {getOssParamsGet } from "@/api/release";
 export default new Vuex.Store({
   state: {
     systemInfo: null,
-    authId: '',
-    ossData: null,
+    ossData: null,  //  阿里图片存储信息
     imgUrlHttp: 'https://chengmipub.oss-cn-hangzhou.aliyuncs.com/city/game/sieve/images',
     token: '', //token
     globalOpenId: '', // 用户唯一凭证openid
@@ -25,10 +24,6 @@ export default new Vuex.Store({
     changeToken: (state, value) => {
       const obj = state
       obj.token = value
-    },
-    changeAuthId: (state, value) => {
-      const obj = state
-      obj.authId = value
     },
     changeOpenId: (state, value) => {
       const obj = state

@@ -29,7 +29,7 @@
           placeholder="请输入日期"
         >
           <view class="picker" v-if="myInfo.birthday">{{myInfo.birthday}}</view>
-          <view class="picker" v-else style="color: #ccc;">请选择城市</view>
+          <view class="picker" v-else style="color: #ccc;">请选择生日</view>
         </picker>
       </div>
       <div class="infoItem">

@@ -19,6 +19,7 @@ export default {
     };
   },
   onLoad() {
+    // 调用store里面的getSystemInfo，获取手机信息
     store.dispatch("getSystemInfo");
     this.getLogin();
   },
@@ -43,7 +44,7 @@ export default {
                       wx.getUserInfo({
                         success: function(userRes) {
                           // 如果用户已经授权则会调用该方法
-                          wx.setStorageSync("userInfoAll", userRes);
+                          // wx.setStorageSync("userInfoAll", userRes);
                           let rawData = JSON.parse(userRes.rawData);
                           _this.nickName = rawData.nickName;
                           _this.avatarUrl = rawData.avatarUrl;
@@ -78,22 +79,14 @@ export default {
       };
       let authToken = await getUserInfo(data);
       wx.setStorageSync("authToken", authToken.result);
-      wx.setStorageSync("isLogin", true);
+      wx.setStorageSync("isLogin", true); // 存储本地  用于判断是否登录
       let authInfo = await userInfoGet();
       if (authInfo.status == 200) {
         wx.setStorageSync("authInfo", authInfo.result);
-
-        store.commit("changeAuthId", authInfo.result.id); //   用于判断是否显示删除
+        wx.setStorageSync("authId", authInfo.result.id); //  存储本地 用于判断是否显示删除
 
         wx.switchTab({
           url: "/pages/home/main"
-        });
-
-        var pages = getCurrentPages();
-        var beforePage = pages[pages.length - 2];
-        beforePage.onLoad();
-        wx.navigateBack({
-          delta: 1
         });
       }
     }

@@ -274,10 +274,13 @@ export default {
   onLoad(options) {
     Object.assign(this.$data, this.$options.data());
     this.mid = options.createrId;
-    this.delId = this.$store.state.authId;
+    this.delId = wx.getStorageSync('authId');
     this.fetchMember(options.createrId);
     this.fetchMemberForum(options.createrId);
     this.fetchMemberComm(options.createrId);
+  },
+  onShow() {
+    this.delId = wx.getStorageSync("authId");
   },
   methods: {
     // 个人信息

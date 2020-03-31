@@ -138,12 +138,15 @@ export default {
   onLoad() {
     if (wx.getStorageSync("isLogin")) {
       this.fetchData();
-      this.delId = this.$store.state.authId;
+      this.delId = wx.getStorageSync("authId");
     } else {
       wx.navigateTo({
         url: "/pages/login/main"
       });
     }
+  },
+  onShow() {
+    this.delId = wx.getStorageSync("authId");
   },
   methods: {
     fetchData() {

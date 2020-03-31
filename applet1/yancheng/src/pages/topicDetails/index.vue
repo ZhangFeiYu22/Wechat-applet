@@ -182,7 +182,7 @@ export default {
     //点击朋友圈图片,弹出框预览大图
     showImg(imgIndex) {
       let inIdx = imgIndex;
-      let imgArr = this.details.picList;
+      let imgArr = this.details.images;
       wx.previewImage({
         current: imgArr[inIdx], // 当前显示图片的http链接
         urls: imgArr // 需要预览的图片http链接列表

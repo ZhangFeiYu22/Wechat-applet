@@ -64,14 +64,14 @@ export default {
               success: function() {
                 // 存储token   和  用户信息
                 wx.setStorageSync("authToken", res.result);
-                wx.setStorageSync("userInfoAll", loRes); //用户所有信息
+                // wx.setStorageSync("userInfoAll", loRes); //用户所有信息
+                wx.setStorageSync("isLogin", true); // 存储本地  用于判断是否登录
 
                 userInfoGet().then(aures => {
                   if (aures.status == 200) {
                     wx.setStorageSync("authInfo", aures.result);
-                    globalStore.commit("changeAuthId", aures.result.id); //   用于判断是否显示删除
+                    wx.setStorageSync("authId", aures.result.id); //  存储本地 用于判断是否显示删除
 
-                    wx.setStorageSync("isLogin", true);
                     //返回上一页并刷新数据
                     var pages = getCurrentPages();
                     var beforePage = pages[pages.length - 2];
