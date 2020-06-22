@@ -100,6 +100,7 @@
       <!-- </form> -->
     </div>
     <div style="height:20px"></div>
+     <vue-tab-bar :selectNavIndex='1'></vue-tab-bar>
   </div>
 </template>
 
@@ -114,10 +115,12 @@ import {
   communityCommentDel
 } from "@/api/community";
 import navigationBar from "@/components/navigationBar";
+import vueTabBar from "@/components/vueTabBar";
 import { getDateDiff } from "@/utils/getDateDiff";
 export default {
   components: {
-    navigationBar
+    navigationBar,
+    vueTabBar
   },
   data() {
     return {
@@ -166,7 +169,7 @@ export default {
       if (comRes.status == 200) {
         var resData = comRes.result.data;
         this.total = comRes.result.total;
-        resData.map(item => {
+        var comResult = resData.map(item => {
           if (item.images !== "") {
             item.images = item.images.split(";");
           }
@@ -180,13 +183,14 @@ export default {
             let dateStr = item.createTime;
             item.createTime = getDateDiff(dateStr);
           }
+          return item
         });
         // 如果不是第一页，追加数据
         if (this.pageIndex > 0) {
-          this.communityFriendsList = this.communityFriendsList.concat(resData);
+          this.communityFriendsList = this.communityFriendsList.concat(comResult);
         } else {
           // 第一页则直接赋值 （下拉刷新）
-          this.communityFriendsList = resData;
+          this.communityFriendsList = comResult;
         }
         wx.stopPullDownRefresh(); //停止下拉刷新
       }

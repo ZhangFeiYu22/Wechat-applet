@@ -10,6 +10,7 @@ export default new Vuex.Store({
     systemInfo: null,
     ossData: null,  //  阿里图片存储信息
     imgUrlHttp: 'https://chengmipub.oss-cn-hangzhou.aliyuncs.com/city/game/sieve/images',
+    commonImgHttp: 'https://chengmipub.oss-cn-hangzhou.aliyuncs.com/city/common',
     token: '', //token
     globalOpenId: '', // 用户唯一凭证openid
     globalSessionKey: '', //sessionKey

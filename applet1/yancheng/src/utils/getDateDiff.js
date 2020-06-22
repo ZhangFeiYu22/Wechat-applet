@@ -1,5 +1,5 @@
 function getDateDiff(dateTimeStamp) {
-  var value = dateTimeStamp.toString().replace(/^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2}).*$/, '$1 $2').replace(/-/g, '/')
+  var value = dateTimeStamp.toString().replace(/^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2}).*$/, '$1 $2').replace(/-/g, '/');
   var minute = 1000 * 60;
   var hour = minute * 60;
   var day = hour * 24;
@@ -7,12 +7,11 @@ function getDateDiff(dateTimeStamp) {
   var month = day * 30;
   var now = new Date().getTime();
   //区分用户的机型
-  var tempTime = ''
   var diffValue = ''
   wx.getSystemInfo({
     success: function (res) {
       if (res.platform == "ios") {
-        diffValue = now - new Date(Date.parse(value)) - 1000 * 60 * 60 * 8
+        diffValue = now - new Date(Date.parse(value)).getTime()
       } else {
         diffValue = now - new Date(dateTimeStamp).getTime();
       }

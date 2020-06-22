@@ -39,7 +39,7 @@
           <span>{{details.commentNum}}</span>
         </div>
         <div class="likeNum">
-          喜欢
+          关注
           <span>{{details.likeNum}}</span>
         </div>
       </div>
@@ -82,7 +82,7 @@
       <div class="other">
         <p @click.stop="likeFun(details.isLike, details.id)">
           <i class="iconfont" :class="details.isLike == 1 ?'icon-aixin1':'icon-aixin0'"></i>
-          <span>喜欢</span>
+          <span>关注</span>
         </p>
         <p @click.stop="showPinLunFun">
           <i class="iconfont icon-pinglun"></i>

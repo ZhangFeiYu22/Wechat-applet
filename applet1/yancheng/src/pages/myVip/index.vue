@@ -31,12 +31,12 @@
                 <div class="left">
                   <p class="p1">
                     Lv
-                    <span class="p1_num">{{item}}</span>
+                    <span class="p1_num">{{item.lev}}</span>
                     <span class="p1_after">等级权益说明</span>
                   </p>
                   <p class="p2">
                     在消费
-                    <span class="p2_num">8000</span>元可晋级
+                    <span class="p2_num">{{item.costNeed}}</span>元可晋级
                   </p>
                   <p class="p3">
                     已经在这级积累
@@ -44,13 +44,13 @@
                   </p>
                 </div>
                 <div class="right">
-                  <img src="../../../static/images/lv1.png" mode="adpectFill" />
+                  <img :src="item.levUrl" mode="adpectFill" />
                 </div>
               </div>
               <div class="bottomDiv">
                 <ul>
                   <li v-for="(ictem,icdex) in lvIconList" :key="icdex">
-                    <i class="iconfont" :class="[ictem.isHas ? 'has' : 'no' , ictem.icon ]"></i>
+                    <i class="iconfont" :class="[icdex < item.powerNum ? 'has' : 'no' , ictem.icon ]"></i>
                     <p>{{ictem.name}}</p>
                   </li>
                 </ul>
@@ -79,7 +79,50 @@ export default {
   },
   data() {
     return {
-      levList: ["1", "2", "3", "4", "5", "6", "7"],
+      levList: [
+        {
+          lev: '1',
+          costNeed: '50',
+          levUrl: `${this.$store.state.commonImgHttp}/lv1.png`,
+          powerNum: 3
+        },
+        {
+          lev: '2',
+          costNeed: '100',
+          levUrl: `${this.$store.state.commonImgHttp}/lv2.png`,
+          powerNum: 5
+        },
+        {
+          lev: '3',
+          costNeed: '300',
+          levUrl: `${this.$store.state.commonImgHttp}/lv3.png`,
+          powerNum: 6
+        },
+        {
+          lev: '4',
+          costNeed: '1000',
+          levUrl: `${this.$store.state.commonImgHttp}/lv4.png`,
+          powerNum: 8
+        },
+        {
+          lev: '5',
+          costNeed: '3000',
+          levUrl: `${this.$store.state.commonImgHttp}/lv5.png`,
+          powerNum: 9
+        },
+        {
+          lev: '6',
+          costNeed: '8000',
+          levUrl: `${this.$store.state.commonImgHttp}/lv6.png`,
+          powerNum: 9
+        },
+        {
+          lev: '7',
+          costNeed: '15000',
+          levUrl: `${this.$store.state.commonImgHttp}/lv7.png`,
+          powerNum: 9
+        }
+      ],
       currentNum: 0,
       myInfo: {},
       lvIconList: [

@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <navigation-bar :title="'城谜'" :navBackgroundColor="'#fff'" :publish-visible="1"></navigation-bar>
+    <navigation-bar :title="'话题'" :navBackgroundColor="'#fff'" :publish-visible="1"></navigation-bar>
     <!-- 轮播 -->
     <div class="carrousel w94">
       <swiper
@@ -26,66 +26,51 @@
         </block>
       </view>
     </div>
-    <!-- 小菜单 -->
-    <div class="navBox w94">
-      <div
-        class="navItem"
-        v-for="(item,index) in navItemList"
-        :key="index"
-        @click="navJump(item.jumpPath)"
-      >
-        <div class="navIcon">
-          <i class="iconfont" :class="item.iconClass"></i>
-        </div>
-        <div class="navTitle">{{item.name}}</div>
-      </div>
-    </div>
+    <!-- tab导航栏 -->
+    <!-- scroll-left属性可以控制滚动条位置 -->
+    <!-- scroll-with-animation滚动添加动画过渡 -->
+    <scroll-view
+      scroll-x="true"
+      class="navListBox"
+      :class="menuFixed ? 'fixedTop' : ''"
+      :scroll-left="navScrollLeft"
+      :scroll-with-animation="true"
+      :style="{'top': menuFixed ? navBar_Height + 'px':0}"
+      id="navFixTop"
+    >
+      <block v-for="(navItem,idx) in navItemList" :key="idx">
+        <view
+          class="nav-item"
+          :class="currentTab == idx ?'active':''"
+          @tap="switchNav"
+          :data-current="idx"
+        >{{navItem.name}}</view>
+      </block>
+    </scroll-view>
     <!-- 内容列表 -->
-    <div class="contentList w94">
-      <div class="contentItem" v-for="(item,index) in forumList" :key="index">
-        <div class="headName" @click.stop="goPersonal(item.createrId)">
-          <img v-if="item.createrAvatar" :src="item.createrAvatar" mode="aspectFill" />
-          <span>{{item.createrName}}</span>
-        </div>
-        <div class="content" :class="item.showEllip ? 'ellip' : ''">{{item.content}}</div>
-        <div v-if="item.showEllip" class="toggleBox">
-          <div class="more_txt" @click.stop="requireTxt(index)">
-            <span>{{item.showEllip ? '展开' : '收起'}}</span>
-          </div>
-        </div>
-        <!-- 图片展示 -->
-        <div class="imgsList">
-          <div
-            class="imgsItem"
-            v-for="(picItem,picIndex) in item.images"
-            :key="picIndex"
-            @click.stop="showImg(index,picIndex)"
-          >
-            <img v-if="picItem" :src="picItem" mode="aspectFill" />
-          </div>
-        </div>
-        <div class="timeHandle">
-          <div class="time">
-            {{item.createTime}}
-            <span
-              class="del"
-              @click="delOneSelf(item.id,index)"
-              v-if="item.createrId == delId"
-            >删除</span>
-          </div>
-          <div class="handle">
-            <i
-              class="iconfont"
-              :class="item.isLike == 1 ?'icon-aixin1':'icon-aixin0'"
-              @click.stop="likeFun(item.isLike,item.id,index)"
-            ></i>
-            <i class="iconfont icon-pinglun" @click.stop="goTopic(item.id)"></i>
-            <i class="iconfont icon-sixin" @click.stop="goTopic(item.id)"></i>
-          </div>
-        </div>
-      </div>
-    </div>
+    <swiper class="tabContentListBox" :current="currentTab" duration="300" @change="switchTab">
+      <!-- <swiper-item v-for="(tabItem,idx) in numA" :key="idx" class="tabContent">{{tabItem}}</swiper-item> -->
+      <!-- 最新 -->
+      <swiper-item class="tabContent">
+        <activityItem></activityItem>
+      </swiper-item>
+      <!-- 活动 -->
+      <swiper-item class="tabContent">
+        <activityItem></activityItem>
+      </swiper-item>
+      <!-- 投票 -->
+      <swiper-item class="tabContent">
+        <voteItem></voteItem>
+      </swiper-item>
+      <swiper-item class="tabContent">
+        <consultItem></consultItem>
+      </swiper-item>
+      <swiper-item class="tabContent">4</swiper-item>
+      <swiper-item class="tabContent">5</swiper-item>
+    </swiper>
+
     <div style="height:20px"></div>
+    <vue-tab-bar :selectNavIndex="3"></vue-tab-bar>
   </div>
 </template>
 
@@ -98,38 +83,47 @@ import {
   forumLike,
   forumLikeNo
 } from "@/api/home";
+import { activitysGet } from "@/api/activity";
 import { getDateDiff } from "@/utils/getDateDiff";
 import navigationBar from "@/components/navigationBar";
+import vueTabBar from "@/components/vueTabBar";
+import activityItem from "@/components/activityItem";
+import voteItem from "@/components/voteItem";
+import consultItem from "@/components/consultItem";
 export default {
   components: {
-    navigationBar
+    navigationBar,
+    vueTabBar,
+    activityItem,
+    voteItem,
+    consultItem
   },
   data() {
     return {
       delId: "",
+      numA: [0, 1, 2, 3, 4, 5],
       navItemList: [
         {
-          name: "活动",
-          iconClass: "icon-huodong",
-          jumpPath: "/pages/activity/main"
+          name: "最新"
         },
         {
-          name: "投票",
-          iconClass: "icon-navicon-tp",
-          jumpPath: "/pages/vote/main"
+          name: "活动"
         },
         {
-          name: "骰子",
-          iconClass: "icon-touzi",
-          jumpPath: "/pages/game_dice/main"
+          name: "投票"
         },
         {
-          name: "真心话",
-          iconClass: "icon-xintiao",
-          jumpPath: "/pages/game_truchOrDare/main"
+          name: "征寻"
+        },
+        {
+          name: "骰子"
+        },
+        {
+          name: "真心话"
         }
       ],
       adList: [],
+      acticityList: [],
       indicatorDots: false,
       autoplay: true,
       interval: 3000,
@@ -138,85 +132,29 @@ export default {
       forumList: [],
       pageSize: 5, //一页显示条数
       pageIndex: 0, //页码
-      total: 0 //总条数
+      total: 0, //总条数
+      currentTab: 0, //nav当前激活位置
+      navScrollLeft: 0, //  滚动条开始位置
+      windowWidth: "",
+      menuFixed: false,
+      scrollTop: 0,
+      menuTop: "",
+      navBar_Height: ""
     };
-  },
-  onLoad() {
-    this.fetchForumContentList();
   },
   mounted() {
     this.fetchAd();
-  },
-  onShow() {
-    this.delId = wx.getStorageSync("authId");
+    this.fetchActiveData();
+    wx.getSystemInfo({
+      success: res => {
+        console.log(res);
+        this.windowWidth = res.windowWidth;
+      }
+    });
+    this.navBar_Height = wx.getStorageSync("navBar_Height");
+    this.initClientRect();
   },
   methods: {
-    fetchForumContentList() {
-      var data = {
-        pageSize: this.pageSize,
-        pageIndex: this.pageIndex
-      };
-      this.fetchForumContent(data);
-    },
-    delOneSelf(id, index) {
-      var _this = this;
-      wx.showModal({
-        content: "确定删除吗？",
-        success(res) {
-          if (res.confirm) {
-            forumContentDel(id).then(delRes => {
-              if (delRes.status == 200) {
-                wx.showToast({
-                  title: "删除成功",
-                  icon: "none",
-                  duration: 2000
-                });
-                _this.forumList.splice(index, 1);
-              }
-            });
-          } else if (res.cancel) {
-            console.log("用户点击取消");
-          }
-        }
-      });
-    },
-    // 获取列表数据
-    async fetchForumContent(data) {
-      var forumRes;
-      if (wx.getStorageSync("isLogin")) {
-        forumRes = await forumContentGetLogin(data);
-      } else {
-        forumRes = await forumContentGet(data);
-      }
-      if (forumRes.status == 200) {
-        var resData = forumRes.result.data;
-        this.total = forumRes.result.total;
-        resData.map(item => {
-          if (item.images !== "" && item.images) {
-            item.images = item.images.split(";");
-          } else {
-            item.images = [];
-          }
-          if (item.content.length > 80) {
-            item["showEllip"] = true;
-          } else {
-            item["showEllip"] = false;
-          }
-          if (item.createTime) {
-            let dateStr = item.createTime;
-            item.createTime = getDateDiff(dateStr);
-          }
-        });
-        // 如果不是第一页，追加数据
-        if (this.pageIndex > 0) {
-          this.forumList = this.forumList.concat(resData);
-        } else {
-          // 第一页则直接赋值 （下拉刷新）
-          this.forumList = resData;
-        }
-        wx.stopPullDownRefresh(); //停止下拉刷新
-      }
-    },
     // 获取广告位
     async fetchAd() {
       let adres = await adGet();
@@ -228,15 +166,6 @@ export default {
     swiperChange: function(e) {
       this.current = e.mp.detail.current;
     },
-    // 折叠展开
-    requireTxt(index) {
-      let val = this.forumList[index].showEllip;
-      if (val) {
-        this.forumList[index].showEllip = false;
-      } else {
-        this.forumList[index].showEllip = true;
-      }
-    },
     //小菜单跳转
     navJump(path) {
       if (wx.getStorageSync("isLogin")) {
@@ -244,93 +173,71 @@ export default {
           url: path
         });
       } else {
-        wx.navigateTo({
-          url: "/pages/login/main"
+        wx.showModal({
+          content: "登录获取更多权限",
+          success(res) {
+            if (res.confirm) {
+              wx.navigateTo({
+                url: "/pages/login/main"
+              });
+            } else if (res.cancel) {
+              console.log("用户点击取消");
+            }
+          }
         });
       }
     },
-    //跳转个人中心
-    goPersonal(creatId) {
-      if (wx.getStorageSync("isLogin")) {
-        wx.navigateTo({
-          url: `/pages/personal/main?createrId=${creatId}`
-        });
+    switchNav(event) {
+      var cur = event.target.dataset.current;
+      var singleNavWidth = this.windowWidth / 6;
+      this.avScrollLeft = (cur - 2) * singleNavWidth;
+      if (this.currentTab == cur) {
+        return false;
       } else {
-        wx.navigateTo({
-          url: `/pages/login/main`
-        });
+        this.currentTab = cur;
       }
     },
-    goTopic(id) {
-      if (wx.getStorageSync("isLogin")) {
-        wx.navigateTo({
-          url: `/pages/topicDetails/main?forumContentId=${id}`
-        });
-      } else {
-        wx.navigateTo({
-          url: "/pages/login/main"
-        });
-      }
+    switchTab(event) {
+      var cur = event.mp.detail.current;
+      var singleNavWidth = this.windowWidth / 6;
+      this.currentTab = cur;
+      this.navScrollLeft = (cur - 2) * singleNavWidth;
     },
-    //点击朋友圈图片,弹出框预览大图
-    showImg(index, imgIndex) {
-      let outIdx = index;
-      let inIdx = imgIndex;
-      let imgArr = this.forumList[outIdx].images;
-      wx.previewImage({
-        current: imgArr[inIdx], // 当前显示图片的http链接
-        urls: imgArr // 需要预览的图片http链接列表
+    initClientRect() {
+      var that = this;
+      var query = wx.createSelectorQuery();
+      query.select("#navFixTop").boundingClientRect();
+      query.exec(function(res) {
+        that.menuTop = res[0].top - that.navBar_Height;
       });
     },
-    likeFun(isLike, id, index) {
-      if (wx.getStorageSync("isLogin")) {
-        var _this = this;
-        if (isLike == 2) {
-          forumLike(id).then(res => {
-            if (res.status == 200) {
-              _this.forumList[index].isLike = 1;
-              wx.showToast({
-                title: "关注成功",
-                icon: "none",
-                duration: 1500
-              });
-            }
-          });
-        } else {
-          forumLikeNo(id).then(res => {
-            if (res.status == 200) {
-              _this.forumList[index].isLike = 2;
-              wx.showToast({
-                title: "取消关注",
-                icon: "none",
-                duration: 1500
-              });
-            }
-          });
+    fetchActiveData() {
+      activitysGet().then(res => {
+        if (res.status == 200) {
+          this.acticityList = res.result.data;
         }
-      } else {
-        wx.navigateTo({
-          url: "/pages/login/main"
-        });
-      }
+      });
+    },
+    goActivityDetails(id) {
+      wx.navigateTo({
+        url: `/pages/activityDetails/main?activityId=${id}`
+      });
     }
   },
-  onReachBottom: function() {
-    if (this.forumList.length >= this.total) {
-      wx.showToast({
-        title: "到底了",
-        icon: "none",
-        duration: 2000
-      });
+  //监听屏幕滚动 判断上下滚动
+  onPageScroll(scroll) {
+    if (scroll.scrollTop >= this.menuTop) {
+      if (this.menuFixed) {
+        return;
+      }
+      this.menuFixed = true;
     } else {
-      this.pageIndex++; //获取现在页码
-      this.fetchForumContentList();
+      this.menuFixed = false;
     }
   },
   //下拉刷新
   onPullDownRefresh: function() {
-    this.pageIndex = 0;
-    this.fetchForumContentList();
+    console.log("下拉刷新");
   }
 };
 </script>
@@ -364,7 +271,7 @@ export default {
       position: absolute;
       right: 0;
       left: 0;
-      bottom: -5px;
+      bottom: 15px;
       display: flex;
       justify-content: center;
       .dot {
@@ -383,105 +290,109 @@ export default {
     }
   }
   // 小菜单
-  .navBox {
-    display: flex;
-    justify-content: space-around;
-    text-align: center;
-    margin-top: 30px;
-    margin-bottom: 20px;
-    .navItem {
-      width: 25%;
-      .navIcon {
-        margin-bottom: 8px;
-        i {
-          font-size: 26px;
-        }
-      }
-      .navTitle {
-        font-size: 16px;
+  .navListBox {
+    height: 50px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    line-height: 40px;
+    background: #fff;
+    font-size: 16px;
+    white-space: nowrap;
+    padding: 5px 10px;
+    &.fixedTop {
+      width: 100%;
+      position: fixed;
+      top: 0;
+      z-index: 99;
+    }
+    .nav-item {
+      // padding: 0 10px;
+      width: 15%;
+      display: inline-block;
+      text-align: center;
+      font-size: 14px;
+      &.active {
+        color: red;
       }
     }
   }
+
   // 内容列表
-  .contentList {
-    margin-top: 20px;
-    .contentItem {
-      padding-bottom: 20px;
-      border-bottom: 1px solid #f1f1f1;
-      margin-bottom: 20px;
-      .headName {
-        margin-bottom: 10px;
-        img {
-          width: 28px;
-          height: 28px;
-          vertical-align: middle;
-          margin-right: 5px;
-          border-radius: 100%;
-        }
-        span {
-          font-size: 18px;
-          vertical-align: middle;
-        }
-      }
-      .content {
-        line-height: 20px;
-        color: #6f6d6d;
-        font-size: 16px;
-        text-align: justify;
-        &.ellip {
-          overflow: hidden;
-          text-overflow: ellipsis;
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-          -webkit-line-clamp: 5;
-        }
-      }
-      .toggleBox {
-        font-size: 16px;
-        color: #6f6d6d;
-        .more_txt {
-          span {
-            border-bottom: 1px solid #6f6d6d;
-          }
-        }
-      }
-      .imgsList {
-        display: flex;
-        flex-wrap: wrap;
-        margin-top: 10px;
-        .imgsItem {
-          width: 32%;
-          margin-right: 1.3333%;
-          height: 115px;
-          margin-bottom: 5px;
-          border-radius: 5px;
-          overflow: hidden;
-          img {
-            width: 100%;
-            height: 100%;
-          }
-        }
-      }
-      .timeHandle {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 15px;
-        .time {
-          width: 40%;
-          font-size: 14px;
-          color: #8b8b8b;
-          .del {
-            color: #5d7394;
-            font-size: 13px;
-            margin-left: 10px;
-          }
-        }
-        .handle {
-          width: 25%;
+  .tabContentListBox {
+    background: #f6f6f6;
+    height: 800px;
+    box-sizing: border-box;
+    .tabContent {
+      overflow-y: scroll;
+      padding: 10px 0 20px;
+      .activityList {
+        width: 90%;
+        margin: 0 auto;
+        .activityItem {
+          font-size: 13px;
           display: flex;
-          justify-content: space-between;
-          .iconfont {
-            font-size: 20px;
+          color: #525151;
+          box-shadow: 0 4px 10px 1px #ddd;
+          padding: 10px;
+          border-radius: 8px;
+          margin-bottom: 10px;
+          position: relative;
+          .imgBox {
+            width: 135px;
+            height: 95px;
+            margin-right: 5px;
+            img {
+              width: 100%;
+              height: 100%;
+            }
+          }
+          .wordBox {
+            flex: 1;
+            .title {
+              line-height: 20px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              display: -webkit-box; //作为弹性伸缩盒子模型显示。
+              -webkit-box-orient: vertical; //设置伸缩盒子的子元素排列方式--从上到下垂直排列
+              -webkit-line-clamp: 2; //显示的行
+              line-clamp: 2; //显示的行
+              font-size: 16px;
+            }
+            .address {
+              font-size: 12px;
+              color: #8e8e8e;
+              line-height: 20px;
+              margin-top: 5px;
+            }
+            .time {
+              font-size: 12px;
+              color: #8e8e8e;
+              line-height: 20px;
+            }
+            i {
+              display: inline-block;
+              margin-right: 5px;
+              vertical-align: middle;
+              font-size: 14px;
+              color: #8e8e8e;
+            }
+            span {
+              vertical-align: middle;
+              color: #8e8e8e;
+            }
+          }
+          .priceBtn {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            height: 16px;
+            line-height: 14px;
+            border: 1px solid #b1a1a3;
+            color: #b1a1a3;
+            font-size: 12px;
+            padding: 0 5px;
+            border-radius: 5px;
           }
         }
       }

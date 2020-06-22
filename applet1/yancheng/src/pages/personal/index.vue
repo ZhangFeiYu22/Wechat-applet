@@ -5,8 +5,8 @@
       <div class="headImg">
         <img v-if="memberInfo.avatar" :src="memberInfo.avatar" mode="aspectFill" />
       </div>
-      <div class="rightIcon" @click="isAttenToggle(memberInfo.id)">
-        <p class="attention attentioned" v-if="isAttention">已关注</p>
+      <div class="rightIcon" @click="isAttenToggle(memberInfo.isFollow,memberInfo.id)">
+        <p class="attention attentioned" v-if="memberInfo.isFollow">已关注</p>
         <p class="attention" v-else>
           <i class="iconfont icon-jiahao"></i>
           <span>关注</span>
@@ -35,12 +35,12 @@
     <div class="linew"></div>
     <div class="navBox">
       <div class="navItem" :class="navType == '0' ? 'active' : ''" @click="itemToggle('0')">
-        <i class="iconfont icon-huati"></i>
-        <!-- <p>话题</p> -->
+        <!-- <i class="iconfont icon-huati"></i> -->
+        <p>话题</p>
       </div>
       <div class="navItem" :class="navType == '1' ? 'active' : ''" @click="itemToggle('1')">
-        <i class="iconfont icon-xiangji"></i>
-        <!-- <p>状态</p> -->
+        <!-- <i class="iconfont icon-xiangji"></i> -->
+        <p>社区</p>
       </div>
     </div>
     <!-- 话题 -->
@@ -80,7 +80,6 @@
               @click.stop="likeFun(item.isLike,item.id,index)"
             ></i>
             <i class="iconfont icon-pinglun" @click.stop="goTopic(item.id)"></i>
-            <i class="iconfont icon-sixin" @click.stop="goTopic(item.id)"></i>
           </div>
         </div>
       </div>
@@ -188,7 +187,7 @@
     <div class="mask" @click.stop="closeMask" v-if="maskVal"></div>
     <div class="maskCont" v-if="maskVal">
       <div class="title">
-        <img :src="headImg" mode="aspectFill" />
+        <img v-if="memberInfo.avatar" :src="memberInfo.avatar" mode="aspectFill" />
         <span>{{memberInfo.nickName}}</span>
       </div>
       <div class="textaCont">
@@ -228,7 +227,6 @@ import {
   getMemberForum,
   getMemberComm,
   followMemberPost,
-  followMemberGet,
   followMemberDel
 } from "@/api/personal";
 import { getDateDiff } from "@/utils/getDateDiff";
@@ -243,10 +241,8 @@ export default {
       mid: "", // 用户ID
       sixinValue: "",
       maskVal: false, //私信显示判断
-      isAttention: false, //关注判断
       navType: 0, //话题，状态判断
       likeAct: false, //喜欢判断
-      headImg: `${this.$store.state.imgUrlHttp}/head.png`,
       memberInfo: {},
       forumList: [],
       showZanAndPinglunNum: null, //点击是那个  将评论点赞显示出来
@@ -274,7 +270,6 @@ export default {
   onLoad(options) {
     Object.assign(this.$data, this.$options.data());
     this.mid = options.createrId;
-    this.delId = wx.getStorageSync('authId');
     this.fetchMember(options.createrId);
     this.fetchMemberForum(options.createrId);
     this.fetchMemberComm(options.createrId);
@@ -288,7 +283,6 @@ export default {
       let memRes = await getMember(id);
       if (memRes.status == 200) {
         this.memberInfo = memRes.result;
-        this.folMemberGet(memRes.result.id);
       }
     },
     // 获取话题列表
@@ -302,7 +296,7 @@ export default {
       if (ffRes.status == 200) {
         var forumRes = ffRes.result.data;
         _this.ffPage.total = ffRes.result.total;
-        forumRes.map(item => {
+        var forResult = forumRes.map(item => {
           if (item.images !== "" && item.images) {
             item.images = item.images.split(";");
           } else {
@@ -317,12 +311,13 @@ export default {
             let dateStr = item.createTime;
             item.createTime = getDateDiff(dateStr);
           }
+          return item;
         });
         if (_this.ffPage.pageIndex > 0) {
-          _this.forumList = _this.forumList.concat(forumRes);
+          _this.forumList = _this.forumList.concat(forResult);
         } else {
           // 第一页则直接赋值 （下拉刷新）
-          _this.forumList = forumRes;
+          _this.forumList = forResult;
         }
       }
     },
@@ -343,7 +338,7 @@ export default {
                   _this.forumList.splice(index, 1);
                 }
               });
-            }else{
+            } else {
               communityFriendsListDel(id).then(delRes => {
                 if (delRes.status == 200) {
                   wx.showToast({
@@ -372,7 +367,7 @@ export default {
       if (cfRes.status == 200) {
         var comRes = cfRes.result.data;
         _this.cfPage.total = cfRes.result.total;
-        comRes.map(item => {
+        var comResult = comRes.map(item => {
           if (item.images !== "") {
             item.images = item.images.split(";");
           }
@@ -385,45 +380,48 @@ export default {
             let dateStr = item.createTime;
             item.createTime = getDateDiff(dateStr);
           }
+          return item;
         });
         if (_this.cfPage.pageIndex > 0) {
           _this.communityFriendsList = _this.communityFriendsList.concat(
-            comRes
+            comResult
           );
         } else {
           // 第一页则直接赋值 （下拉刷新）
-          _this.communityFriendsList = comRes;
+          _this.communityFriendsList = comResult;
         }
-        console.log("2---", this.communityFriendsList);
       }
     },
-    // 关注 切换
-    isAttenToggle(id) {
-      if (this.isAttention) {
+    //  个人 关注 切换
+    isAttenToggle(isFoll, id) {
+      if (isFoll) {
         this.folMemberDel(id);
       } else {
         this.folMemberPost(id);
       }
     },
-    // 查看是否关注
-    async folMemberGet(id) {
-      let geRes = await followMemberGet(id);
-      if (geRes.status == 200) {
-        this.isAttention = geRes.result;
-      }
-    },
-    // 关注
+    // 个人 关注
     async folMemberPost(id) {
       let poRes = await followMemberPost(id);
       if (poRes.status == 200) {
-        this.isAttention = poRes.result;
+        this.memberInfo.isFollow = poRes.result;
+        wx.showToast({
+          title: "关注成功",
+          icon: "none",
+          duration: 2000
+        });
       }
     },
-    // 取消关注
+    // 个人  取消关注
     async folMemberDel(id) {
       let deRes = await followMemberDel(id);
       if (deRes.status == 200) {
-        this.isAttention = false;
+        this.memberInfo.isFollow = false;
+        wx.showToast({
+          title: "取消关注",
+          icon: "none",
+          duration: 2000
+        });
       }
     },
     // 动态，社区切换
@@ -574,7 +572,7 @@ export default {
       this.pinglunIndex = index;
       this.comItemData = comItem;
     },
-    // 关注（点赞）
+    // 话题关注
     likeFun(isLike, id, index) {
       var _this = this;
       if (isLike == 2) {
@@ -820,7 +818,8 @@ export default {
     justify-content: space-around;
     align-items: center;
     text-align: center;
-    padding: 15px 0 0px;
+    padding: 10px 0 10px;
+    border-bottom: 1px solid #eee;
     .navItem {
       i {
         display: inline-block;
@@ -831,14 +830,18 @@ export default {
       }
       p {
         display: inline-block;
-        font-size: 12px;
+        font-size: 18px;
         vertical-align: middle;
-        color: #e83e3e;
+        color: #777;
       }
       &.active {
         i {
           color: #111;
           font-weight: 600;
+        }
+        p{
+          font-weight: 600;
+          color: #333;
         }
       }
     }
@@ -905,7 +908,7 @@ export default {
           }
         }
         .handle {
-          width: 25%;
+          width: 15%;
           display: flex;
           justify-content: space-between;
           .iconfont {

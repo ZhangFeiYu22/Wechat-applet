@@ -1,10 +1,5 @@
 <template>
   <div class="vote">
-    <navigation-bar
-      :title="'投票'"
-      :navBackgroundColor="'#fff'"
-      :back-visible="true"
-    ></navigation-bar>
     <!-- 内容列表 -->
     <div class="contentList">
       <div class="contentItem w94" v-for="(item,index) in ItemList" :key="index">
@@ -65,17 +60,12 @@
       </div>
     </div>
 
-    <div class="createBtn" @click="goCreateVote">创建投票</div>
   </div>
 </template>
 
 <script>
 import { voteGet } from "@/api/vote";
-import navigationBar from "@/components/navigationBar";
 export default {
-  components: {
-    navigationBar
-  },
   data() {
     return {
       maskVal: false,
@@ -113,7 +103,7 @@ export default {
     };
   },
   mounted () {
-    this.fetchVoteData()
+    // this.fetchVoteData()
   },
   methods: {
     fetchVoteData(){
@@ -150,11 +140,6 @@ export default {
     },
     selectOne(num) {
       this.itemsNum = num;
-    },
-    goCreateVote() {
-      wx.navigateTo({
-        url: "/pages/voteAdd/main"
-      });
     }
   }
 };
@@ -309,19 +294,6 @@ export default {
         }
       }
     }
-  }
-  .createBtn {
-    background-color: #b1a1a3;
-    color: #fff;
-    font-size: 14px;
-    height: 30px;
-    line-height: 30px;
-    width: 30%;
-    text-align: center;
-    border-radius: 30px;
-    position: fixed;
-    bottom: 5%;
-    left: 35%;
   }
 }
 </style>

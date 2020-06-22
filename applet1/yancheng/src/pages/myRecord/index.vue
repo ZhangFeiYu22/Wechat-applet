@@ -1,13 +1,10 @@
 <template>
   <div class="attention">
-    <navigation-bar
-      :title="'记录'"
-      :navBackgroundColor="'#fff'"
-      :back-visible="true"
-    ></navigation-bar>
+    <navigation-bar :title="'记录'" :navBackgroundColor="'#fff'" :back-visible="true"></navigation-bar>
     <div class="navToggle">
       <div class="navI" :class="itemActive == '1' ? 'active' : ''" @click="itemToggle('1')">活动</div>
       <div class="navI" :class="itemActive == '0' ? 'active' : ''" @click="itemToggle('0')">投票</div>
+      <div class="navI" :class="itemActive == '2' ? 'active' : ''" @click="itemToggle('2')">征寻</div>
     </div>
     <div class="activityList list" v-if="itemActive == 1">
       <div class="activityItem item" @click="goActivityDetails">
@@ -43,7 +40,7 @@
         </div>
       </div>
     </div>
-    <div class="voteList list" v-else>
+    <div class="voteList list" v-if="itemActive == 0">
       <div class="contentItem" v-for="(item,index) in ItemList" :key="index">
         <div class="headName" @click="goPersonal">
           <div class="headImg">
@@ -100,14 +97,19 @@
         </div>
       </div>
     </div>
+    <div class="consultList" v-else>
+      <consultItem :handle="1"></consultItem>
+    </div>
   </div>
 </template>
 
 <script>
 import navigationBar from "@/components/navigationBar";
+import consultItem from "@/components/consultItem";
 export default {
   components: {
-    navigationBar
+    navigationBar,
+    consultItem
   },
   data() {
     return {
@@ -140,7 +142,7 @@ export default {
             `${this.$store.state.imgUrlHttp}/a3.png`,
             `${this.$store.state.imgUrlHttp}/a4.png`,
             `${this.$store.state.imgUrlHttp}/a5.png`,
-            `${this.$store.state.imgUrlHttp}/a6.png`,
+            `${this.$store.state.imgUrlHttp}/a6.png`
           ]
         }
       ]

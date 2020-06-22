@@ -5,8 +5,16 @@
       <div class="headImg">
         <img :src="userInfo.avatar" mode="aspectFill" />
         <div class="hierarchy">
-          <img src="../../../static/images/lv5.png" mode="aspectFill" />
-          <p>LV5</p>
+          <!-- <img :src="levUrl" mode="aspectFill" /> -->
+          <div class="nameSex">
+            <p class="name">{{userInfo.nickName}}</p>
+            <p class="sex">
+              <i class="iconfont icon-nan" v-if="userInfo.gender==1"></i>
+              <i class="iconfont icon-nv" v-else-if="userInfo.gender==2"></i>
+              <i class="iconfont" v-else></i>
+            </p>
+          </div>
+          <p class="lv">LV5</p>
         </div>
       </div>
       <div class="rightIcon">
@@ -15,7 +23,7 @@
       </div>
     </div>
     <div class="baseInfo">
-      <div class="nameSexPhone">
+      <!-- <div class="nameSexPhone">
         <p class="name">{{userInfo.nickName}}</p>
         <p class="sex">
           <i class="iconfont icon-nan" v-if="userInfo.gender==1"></i>
@@ -23,8 +31,8 @@
           <i class="iconfont" v-else></i>
         </p>
         <p class="phone">182****1234</p>
-      </div>
-      <div class="inaword">{{userInfo.introduction}}</div>
+      </div>-->
+      <div class="inaword ellip">{{userInfo.introduction}}</div>
       <div class="other">
         <p class="constellation">金牛座</p>
         <p class="address">{{userInfo.city}}</p>
@@ -32,7 +40,7 @@
         <p class="autonym">已实名</p>
       </div>
     </div>
-    <div class="wallet">
+    <!-- <div class="wallet">
       <div class="gold">
         <p class="p1">我的金币</p>
         <p class="p2">100.00</p>
@@ -44,21 +52,27 @@
       <div class="recharge" @click="goRecharge">
         <p class="p1 p1r">充值</p>
       </div>
+    </div>-->
+    <div class="wallet2">
+      <p class="p1">我的砖头</p>
+      <p class="p2">
+        <i class="iconfont icon-zhuan3"></i>100.00
+      </p>
     </div>
     <div class="otherList">
-      <div class="otherItem" @click="goMyVip">
+      <!-- <div class="otherItem" @click="goMyVip">
         <i class="iconfont icon-huiyuan iconLeft"></i>
         <span>我的会员</span>
+        <i class="iconfont icon-right iconRight"></i>
+      </div>-->
+      <div class="otherItem" @click="goAttention">
+        <i class="iconfont icon-guanzhu iconLeft"></i>
+        <span>我的关注</span>
         <i class="iconfont icon-right iconRight"></i>
       </div>
       <div class="otherItem" @click="goPublish">
         <i class="iconfont icon-publish iconLeft"></i>
         <span>我的发布</span>
-        <i class="iconfont icon-right iconRight"></i>
-      </div>
-      <div class="otherItem" @click="goAttention">
-        <i class="iconfont icon-guanzhu iconLeft"></i>
-        <span>我的关注</span>
         <i class="iconfont icon-right iconRight"></i>
       </div>
       <div class="otherItem" @click="goRecord">
@@ -73,7 +87,7 @@
       </div>
       <div class="otherItem" @click="goMedal">
         <i class="iconfont icon-xunzhang iconLeft"></i>
-        <span>我的勋章</span>
+        <span>活动勋章</span>
         <i class="iconfont icon-right iconRight"></i>
       </div>
     </div>
@@ -86,24 +100,27 @@
       </div>
     </div>
     <div class="logo">
-      <img src="../../../static/images/logo.jpg" mode="aspectFill" />
+      <img src="../../../static/images/logo.png" mode="aspectFill" />
     </div>
+    <vue-tab-bar :selectNavIndex="4"></vue-tab-bar>
   </div>
 </template>
 
 <script>
 import navigationBar from "@/components/navigationBar";
+import vueTabBar from "@/components/vueTabBar";
 export default {
   components: {
-    navigationBar
+    navigationBar,
+    vueTabBar
   },
   data() {
     return {
+      levUrl: `${this.$store.state.commonImgHttp}/lv5.png`,
       userInfo: {},
       likeAct: false,
       itemActive: 0,
-      headImg: `${this.$store.state.imgUrlHttp}/head.png`,
-      hierarchy: `${this.$store.state.imgUrlHttp}/hierarchy.png`
+      headImg: `${this.$store.state.imgUrlHttp}/head.png`
     };
   },
   onLoad() {
@@ -114,6 +131,10 @@ export default {
         url: "/pages/login/main"
       });
     }
+  },
+  onShow() {
+    console.log("1");
+    this.userInfo = wx.getStorageSync("authInfo");
   },
   methods: {
     goMyVip() {
@@ -198,15 +219,19 @@ export default {
         vertical-align: middle;
         margin-left: 20px;
         text-align: center;
-        img {
-          width: 50px;
-          height: 50px;
-        }
-        p {
+        .lv {
           background: linear-gradient(to bottom, #ffefae, #eba351);
           color: #fff;
           font-size: 13px;
           letter-spacing: 2px;
+        }
+        .nameSex {
+          margin-bottom: 10px;
+          display: flex;
+          align-items: center;
+          .sex {
+            margin-left: 5px;
+          }
         }
       }
     }
@@ -246,6 +271,13 @@ export default {
       font-size: 12px;
       color: #333;
       margin: 10px 0;
+      &.ellip {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+      }
     }
     .other {
       display: flex;
@@ -311,6 +343,24 @@ export default {
       border-right: 1px solid #fff;
     }
   }
+  .wallet2 {
+    height: 40px;
+    width: 92%;
+    margin: 15px auto 10px;
+    border-radius: 5px;
+    background: linear-gradient(to right, #fd5139, #fe9386);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    color: #fff;
+    .p2 {
+      i {
+        display: inline-block;
+        margin-right: 5px;
+        font-size: 18px;
+      }
+    }
+  }
   .otherList {
     width: 90%;
     margin: 0 auto;
@@ -334,10 +384,10 @@ export default {
   }
   .logo {
     img {
-      width: 45px;
+      width: 70px;
       height: 45px;
       display: block;
-      margin: 20px auto 0;
+      margin: 10px auto 20px;
     }
   }
   .line {

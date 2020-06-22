@@ -3,15 +3,19 @@
     <navigation-bar :title="'我的发布'" :navBackgroundColor="'#fff'" :back-visible="true"></navigation-bar>
     <div class="navBox">
       <div class="navItem" :class="navType == '0' ? 'active' : ''" @click="itemToggle('0')">
-        <i class="iconfont icon-huati"></i>
-        <!-- <p>话题</p> -->
+        <p>状态</p>
       </div>
       <div class="navItem" :class="navType == '1' ? 'active' : ''" @click="itemToggle('1')">
-        <i class="iconfont icon-xiangji"></i>
-        <!-- <p>状态</p> -->
+        <p>投票</p>
+      </div>
+      <div class="navItem" :class="navType == '2' ? 'active' : ''" @click="itemToggle('2')">
+        <p>活动</p>
+      </div>
+      <div class="navItem" :class="navType == '3' ? 'active' : ''" @click="itemToggle('3')">
+        <p>征寻</p>
       </div>
     </div>
-    <!-- 社区 -->
+    <!-- 状态 -->
     <div class="contentList w94" v-if="navType == '0'">
       <div class="contentItem" v-for="(item,index) in forumList" :key="index">
         <div class="content" :class="item.showEllip ? 'ellip' : ''">{{item.content}}</div>
@@ -47,93 +51,22 @@
               @click.stop="likeFun(item.isLike,item.id,index)"
             ></i>
             <i class="iconfont icon-pinglun" @click.stop="goTopic(item.id)"></i>
-            <i class="iconfont icon-sixin" @click.stop="goTopic(item.id)"></i>
           </div>
         </div>
       </div>
     </div>
-    <!-- 动态 -->
-    <div class="contentList contentList_2 w94" v-else>
-      <div class="contentItem" v-for="(item,index) in communityFriendsList" :key="item.id">
-        <!-- 内容 -->
-        <div class="content" id="contentInfo" :class="item.showEllip ?'ellip': ''">{{item.content}}</div>
-        <div v-if="item.showEllip" class="toggleBox">
-          <div class="more_txt" @click="requireTxt(index)">
-            <span>{{item.showEllip ? '展开' : '收起'}}</span>
-          </div>
-        </div>
-        <!-- 图片 -->
-        <div class="imgsList">
-          <div
-            class="imgsItem"
-            @click.stop="showImg(index,imgIndex)"
-            v-for="(imgItem,imgIndex) in item.images"
-            :key="imgIndex"
-          >
-            <img v-if="imgItem" :src="imgItem" mode="aspectFill" />
-          </div>
-        </div>
-        <!-- 时间  点赞 -->
-        <div class="timeHandle">
-          <div class="time">
-            {{item.createTime}}
-            <span
-              class="del"
-              @click="delOneSelf(item.id,index)"
-              v-if="item.memberId == delId"
-            >删除</span>
-          </div>
-          <div class="handle">
-            <div class="zan-pinglun" v-if="showZanAndPinglunNum == item.id">
-              <span
-                @click.stop="zanHandle(item.id,item.isLike,index)"
-              >{{item.isLike == 1 ? '取消': '点赞'}}</span>
-              <span @click.stop="showPinLunFun(index)">评论</span>
-            </div>
-            <div class="iconfont icon-pinglun2" @click.stop="showZanAndPinglun(item.id)"></div>
-          </div>
-        </div>
-        <!-- 点赞展示 -->
-        <div
-          class="zanShowBox"
-          @click.stop="goZan"
-          v-if="item.properties.communityLikeList.length > 0"
-        >
-          <div
-            class="imgLi"
-            v-for="(comLikeItem,comLikeIndex) in item.properties.communityLikeList"
-            :key="comLikeItem.id"
-          >
-            <img
-              v-if="comLikeItem.avatar && comLikeIndex<3"
-              :src="comLikeItem.avatar"
-              mode="aspectFill"
-            />
-          </div>
-          <div class="zanWord">等{{item.properties.communityLikeList.length}}次赞</div>
-        </div>
-        <!-- 评论展示 -->
-        <div class="pinglunBox" v-if="item.properties.communityCommentList.length>0">
-          <div
-            v-for="(comComItem,comComIndex) in item.properties.communityCommentList"
-            :key="comComIndex"
-          >
-            <p
-              class="line line1"
-              @longpress="backPinLunFun(comComItem,index)"
-              v-if="comComItem.replyId"
-            >
-              <span class="s1">{{comComItem.memberName}}</span>回复
-              <span>{{comComItem.replyName}}</span>：
-              <span>{{comComItem.comment}}</span>
-            </p>
-            <p class="line line0" @longpress="backPinLunFun(comComItem,index)" v-else>
-              <span class="s0">{{comComItem.memberName}}</span>：
-              <span class="s0c">{{comComItem.comment}}</span>
-            </p>
-          </div>
-        </div>
-      </div>
+    <!-- 投票 -->
+    <div class="contentList contentList_2" v-if="navType == '1'">
+      <voteItem></voteItem>
+      
+    </div>
+    <!-- 活动 -->
+    <div class="contentList contentList_2"  v-if="navType == '2'">
+      <activityItem></activityItem>
+    </div>
+    <!-- 征寻 -->
+    <div class="contentList contentList_2"  v-else>
+      <consultItem :handle='2'></consultItem>
     </div>
 
     <div v-if="showPinLun" class="pinlunB">
@@ -173,9 +106,15 @@ import {
 import { getMember, getMemberForum, getMemberComm } from "@/api/personal";
 import { getDateDiff } from "@/utils/getDateDiff";
 import navigationBar from "@/components/navigationBar";
+import activityItem from "@/components/activityItem";
+import voteItem from "@/components/voteItem";
+import consultItem from "@/components/consultItem";
 export default {
   components: {
-    navigationBar
+    navigationBar,
+    activityItem,
+    voteItem,
+    consultItem
   },
   data() {
     return {
@@ -183,7 +122,7 @@ export default {
       mid: "", // 用户ID
       sixinValue: "",
       maskVal: false, //私信显示判断
-      navType: 0, //话题，状态判断
+      navType: 0, 
       memberInfo: {},
       forumList: [],
       showZanAndPinglunNum: null, //点击是那个  将评论点赞显示出来
@@ -238,7 +177,7 @@ export default {
       if (ffRes.status == 200) {
         var forumRes = ffRes.result.data;
         _this.ffPage.total = ffRes.result.total;
-        forumRes.map(item => {
+        var forResult = forumRes.map(item => {
           if (item.images !== "" && item.images) {
             item.images = item.images.split(";");
           } else {
@@ -253,12 +192,13 @@ export default {
             let dateStr = item.createTime;
             item.createTime = getDateDiff(dateStr);
           }
+          return item
         });
         if (_this.ffPage.pageIndex > 0) {
-          _this.forumList = _this.forumList.concat(forumRes);
+          _this.forumList = _this.forumList.concat(forResult);
         } else {
           // 第一页则直接赋值 （下拉刷新）
-          _this.forumList = forumRes;
+          _this.forumList = forResult;
         }
       }
     },
@@ -308,7 +248,7 @@ export default {
       if (cfRes.status == 200) {
         var comRes = cfRes.result.data;
         _this.cfPage.total = cfRes.result.total;
-        comRes.map(item => {
+        var resResult = comRes.map(item => {
           if (item.images !== "") {
             item.images = item.images.split(";");
           }
@@ -321,16 +261,16 @@ export default {
             let dateStr = item.createTime;
             item.createTime = getDateDiff(dateStr);
           }
+          return item;
         });
         if (_this.cfPage.pageIndex > 0) {
           _this.communityFriendsList = _this.communityFriendsList.concat(
-            comRes
+            resResult
           );
         } else {
           // 第一页则直接赋值 （下拉刷新）
-          _this.communityFriendsList = comRes;
+          _this.communityFriendsList = resResult;
         }
-        console.log("2---", this.communityFriendsList);
       }
     },
     // 动态，社区切换
@@ -497,7 +437,6 @@ export default {
         });
       } else {
         forumLikeNo(id).then(res => {
-          console.log("p----", res);
           if (res.status == 200) {
             _this.forumList[index].isLike = 2;
             wx.showToast({
@@ -588,7 +527,8 @@ export default {
     justify-content: space-around;
     align-items: center;
     text-align: center;
-    padding: 15px 0 0px;
+    padding: 10px 0 10px;
+    border-bottom: 1px solid #eee;
     .navItem {
       i {
         display: inline-block;
@@ -599,14 +539,18 @@ export default {
       }
       p {
         display: inline-block;
-        font-size: 12px;
+        font-size: 18px;
         vertical-align: middle;
-        color: #e83e3e;
+        color: #777;
       }
       &.active {
         i {
           color: #111;
           font-weight: 600;
+        }
+        p{
+          font-weight: 600;
+          color: #333;
         }
       }
     }
@@ -673,7 +617,7 @@ export default {
           }
         }
         .handle {
-          width: 25%;
+          width: 15%;
           display: flex;
           justify-content: space-between;
           .iconfont {

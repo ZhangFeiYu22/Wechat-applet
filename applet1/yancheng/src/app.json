@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/start/main",
+    "pages/issue/main",
     "pages/home/main",
     "pages/community/main",
     "pages/mallCenter/main",
@@ -20,11 +21,11 @@
     "pages/releaseRealy/main",
     "pages/topicDetails/main",
     "pages/personal/main",
-    "pages/activity/main",
     "pages/activityDetails/main",
     "pages/activityAdd/main",
-    "pages/vote/main",
     "pages/voteAdd/main",
+    "pages/consultDetails/main",
+    "pages/collectAdd/main",
     "pages/game_dice/main",
     "pages/game_truchOrDare/main",
     "pages/login/main"
@@ -41,27 +42,34 @@
     "backgroundColor": "#fafafa",
     "selectedColor": "#333",
     "borderStyle": "white",
+    "custom": true,
     "list": [{
-      "pagePath": "pages/mallCenter/main",
-      "iconPath": "static/tabbar/mall.png",
-      "selectedIconPath": "static/tabbar/mall-active.png",
-      "text": "商城"
-    }, {
-      "pagePath": "pages/home/main",
-      "iconPath": "static/tabbar/home.png",
-      "selectedIconPath": "static/tabbar/home-active.png",
-      "text": "首页"
-    }, {
-      "pagePath": "pages/community/main",
-      "iconPath": "static/tabbar/community.png",
-      "selectedIconPath": "static/tabbar/community-avtive.png",
-      "text": "话题"
-    }, {
-      "pagePath": "pages/my/main",
-      "iconPath": "static/tabbar/my.png",
-      "selectedIconPath": "static/tabbar/my-active.png",
-      "text": "我的"
-    }],
+        "pagePath": "pages/mallCenter/main",
+        "iconPath": "static/tabbar/mall.png",
+        "selectedIconPath": "static/tabbar/mall-active.png",
+        "text": "集市"
+      }, {
+        "pagePath": "pages/community/main",
+        "iconPath": "static/tabbar/home.png",
+        "selectedIconPath": "static/tabbar/home-active.png",
+        "text": "社区"
+      },
+      {
+        "pagePath": "pages/issue/main",
+        "iconPath": "static/tabbar/icon_release.png",
+        "selectedIconPath": "static/tabbar/icon_release.png"
+      }, {
+        "pagePath": "pages/home/main",
+        "iconPath": "static/tabbar/community.png",
+        "selectedIconPath": "static/tabbar/community-avtive.png",
+        "text": "话题"
+      }, {
+        "pagePath": "pages/my/main",
+        "iconPath": "static/tabbar/my.png",
+        "selectedIconPath": "static/tabbar/my-active.png",
+        "text": "我的"
+      }
+    ],
     "position": "bottom"
   }
 }

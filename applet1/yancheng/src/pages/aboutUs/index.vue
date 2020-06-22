@@ -30,6 +30,10 @@ export default {
   data() {
     return {};
   },
+  mounted () {
+    let xx = wx.getAccountInfoSync()
+    console.log(xx)
+  },
   methods: {
     call() {
       wx.makePhoneCall({

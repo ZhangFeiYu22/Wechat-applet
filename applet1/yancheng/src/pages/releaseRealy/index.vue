@@ -127,7 +127,7 @@ export default {
     },
     publishTypeFun(type) {
       var _this = this;
-      if (type == 1) {
+      if (type == 2) {
         communityFriendsPost(_this.cfpData).then(res => {
           if (res.status == 200) {
             wx.showToast({
@@ -137,7 +137,7 @@ export default {
               success: function() {
                 setTimeout(function() {
                   wx.switchTab({
-                    url: "/pages/community/main",
+                    url: "/pages/home/main",
                     success: function(e) {
                       var page = getCurrentPages().pop();
                       if (page == undefined || page == null) return;
@@ -159,7 +159,7 @@ export default {
               success: function() {
                 setTimeout(function() {
                   wx.switchTab({
-                    url: "/pages/home/main",
+                    url: "/pages/community/main",
                     success: function(e) {
                       var page = getCurrentPages().pop();
                       if (page == undefined || page == null) return;
@@ -199,7 +199,6 @@ export default {
     .edit-text {
       height: 104px;
       width: 100%;
-      padding: 2px 0 10px;
       overflow-y: scroll;
       line-height: 20px;
       font-size: 14px;
@@ -208,9 +207,11 @@ export default {
     }
     .edit-textShow {
       box-sizing: border-box;
+      padding: 0 0;
     }
     .edit-textNo {
       color: #dcdcdc;
+      padding: 6px 5px 0;
     }
     .edit-img {
       display: flex;

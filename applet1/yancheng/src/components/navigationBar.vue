@@ -16,7 +16,8 @@
         <div v-if="publishVisible" class="bar-optionsBox">
           <div class="onlyBack">
             <div class="opt opt-add" @click="publishClick()">
-              <i class="iconfont" :class="publishVisible == 1 ? 'icon-publish1' : 'icon-publish2'"></i>
+              <span  v-if="publishVisible == 1">发布</span>
+               <i v-else  class="iconfont icon-publish1"></i>
             </div>
           </div>
         </div>
@@ -140,11 +141,11 @@ export default {
       console.log("0000--",this.title);
       if(this.title == '社区'){
         wx.navigateTo({
-          url: "/pages/releaseRealy/main?publishType=1"
+          url: "/pages/releaseRealy/main?publishType=2"
         });
       }else{
         wx.navigateTo({
-          url: "/pages/releaseRealy/main?publishType=2"
+          url: "/pages/releaseRealy/main?publishType=1"
         });
       }
     }
@@ -179,8 +180,14 @@ export default {
           position: absolute;
           left: 7px;
           .opt-add{
+            span{
+              font-size: 16px;
+            }
             .iconfont{
-              font-size: 20px;
+              font-size: 22px;
+              &.icon-publish1{
+                color: #5B8E52;
+              }
             }
           }
         }

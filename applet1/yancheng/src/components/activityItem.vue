@@ -1,8 +1,7 @@
 <template>
   <div class="activity">
-    <navigation-bar :title="'活动'" :navBackgroundColor="'#fff'" :back-visible="true"></navigation-bar>
     <div class="activityList">
-      <div class="activityItem" @click="goActivityDetails(item.id)" v-for="item in acticityList" :key="item.id">
+      <div class="activityItem" @click="goActivityDetails(item.id)" v-for="(item,acIndex) in acticityList" :key="acIndex">
         <div class="imgBox">
           <img v-if="item.coverImage" :src="item.coverImage" mode="aspectFill" />
         </div>
@@ -20,17 +19,12 @@
         <div class="priceBtn">￥{{item.activityFee}}</div>
       </div>
     </div>
-    <text class="btn" @click="goPublishActivity">我要发起</text>
   </div>
 </template>
 
 <script>
 import { activitysGet } from "@/api/activity";
-import navigationBar from "@/components/navigationBar";
 export default {
-  components: {
-    navigationBar
-  },
   data() {
     return {
       acticityList: []
@@ -50,11 +44,6 @@ export default {
     goActivityDetails(id) {
       wx.navigateTo({
         url: `/pages/activityDetails/main?activityId=${id}`
-      });
-    },
-    goPublishActivity() {
-      wx.navigateTo({
-        url: "/pages/activityAdd/main"
       });
     }
   }
@@ -133,20 +122,6 @@ export default {
         border-radius: 5px;
       }
     }
-  }
-  .btn {
-    position: fixed;
-    left: 50%;
-    margin-left: -60px;
-    bottom: 30px;
-    width: 120px;
-    height: 32px;
-    line-height: 32px;
-    border-radius: 32px;
-    color: #fff;
-    background-color: #b1a1a3;
-    font-size: 14px;
-    text-align: center;
   }
 }
 </style>

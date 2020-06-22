@@ -1,7 +1,7 @@
 <template>
   <div class="myInfo">
     <navigation-bar :title="'设置'" :navBackgroundColor="'#fff'" :back-visible="true"></navigation-bar>
-    <div class="headImg">
+    <div class="headImg" @click="chooseImage">
       <img v-if="myInfo.avatar" :src="myInfo.avatar" mode="aspectFill" />
     </div>
     <div class="infoList">
@@ -11,7 +11,7 @@
       </div>
       <div class="infoItem" @click="changeIntro(myInfo.introduction)">
         <p class="ll">简介</p>
-        <p class="cc">{{myInfo.introduction}}</p>
+        <p class="cc ellip">{{myInfo.introduction}}</p>
       </div>
       <div class="infoItem" @click="changeSex">
         <p class="ll">性别</p>
@@ -35,14 +35,12 @@
       <div class="infoItem">
         <p class="ll">城市</p>
         <picker
-          class="cc"
-          mode="region"
-          @change="bindRegionChange"
-          :value="region"
-          placeholder="请选择城市"
+          mode="multiSelector"
+          @change="bindCityChange"
+          :value="multiIndex"
+          :range="multiArray"
         >
-          <view class="picker" v-if="region.length == 0" style="color: #ccc;">请选择城市</view>
-          <view class="picker" v-else>{{region[0]}}&nbsp;{{region[1]}}&nbsp;{{region[2]}}</view>
+          <view class="picker">{{multiArray[0][multiIndex[0]]}}，{{multiArray[1][multiIndex[1]]}}</view>
         </picker>
       </div>
     </div>
@@ -68,6 +66,7 @@
 
 <script>
 import { userInfoGet, userInfoPost } from "@/api/my";
+import { imgsUpload } from "@/utils/imgsUpload";
 import navigationBar from "@/components/navigationBar";
 export default {
   components: {
@@ -76,31 +75,65 @@ export default {
   data() {
     return {
       myInfo: {},
-      region: [],
       nameVal: "",
       introVal: "",
       bgMask: false,
       nameMask: false,
-      introMask: false
+      introMask: false,
+      multiIndex: [0, 0],
+      multiArray: [
+        ["盐城"],
+        [
+          "建湖县",
+          "射阳县",
+          "阜宁县",
+          "滨海县",
+          "响水县",
+          "亭湖区",
+          "盐都区",
+          "大丰区",
+          "东台市",
+          "其他"
+        ]
+      ]
     };
   },
   mounted() {
     this.fetchInfo();
   },
   methods: {
+    bindCityChange(e) {
+      let data = {
+        province: this.multiArray[0][e.mp.detail.value[0]],
+        city: this.multiArray[1][e.mp.detail.value[1]]
+      };
+      userInfoPost(data).then(res => {
+        if (res.status == 200) {
+          this.handelSuccess();
+          wx.setStorageSync("authInfo", res.result);
+          this.fetchInfo();
+        }
+      });
+    },
     // 获取信息
     async fetchInfo() {
+      var that = this;
       let inRes = await userInfoGet();
       if (inRes.status == 200) {
-        this.myInfo = inRes.result;
+        that.myInfo = inRes.result;
         if (inRes.result.province && inRes.result.province !== "") {
-          this.region[0] = inRes.result.province;
+          that.multiArray[0].forEach((item, index) => {
+            if (item == inRes.result.province) {
+              that.multiIndex[0] = index;
+            }
+          });
         }
         if (inRes.result.city && inRes.result.city !== "") {
-          this.region[1] = inRes.result.city;
-        }
-        if (inRes.result.district && inRes.result.district !== "") {
-          this.region[2] = inRes.result.district;
+          that.multiArray[1].forEach((item, index) => {
+            if (item == inRes.result.city) {
+              that.multiIndex[1] = index;
+            }
+          });
         }
       }
     },
@@ -108,6 +141,33 @@ export default {
       this.bgMask = false;
       this.nameMask = false;
       this.introMask = false;
+    },
+    // 修改头像
+    chooseImage() {
+      let self = this;
+      self.$store.dispatch("getOssData", { dir: "city/myInfo" });
+      wx.chooseImage({
+        count: 1,
+        sizeType: "compressed",
+        sourceType: ["album", "camera"],
+        success(res) {
+          let newArr = [];
+          for (var i = 0; i < res.tempFilePaths.length; i++) {
+            imgsUpload(res.tempFilePaths[i]).then(rere => {
+              let data = {
+                avatar: rere
+              };
+              userInfoPost(data).then(imgres => {
+                if (imgres.status == 200) {
+                  self.myInfo.avatar = imgres.result.avatar;
+                  self.handelSuccess();
+                  wx.setStorageSync("authInfo", imgres.result);
+                }
+              });
+            });
+          }
+        }
+      });
     },
     changeName(name) {
       this.bgMask = true;
@@ -129,6 +189,7 @@ export default {
                 that.myInfo.nickName = that.nameVal;
                 that.closeMask();
                 that.handelSuccess();
+                wx.setStorageSync("authInfo", res.result);
               }
             });
           } else {
@@ -157,6 +218,7 @@ export default {
                 that.myInfo.introduction = that.introVal;
                 that.closeMask();
                 that.handelSuccess();
+                wx.setStorageSync("authInfo", res.result);
               }
             });
           } else {
@@ -177,6 +239,7 @@ export default {
           userInfoPost(data).then(res => {
             if (res.status == 200) {
               that.myInfo.gender = res.result.gender;
+              wx.setStorageSync("authInfo", res.result);
             }
           });
         }
@@ -190,20 +253,7 @@ export default {
       userInfoPost(data).then(res => {
         if (res.status == 200) {
           this.myInfo.birthday = res.result.birthday;
-        }
-      });
-    },
-    // 城市修改
-    bindRegionChange: function(e) {
-      let regData = e.mp.detail.value;
-      let data = {
-        city: regData[1],
-        district: regData[2],
-        province: regData[0]
-      };
-      userInfoPost(data).then(res => {
-        if (res.status == 200) {
-          this.region = regData;
+          wx.setStorageSync("authInfo", res.result);
         }
       });
     },
@@ -233,6 +283,7 @@ export default {
     margin: 0 auto;
     .infoItem {
       font-size: 13px;
+      height: 40px;
       line-height: 40px;
       display: flex;
       justify-content: flex-start;
@@ -252,10 +303,18 @@ export default {
         top: 16px;
       }
       .ll {
-        margin-right: 30px;
+        width: 30px;
+        margin-right: 20px;
       }
       .cc {
-        flex-grow: 1;
+        flex: 1;
+        &.ellip {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 1;
+        }
       }
     }
   }
@@ -302,8 +361,8 @@ export default {
       margin: 20px auto;
       border-radius: 5px;
       height: 100px;
-      line-height: 32px;
-      padding: 2px 10px;
+      line-height: 24px;
+      padding: 5px 10px;
       font-size: 14px;
       color: #333;
     }

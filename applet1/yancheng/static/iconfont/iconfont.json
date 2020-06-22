@@ -6,6 +6,48 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "646356",
+      "name": "金砖",
+      "font_class": "zhuan1",
+      "unicode": "e622",
+      "unicode_decimal": 58914
+    },
+    {
+      "icon_id": "7880309",
+      "name": "金砖",
+      "font_class": "zhuan2",
+      "unicode": "e6d1",
+      "unicode_decimal": 59089
+    },
+    {
+      "icon_id": "12210132",
+      "name": "黄金_金砖",
+      "font_class": "zhuan3",
+      "unicode": "e741",
+      "unicode_decimal": 59201
+    },
+    {
+      "icon_id": "1754529",
+      "name": "播视web_未收藏",
+      "font_class": "aixin0",
+      "unicode": "e62b",
+      "unicode_decimal": 58923
+    },
+    {
+      "icon_id": "1754531",
+      "name": "播视web_已收藏",
+      "font_class": "aixin1",
+      "unicode": "e62c",
+      "unicode_decimal": 58924
+    },
+    {
+      "icon_id": "11463944",
+      "name": "微信",
+      "font_class": "weixin",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
       "icon_id": "755558",
       "name": "设置",
       "font_class": "settings",
@@ -333,20 +375,6 @@
       "font_class": "jiahao",
       "unicode": "e635",
       "unicode_decimal": 58933
-    },
-    {
-      "icon_id": "10461425",
-      "name": "收 藏1",
-      "font_class": "aixin0",
-      "unicode": "e616",
-      "unicode_decimal": 58902
-    },
-    {
-      "icon_id": "10523048",
-      "name": "收 藏2",
-      "font_class": "aixin1",
-      "unicode": "e68a",
-      "unicode_decimal": 59018
     },
     {
       "icon_id": "188161",

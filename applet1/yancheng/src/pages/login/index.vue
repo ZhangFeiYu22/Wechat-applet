@@ -1,13 +1,17 @@
 <template>
   <div class="login">
-    <img src="../../../static/images/loginbg.jpeg" mode="aspectFill" />
+    <img class="loginBg" :src="loginBg" mode="aspectFill" />
     <div class="loginMain">
-      <div class="userInfo">
-        <div class="welcome">欢迎使用</div>
+      <div class="top">
+        <img class="logo_w" :src="logo" mode="aspectFill" />
+        <p class="title">城谜</p>
       </div>
-      <div class="info">请允许获得您的公开信息</div>
+      <div class="info">开启你不一样的城市社交生活</div>
       <div class="btnBox">
-        <button class="btn" open-type="getUserInfo" @getuserinfo="bindGetUserInfo">微信登录</button>
+        <button class="btn" open-type="getUserInfo" @getuserinfo="bindGetUserInfo">
+          <i class="iconfont icon-weixin"></i>
+          <span>微信一键登录</span>
+        </button>
       </div>
     </div>
   </div>
@@ -19,7 +23,8 @@ import { getSessionInfo, getUserInfo, userInfoGet } from "@/api/login";
 export default {
   data() {
     return {
-      loginBg: require("../../../static/images/loginbg.jpeg")
+      loginBg: `${this.$store.state.commonImgHttp}/loginbg.png`,
+      logo: require("../../../static/images/logo_w.png")
     };
   },
   mounted() {
@@ -115,7 +120,7 @@ export default {
   bottom: 0;
   left: 0;
   right: 0;
-  img {
+  .loginBg {
     width: 100%;
     height: 100%;
     position: absolute;
@@ -123,39 +128,57 @@ export default {
   }
   .loginMain {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 70%;
-    .userInfo {
-      padding: 10px;
-      width: 92px;
-      margin: 0 auto;
-      text-align: center;
-      .welcome {
-        font-size: 18px;
-        line-height: 20px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(11, 11, 52, 0.6);
+    .top {
+      position: absolute;
+      top: 12%;
+      left: 50%;
+      transform: translateX(-50%);
+      .logo_w {
+        width: 100px;
+        height: 60px;
+      }
+      .title {
+        font-size: 50px;
         color: #fff;
       }
     }
     .info {
-      margin-top: 60px;
+      position: absolute;
+      top: 55%;
+      width: 100%;
       text-align: center;
-      font-size: 16px;
-      color: #f1f1f1;
+      font-size: 15px;
+      color: #fff;
     }
     .btnBox {
-      width: 100%;
-      margin: 80px auto;
+      position: absolute;
+      width: 80%;
+      top: 80%;
+      left: 50%;
+      transform: translateX(-50%);
       .btn {
         border: none;
         height: 40px;
         line-height: 40px;
-        font-size: 16px;
-        background: #2aa144;
+        font-size: 12px;
+        background: rgba(145, 145, 145, 0.6);
         color: #fff;
-        border-radius: 5px;
+        border-radius: 20px;
         text-align: center;
+        i {
+          display: inline-block;
+          vertical-align: middle;
+          margin-right: 5px;
+          font-size: 20px;
+        }
+        span {
+          vertical-align: middle;
+        }
       }
     }
   }
