@@ -167,22 +167,22 @@ export default {
       var that = this;
       var animation1 = wx.createAnimation({
         duration: 300,
-        delay: 150,
+        delay: 0,
         timingFunction: "ease"
       });
       var animation2 = wx.createAnimation({
         duration: 300,
-        delay: 100,
+        delay: 50,
         timingFunction: "ease"
       });
       var animation3 = wx.createAnimation({
         duration: 300,
-        delay: 50,
+        delay: 100,
         timingFunction: "ease"
       });
       var animation4 = wx.createAnimation({
         duration: 300,
-        delay: 0,
+        delay: 100,
         timingFunction: "ease"
       });
       //表示一组动画完成
@@ -267,7 +267,9 @@ export default {
 }
 .issue {
   .fixbox {
-    position: absolute;
+    position: fixed;
+    z-index: 998;
+    height: 100%;
     top: 0;
     bottom: 0;
     left: 0;
@@ -310,6 +312,7 @@ export default {
   }
   .close {
     position: fixed;
+    z-index: 999;
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);

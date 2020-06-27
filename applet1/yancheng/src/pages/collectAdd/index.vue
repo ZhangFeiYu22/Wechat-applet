@@ -7,20 +7,21 @@
           <div class="left">名称：</div>
           <div class="right">
             <input
-              v-model="detailAddress"
+              v-model="publishFormData.title"
               type="text"
-              placeholder="请填写征寻名称（12个字符以内"
+              placeholder="请填写征寻名称（12个字符以内)"
+              maxlength="12"
               placeholder-style="color:#D1CFCF"
             />
           </div>
         </div>
         <div class="line detail">
-          <div class="left">征寻人数：</div>
+          <div class="left">征集人数：</div>
           <div class="right">
             <input
-              v-model="detailAddress"
+              v-model="publishFormData.num"
               type="text"
-              placeholder="请填写征寻名称（12个字符以内"
+              placeholder="需要多少人帮你完成"
               placeholder-style="color:#D1CFCF"
             />
           </div>
@@ -29,9 +30,9 @@
           <div class="left">奖励砖数：</div>
           <div class="right">
             <input
-              v-model="detailAddress"
+              v-model="publishFormData.integral"
               type="text"
-              placeholder="请填写征寻名称（12个字符以内"
+              placeholder="为没人给与多少砖头"
               placeholder-style="color:#D1CFCF"
             />
           </div>
@@ -39,25 +40,19 @@
         <div class="line">
           <div class="left">有效时间：</div>
           <div class="right">
-            <picker mode="date" start="2000-01-01" end="2050-12-31" @change="bindDateChange">
-              <input
-                v-model="publishFormData.activityTime"
-                disabled
-                type="text"
-                placeholder="请选择时间"
-                placeholder-style="color:#D1CFCF"
-              />
+            <picker @change="bindDateChange" v-model="publishFormData.validDay" :index='tIndex' :range="timeArray">
+              <view class="picker" :class="tIndex?'hasColor':''">{{ tIndex ? timeArray[tIndex] : '选择有效时间'}} </view>
             </picker>
           </div>
         </div>
         <div class="line">
           <div class="left">图片证明：</div>
           <div class="right isno">
-            <radio-group class="radio-group" bindchange="radioChange">
-              <radio class="radio" :value="publishFormData.isPic">
+            <radio-group class="radio-group" @change="needPicChange">
+              <radio class="radio" :checked="publishFormData.needPic == 1" value="1">
                 <text>需要</text>
               </radio>
-              <radio class="radio" :value="publishFormData.isPic">
+              <radio class="radio" :checked="publishFormData.needPic == 0" value="0">
                 <text>不需要</text>
               </radio>
             </radio-group>
@@ -66,17 +61,23 @@
         <div class="line">
           <div class="left">等级要求：</div>
           <div class="right isno">
-            <input class="publishFormData.lv" type="number" placeholder="需要达到多少等级"  placeholder-style="color:#D1CFCF"/>
+            <input
+              class="publishFormData"
+              v-model="publishFormData.rank"
+              type="number"
+              placeholder="需要达到多少等级"
+              placeholder-style="color:#D1CFCF"
+            />
           </div>
         </div>
         <div class="line">
           <div class="left">实名要求：</div>
           <div class="right isno">
-            <radio-group class="radio-group" bindchange="radioChange">
-              <radio class="radio" :value="publishFormData.isTrue">
+            <radio-group class="radio-group" @change="needRealChange">
+              <radio class="radio" :checked="publishFormData.needReal == 1" value="1">
                 <text>需要</text>
               </radio>
-              <radio class="radio" :value="publishFormData.isTrue">
+              <radio class="radio" :checked="publishFormData.needReal == 0" value="0">
                 <text>不需要</text>
               </radio>
             </radio-group>
@@ -87,7 +88,7 @@
           class="edit-text edit-textShow"
           auto-focus
           @blur="bindblurTextStatus"
-          v-model="publishFormData.title"
+          v-model="publishFormData.content"
         ></textarea>
         <div
           v-else
@@ -95,13 +96,6 @@
           :style="{color: textNoColor}"
           @click="changeTextStatus"
         >{{realTextValue}}</div>
-        <!-- <div class="edit-img">
-          <div class="imgbox" v-for="(item,index) in imgArr1" :key="index">
-            <image v-if="item" :src="item" mode="aspectFill" />
-            <i class="close iconfont icon-iconless" @click.stop="closeFunOne(item,index)"></i>
-          </div>
-          <div class="iconfont icon-jiahao" @click.stop="chooseImageOne"></div>
-        </div>-->
         <div class="bb">
           <p class="tt">示例图：</p>
           <div class="edit-img">
@@ -120,7 +114,7 @@
 </template>
 
 <script>
-import { activitysPost } from "@/api/activity";
+import { solicitAdd } from "@/api/solicit";
 import { imgsUpload } from "@/utils/imgsUpload";
 import navigationBar from "@/components/navigationBar";
 export default {
@@ -129,26 +123,23 @@ export default {
   },
   data() {
     return {
+      timeArray:['30分钟','1小时','6小时','1天','2天','3天'],
+      tIndex: '',
       publishFormData: {
-        activityAddress: "",
-        activityFee: "",
-        activityTime: "",
+        title: "",
+        num: "",
+        integral: "",
+        validDay: "",
+        needPic: 1,
+        rank: "",
+        needReal: 1,
         content: "",
-        coverImage: "",
-        feeType: 0,
-        subTitle: "",
-        title: ""
+        images: ""
       },
       textNoColor: "#dcdcdc",
       realTextValue: "请填写征寻的详细要求（100字以内）",
       textStatus: false,
-      textNoColor2: "#dcdcdc",
-      realTextValue2: "请填写活动须知",
-      textStatus2: false,
-      imgArr1: [],
-      imgArrCenter: [],
-      imgArr2: [],
-      detailAddress: ""
+      imgArr2: []
     };
   },
   mounted() {
@@ -160,52 +151,14 @@ export default {
       this.textStatus = true;
     },
     bindblurTextStatus() {
-      if (this.publishFormData.title.length == 0) {
-        this.realTextValue = "标题";
+      if (this.publishFormData.content.length == 0) {
+        this.realTextValue = "请填写征寻的详细要求（100字以内）";
         this.textNoColor = "#dcdcdc";
       } else {
-        this.realTextValue = this.publishFormData.title;
+        this.realTextValue = this.publishFormData.content;
         this.textNoColor = "#353535";
       }
       this.textStatus = false;
-    },
-    changeTextStatus2() {
-      this.realTextValue2 = "";
-      this.textStatus2 = true;
-    },
-    bindblurTextStatus2() {
-      if (this.publishFormData.subTitle.length == 0) {
-        this.realTextValue2 = "请填写活动须知";
-        this.textNoColor2 = "#dcdcdc";
-      } else {
-        this.realTextValue2 = this.publishFormData.subTitle;
-        this.textNoColor2 = "#353535";
-      }
-      this.textStatus2 = false;
-    },
-    selectOne(num) {
-      this.itemsNum = num;
-    },
-    chooseImageOne() {
-      let self = this;
-      self.$store.dispatch("getOssData", { dir: "city/activityHead" });
-      wx.chooseImage({
-        count: 1,
-        sizeType: "compressed",
-        sourceType: ["album", "camera"],
-        success(res) {
-          let newArr = [];
-          for (var i = 0; i < res.tempFilePaths.length; i++) {
-            imgsUpload(res.tempFilePaths[i]).then(rere => {
-              newArr.push(rere);
-              self.imgArr1 = newArr;
-            });
-          }
-        }
-      });
-    },
-    closeFunOne(item, index) {
-      this.imgArr1.splice(index, 1);
     },
     chooseImageTwo() {
       let self = this;
@@ -226,35 +179,27 @@ export default {
     closeFunTwo(item, index) {
       this.imgArr2.splice(index, 1);
     },
-    toggleBag(num) {
-      if (num == "1") {
-        this.publishFormData.feeType = 0;
-      } else {
-        this.publishFormData.feeType = 1;
-      }
-    },
     bindDateChange(e) {
-      this.publishFormData.activityTime = e.mp.detail.value;
+      this.tIndex = e.mp.detail.value;
+      this.publishFormData.validDay = this.timeArray[e.mp.detail.value];
     },
-    bindRegionChange(e) {
-      console.log("picker发送选择改变，携带值为", e.mp.detail.value);
-      let region = e.mp.detail.value;
-      let regionString = region.join(" ");
-      this.publishFormData.activityAddress = regionString;
+    needPicChange(e) {
+      this.publishFormData.needPic = e.mp.detail.value;
+    },
+    needRealChange(e) {
+      this.publishFormData.needReal = e.mp.detail.value;
     },
     publishFun() {
-      wx.showToast({
-          title: "暂不可发布",
-          icon: "none",
-          duration: 2000
-        });
-     /* if (
+      if (
         this.publishFormData.title == "" ||
-        this.imgArr1.length == 0 ||
-        this.imgArr2.length == 0 ||
-        this.publishFormData.activityTime == "" ||
-        this.publishFormData.activityAddress == "" ||
-        this.publishFormData.subTitle == ""
+        this.publishFormData.num == "" ||
+        this.publishFormData.integral == "" ||
+        this.publishFormData.validDay == "" ||
+        this.publishFormData.needPic == "" ||
+        this.publishFormData.rank == "" ||
+        this.publishFormData.needReal == "" ||
+        this.publishFormData.content == "" ||
+        this.imgArr2.length == 0
       ) {
         wx.showToast({
           title: "请检查信息是否填写完整",
@@ -263,27 +208,40 @@ export default {
         });
         return;
       } else {
-        this.publishFormData.coverImage = this.imgArr1[0];
-        let content = this.imgArr2.join(";");
-        this.publishFormData.content = content;
-        this.publishFormData.activityAddress =
-          this.publishFormData.activityAddress + " " + this.detailAddress;
-        activitysPost(this.publishFormData).then(res => {
-          if (res.status == 200) {
-            wx.showToast({
-              title: "发布成功",
-              icon: "none",
-              duration: 1500,
-              success: function() {
-                wx.navigateTo({
-                  url: "/pages/activity/main"
-                });
-              }
-            });
-          }
-        });
+        let needIntegral =
+          this.publishFormData.num * this.publishFormData.integral;
+        let authInfo = wx.getStorageSync("authInfo");
+        let authIntegral = authInfo.points;
+        if (needIntegral > authIntegral) {
+          wx.showToast({
+            title: "您的砖头余额不足！",
+            icon: "none",
+            duration: 2000
+          });
+          return;
+        } else {
+          this.publishFormData.images = this.imgArr2.join("|");
+          this.publishFormData.num == Number(this.publishFormData.num);
+          this.publishFormData.integral ==
+            Number(this.publishFormData.integral);
+          this.publishFormData.rank == Number(this.publishFormData.rank);
+          solicitAdd(this.publishFormData).then(res => {
+            if (res.status == 200) {
+              this.globalData.homeShowNum = 2;
+              wx.showToast({
+                title: "发布成功",
+                icon: "none",
+                duration: 1500,
+                success: function() {
+                  wx.switchTab({
+                    url: `/pages/home/main`
+                  });
+                }
+              });
+            }
+          });
+        }
       }
-      */
     }
   }
 };
@@ -390,6 +348,12 @@ export default {
             }
           }
         }
+        .picker{
+          color: #dcdcdc;
+          &.hasColor{
+            color: #343434;
+          }
+        }
       }
     }
     .linebg {
@@ -421,6 +385,5 @@ export default {
     bottom: 5%;
     left: 35%;
   }
-  
 }
 </style>

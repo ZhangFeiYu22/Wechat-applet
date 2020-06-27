@@ -13,6 +13,9 @@ export default {
 
 <style>
 @import "./../static/iconfont/iconfont.css";
+page{
+  height: 100%;
+}
 .container {
   height: 100%;
   display: flex;

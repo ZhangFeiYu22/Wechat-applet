@@ -63,7 +63,9 @@ export default {
     return {
       imgArr: [],
       optionsData: {
-        content: ""
+        content: "",
+        options: "",
+        images: ""
       },
       options: [
         { optionsContent: "" },
@@ -106,13 +108,13 @@ export default {
     },
     optionAdd() {
       console.log("this.options--", this.options);
-      if (this.options.length < 6) {
+      if (this.options.length < 5) {
         var lists = this.options;
         lists.push({ optionsContent: "" });
         this.options = lists;
       } else {
         wx.showToast({
-          title: "最多可添加六个选项",
+          title: "最多可添加五个选项",
           icon: "none",
           duration: 1500
         });
@@ -139,23 +141,26 @@ export default {
     },
     publishFun() {
       var _this = this;
-      _this.options.forEach((item, index) => {
-        if (index == 0) {
-          _this.optionsData.optionOne = item.optionsContent;
-        } else if (index == 1) {
-          _this.optionsData.optionTwo = item.optionsContent;
-        } else if (index == 2) {
-          _this.optionsData.optionThree = item.optionsContent;
-        } else if (index == 3) {
-          _this.optionsData.optionFour = item.optionsContent;
-        }
-      });
-      console.log("发布", this.optionsData);
+      _this.optionsData.options = _this.options
+        .map(item => item.optionsContent)
+        .join("|");
+      _this.optionsData.images = _this.imgArr.join("|");
       wx.showModal({
         title: "确定发布？",
         success(res) {
           voteAdd(_this.optionsData).then(res => {
             console.log(res);
+            if (res.status == 200) {
+              this.globalData.homeShowNum = 1
+              wx.switchTab({
+                url: `/pages/home/main`
+              });
+              wx.showToast({
+                title: "发布成功",
+                duration: 1500,
+                icon: "none"
+              });
+            }
           });
         }
       });

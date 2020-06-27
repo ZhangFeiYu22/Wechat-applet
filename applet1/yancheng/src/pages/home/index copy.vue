@@ -48,17 +48,21 @@
       </block>
     </scroll-view>
     <!-- 内容列表 -->
-    <!-- 活动 -->
-    <div class="tabContent" v-show="currentTab == 0">
-      <activityItem></activityItem>
-    </div>
-    <!-- 投票 -->
-    <div class="tabContent" v-show="currentTab == 1">
-      <voteItem></voteItem>
-    </div>
-    <div class="tabContent" v-show="currentTab == 2">
-      <consultItem></consultItem>
-    </div>
+    <swiper class="tabContentListBox" :current="currentTab" duration="300" @change="switchTab">
+      <!-- <swiper-item v-for="(tabItem,idx) in numA" :key="idx" class="tabContent">{{tabItem}}</swiper-item> -->
+      <!-- 活动 -->
+      <swiper-item class="tabContent">
+        <activityItem></activityItem>
+      </swiper-item>
+      <!-- 投票 -->
+      <swiper-item class="tabContent">
+        <voteItem></voteItem>
+      </swiper-item>
+      <swiper-item class="tabContent">
+        <consultItem></consultItem>
+      </swiper-item>
+    </swiper>
+
     <div style="height:20px"></div>
     <vue-tab-bar :selectNavIndex="3"></vue-tab-bar>
   </div>
@@ -129,9 +133,9 @@ export default {
       navBar_Height: ""
     };
   },
-  onShow() {
-    if (this.globalData.homeShowNum) {
-      this.currentTab = this.globalData.homeShowNum;
+  onShow(){
+    if(this.globalData.homeShowNum){
+      this.currentTab = this.globalData.homeShowNum
     }
   },
   mounted() {
@@ -184,32 +188,36 @@ export default {
       var cur = event.target.dataset.current;
       var singleNavWidth = this.windowWidth / 6;
       this.avScrollLeft = (cur - 2) * singleNavWidth;
-      console.log("cur", cur);
       if (this.currentTab == cur) {
         return false;
       } else {
         this.currentTab = cur;
       }
-      switch (cur) {
-        case 0:
-          break;
-        case 1:
-          break;
-        case 2:
-          break;
-        case 3:
-          wx.navigateTo({
-            url: `/pages/game_dice/main`
-          });
-          break;
-        case 4:
-          wx.navigateTo({
-            url: `/pages/game_truchOrDare/main`
-          });
-          break;
-
-        default:
-          break;
+      if (cur == 3) {
+        wx.navigateTo({
+          url: `/pages/game_dice/main`
+        });
+      } else if (cur == 4) {
+        wx.navigateTo({
+          url: `/pages/game_truchOrDare/main`
+        });
+      }
+    },
+    // 滑动切换
+    switchTab(event) {
+      var cur = event.mp.detail.current;
+      var singleNavWidth = this.windowWidth / 6;
+      if (cur == 3) {
+        wx.navigateTo({
+          url: `/pages/game_dice/main`
+        });
+      } else if (cur == 4) {
+        wx.navigateTo({
+          url: `/pages/game_truchOrDare/main`
+        });
+      } else {
+        this.currentTab = cur;
+        this.navScrollLeft = (cur - 2) * singleNavWidth;
       }
     },
     initClientRect() {
@@ -330,76 +338,82 @@ export default {
     }
   }
 
-  .tabContent {
-    overflow-y: scroll;
-    padding: 10px 0 20px;
-    .activityList {
-      width: 90%;
-      margin: 0 auto;
-      .activityItem {
-        font-size: 13px;
-        display: flex;
-        color: #525151;
-        box-shadow: 0 4px 10px 1px #ddd;
-        padding: 10px;
-        border-radius: 8px;
-        margin-bottom: 10px;
-        position: relative;
-        .imgBox {
-          width: 135px;
-          height: 95px;
-          margin-right: 5px;
-          img {
-            width: 100%;
-            height: 100%;
-          }
-        }
-        .wordBox {
-          flex: 1;
-          .title {
-            line-height: 20px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box; //作为弹性伸缩盒子模型显示。
-            -webkit-box-orient: vertical; //设置伸缩盒子的子元素排列方式--从上到下垂直排列
-            -webkit-line-clamp: 2; //显示的行
-            line-clamp: 2; //显示的行
-            font-size: 16px;
-          }
-          .address {
-            font-size: 12px;
-            color: #8e8e8e;
-            line-height: 20px;
-            margin-top: 5px;
-          }
-          .time {
-            font-size: 12px;
-            color: #8e8e8e;
-            line-height: 20px;
-          }
-          i {
-            display: inline-block;
+  // 内容列表
+  .tabContentListBox {
+    background: #f6f6f6;
+    height: 100%;
+    box-sizing: border-box;
+    .tabContent {
+      overflow-y: scroll;
+      padding: 10px 0 20px;
+      .activityList {
+        width: 90%;
+        margin: 0 auto;
+        .activityItem {
+          font-size: 13px;
+          display: flex;
+          color: #525151;
+          box-shadow: 0 4px 10px 1px #ddd;
+          padding: 10px;
+          border-radius: 8px;
+          margin-bottom: 10px;
+          position: relative;
+          .imgBox {
+            width: 135px;
+            height: 95px;
             margin-right: 5px;
-            vertical-align: middle;
-            font-size: 14px;
-            color: #8e8e8e;
+            img {
+              width: 100%;
+              height: 100%;
+            }
           }
-          span {
-            vertical-align: middle;
-            color: #8e8e8e;
+          .wordBox {
+            flex: 1;
+            .title {
+              line-height: 20px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              display: -webkit-box; //作为弹性伸缩盒子模型显示。
+              -webkit-box-orient: vertical; //设置伸缩盒子的子元素排列方式--从上到下垂直排列
+              -webkit-line-clamp: 2; //显示的行
+              line-clamp: 2; //显示的行
+              font-size: 16px;
+            }
+            .address {
+              font-size: 12px;
+              color: #8e8e8e;
+              line-height: 20px;
+              margin-top: 5px;
+            }
+            .time {
+              font-size: 12px;
+              color: #8e8e8e;
+              line-height: 20px;
+            }
+            i {
+              display: inline-block;
+              margin-right: 5px;
+              vertical-align: middle;
+              font-size: 14px;
+              color: #8e8e8e;
+            }
+            span {
+              vertical-align: middle;
+              color: #8e8e8e;
+            }
           }
-        }
-        .priceBtn {
-          position: absolute;
-          right: 10px;
-          bottom: 10px;
-          height: 16px;
-          line-height: 14px;
-          border: 1px solid #b1a1a3;
-          color: #b1a1a3;
-          font-size: 12px;
-          padding: 0 5px;
-          border-radius: 5px;
+          .priceBtn {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            height: 16px;
+            line-height: 14px;
+            border: 1px solid #b1a1a3;
+            color: #b1a1a3;
+            font-size: 12px;
+            padding: 0 5px;
+            border-radius: 5px;
+          }
         }
       }
     }
