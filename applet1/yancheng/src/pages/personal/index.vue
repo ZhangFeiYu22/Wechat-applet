@@ -632,6 +632,7 @@ export default {
     // 动态的评论
     submitComment(e) {
       var _this = this;
+      let authInfo = wx.getStorageSync("authInfo");
       var pingD;
       if (_this.commentValue.length <= 0) {
         wx.showToast({
@@ -648,9 +649,10 @@ export default {
         };
       } else {
         pingD = {
-          comment: _this.commentValue,
+          comment: _this.commentValue + 'l',
           communityId: _this.comItemData.communityId,
-          memberName: _this.communityFriendsList[_this.pinglunIndex].memberName,
+          // memberName: _this.communityFriendsList[_this.pinglunIndex].memberName,
+          memberName: authInfo.nickName,
           replyId: _this.comItemData.memberId,
           replyName: _this.comItemData.memberName
         };

@@ -146,6 +146,7 @@ export default {
   },
   data() {
     return {
+      fID: "",
       maskVal: false,
       sixinValue: "", //私信内容
       commentValue: "", //评论内容
@@ -160,22 +161,26 @@ export default {
     };
   },
   onLoad(options) {
-    forumContentDetailsGet(options.forumContentId).then(res => {
-      if (res.status == 200) {
-        let resD = res.result;
-        if (resD.images !== "") {
-          resD.images = resD.images.split(";");
-        }
-        if (resD.content.length > 100) {
-          resD["showEllip"] = true;
-        } else {
-          resD["showEllip"] = false;
-        }
-        this.details = resD;
-      }
-    });
+    this.fID = options.forumContentId;
+    this.fetchForumDetails(this.fID);
   },
   methods: {
+    fetchForumDetails(fid) {
+      forumContentDetailsGet(fid).then(res => {
+        if (res.status == 200) {
+          let resD = res.result;
+          if (resD.images !== "") {
+            resD.images = resD.images.split(";");
+          }
+          if (resD.content.length > 100) {
+            resD["showEllip"] = true;
+          } else {
+            resD["showEllip"] = false;
+          }
+          this.details = resD;
+        }
+      });
+    },
     requireTxt() {
       this.details.showEllip = !this.details.showEllip;
     },
@@ -235,7 +240,7 @@ export default {
     },
     backPinLunFun(comItem) {
       this.showZanAndPinglunNum = null;
-      this.commentContent = '';
+      this.commentContent = "";
       this.placeholderPL = "回复: " + comItem.memberName;
       this.showPinLun = true;
       this.show_back = 2;
@@ -304,7 +309,11 @@ export default {
               createTime: res.result.createTime
             };
           }
-          _this.details.properties.forumCommentList.push(data); //成功，则丢进数组
+          // let neArr = _this.details.properties.forumCommentList;
+          // neArr.push(data);
+          // _this.details.properties.forumCommentList = neArr; //成功，则丢进数组
+          // console.log(_this.details.properties.forumCommentList);
+          this.fetchForumDetails(this.fID)
         }
       });
     }

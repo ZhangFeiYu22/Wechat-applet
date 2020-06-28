@@ -64,8 +64,8 @@
 </template>
 
 <script>
-import { voteGet } from "@/api/vote";
 export default {
+  props: ['voteLists'],
   data() {
     return {
       maskVal: false,
@@ -102,18 +102,7 @@ export default {
       ]
     };
   },
-  mounted () {
-    // this.fetchVoteData()
-  },
   methods: {
-    fetchVoteData(){
-      voteGet().then(res=>{
-        console.log(res)
-        if(res.status == 200){
-          this.voteLists = res.result.data
-        }
-      })
-    },
     requireTxt(index) {
       let val = this.ItemList[index].showEllip;
       if (val) {

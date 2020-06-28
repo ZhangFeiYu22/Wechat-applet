@@ -57,12 +57,12 @@
     </div>
     <!-- 投票 -->
     <div class="contentList contentList_2" v-if="navType == '1'">
-      <voteItem></voteItem>
+      <voteItem :voteLists="voteLists"></voteItem>
       
     </div>
     <!-- 活动 -->
     <div class="contentList contentList_2"  v-if="navType == '2'">
-      <activityItem></activityItem>
+      <activityItem :acticityList="acticityList"></activityItem>
     </div>
     <!-- 征寻 -->
     <div class="contentList contentList_2"  v-else>

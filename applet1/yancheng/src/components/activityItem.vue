@@ -1,7 +1,12 @@
 <template>
   <div class="activity">
     <div class="activityList">
-      <div class="activityItem" @click="goActivityDetails(item.id)" v-for="(item,acIndex) in acticityList" :key="acIndex">
+      <div
+        class="activityItem"
+        @click="goActivityDetails(item.id)"
+        v-for="(item,acIndex) in acticityList"
+        :key="acIndex"
+      >
         <div class="imgBox">
           <img v-if="item.coverImage" :src="item.coverImage" mode="aspectFill" />
         </div>
@@ -23,24 +28,12 @@
 </template>
 
 <script>
-import { activitysGet } from "@/api/activity";
 export default {
+  props: ["acticityList"],
   data() {
-    return {
-      acticityList: []
-    };
-  },
-  mounted() {
-    this.fetchData();
+    return {};
   },
   methods: {
-    fetchData() {
-      activitysGet().then(res => {
-        if(res.status == 200){
-          this.acticityList = res.result.data;
-        }
-      });
-    },
     goActivityDetails(id) {
       wx.navigateTo({
         url: `/pages/activityDetails/main?activityId=${id}`

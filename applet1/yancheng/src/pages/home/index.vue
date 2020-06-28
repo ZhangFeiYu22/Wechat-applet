@@ -50,11 +50,11 @@
     <!-- 内容列表 -->
     <!-- 活动 -->
     <div class="tabContent" v-show="currentTab == 0">
-      <activityItem></activityItem>
+      <activityItem :acticityList="acticityList"></activityItem>
     </div>
     <!-- 投票 -->
     <div class="tabContent" v-show="currentTab == 1">
-      <voteItem></voteItem>
+      <voteItem :voteLists="voteLists"></voteItem>
     </div>
     <div class="tabContent" v-show="currentTab == 2">
       <consultItem></consultItem>
@@ -74,6 +74,7 @@ import {
   forumLikeNo
 } from "@/api/home";
 import { activitysGet } from "@/api/activity";
+import { voteListGet } from "@/api/vote";
 import { getDateDiff } from "@/utils/getDateDiff";
 import navigationBar from "@/components/navigationBar";
 import vueTabBar from "@/components/vueTabBar";
@@ -111,22 +112,25 @@ export default {
       ],
       adList: [],
       acticityList: [],
+      voteLists: [],
       indicatorDots: false,
       autoplay: true,
       interval: 3000,
       duration: 1000,
       current: 0,
-      forumList: [],
-      pageSize: 5, //一页显示条数
-      pageIndex: 0, //页码
-      total: 0, //总条数
+
       currentTab: 0, //nav当前激活位置
       navScrollLeft: 0, //  滚动条开始位置
       windowWidth: "",
       menuFixed: false,
       scrollTop: 0,
       menuTop: "",
-      navBar_Height: ""
+      navBar_Height: "",
+      votePage: {
+        pageSize: 5, //一页显示条数
+        pageIndex: 0, //页码
+        total: 0 //总条数
+      }
     };
   },
   onShow() {
@@ -192,8 +196,10 @@ export default {
       }
       switch (cur) {
         case 0:
+          this.fetchActiveData();
           break;
         case 1:
+          this.fetchVoteData();
           break;
         case 2:
           break;
@@ -223,9 +229,19 @@ export default {
     fetchActiveData() {
       activitysGet().then(res => {
         if (res.status == 200) {
+          console.log(0);
           this.acticityList = res.result.data;
         }
       });
+    },
+    async fetchVoteData() {
+      var data = {
+        pageSize: this.votePage.pageSize,
+        pageIndex: this.votePage.pageIndex
+      };
+      let ares = await voteListGet(data);
+      this.voteLists = ares.result.data
+      console.log(ares.result.data);
     },
     goActivityDetails(id) {
       wx.navigateTo({
