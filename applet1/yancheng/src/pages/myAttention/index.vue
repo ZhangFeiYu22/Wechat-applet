@@ -21,7 +21,8 @@
         </div>
       </div>
     </div>
-    <div class="activityList list" v-else>
+    <activityItem :acticityList="acticityList" v-else></activityItem>
+    <!-- <div class="activityList list" v-else>
       <div class="activityItem item" @click="goActivityDetails">
         <div class="imgBox">
           <img :src="actImg1" mode="aspectFill" />
@@ -54,16 +55,18 @@
           </p>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
-import { myFollow } from "@/api/my.js";
+import { myFollow, myFollowActivity } from "@/api/my.js";
 import navigationBar from "@/components/navigationBar";
+import activityItem from "@/components/activityItem";
 export default {
   components: {
-    navigationBar
+    navigationBar,
+    activityItem
   },
   data() {
     return {
@@ -75,14 +78,15 @@ export default {
       pageSize: 3, //一页显示条数
       pageIndex: 1, //页码
       total: 0, //总条数
-      mfDataList: []
+      mfDataList: [],
+      acticityList:[]
     };
   },
   mounted() {
-    this.fetchFollow();
+    this.fetchFollowPeople();
   },
   methods: {
-    async fetchFollow() {
+    async fetchFollowPeople() {
       var data = {
         pageSize: this.pageSize,
         pageIndex: this.pageIndex
@@ -91,9 +95,25 @@ export default {
       if (mfRes.status == 200) {
         this.mfDataList = mfRes.result.data;
       }
+    }, 
+    async fetchFollowActicity() {
+      var data = {
+        pageSize: this.pageSize,
+        pageIndex: this.pageIndex
+      };
+      let mfRes = await myFollowActivity();
+      if (mfRes.status == 200) {
+        this.acticityList = mfRes.result.data;
+      }
     },
+
     itemToggle(num) {
       this.itemActive = num;
+      if(num == '0'){
+        this.fetchFollowPeople()
+      }else if(num == '1'){
+        this.fetchFollowActicity();
+      }
     },
     goPersonal(id) {
       wx.navigateTo({

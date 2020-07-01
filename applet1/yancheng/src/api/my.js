@@ -2,6 +2,12 @@ import request from '@/utils/request'
 
 // 我的关注
 export const myFollow = (data) => request.get(`/followMember`,data)
+export const myFollowActivity = (data) => request.get(`/followActivity`,data)
+
+// 我的发布
+export const myPublish_activity = (data) => request.get(`/activitys/myActivitys`,data)
+export const myPublish_vote = (data) => request.get(`/vote/myPublishList`,data)
+export const myPublish_solicit = (data) => request.get(`/solicit/myPublishList`,data)
 
 // 我的消息
 export const myMessageList = () => request.get(`/message/no-paging`)

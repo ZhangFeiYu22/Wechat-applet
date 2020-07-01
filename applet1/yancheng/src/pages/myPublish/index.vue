@@ -57,16 +57,15 @@
     </div>
     <!-- 投票 -->
     <div class="contentList contentList_2" v-if="navType == '1'">
-      <voteItem :voteLists="voteLists"></voteItem>
-      
+      <voteItem :voteLists="voteList"></voteItem>
     </div>
     <!-- 活动 -->
-    <div class="contentList contentList_2"  v-if="navType == '2'">
+    <div class="contentList contentList_2" v-if="navType == '2'">
       <activityItem :acticityList="acticityList"></activityItem>
     </div>
     <!-- 征寻 -->
-    <div class="contentList contentList_2"  v-else>
-      <consultItem :handle='2'></consultItem>
+    <div class="contentList contentList_2" v-else>
+      <consultItem :handle="2" :consultList='consultList'></consultItem>
     </div>
 
     <div v-if="showPinLun" class="pinlunB">
@@ -104,6 +103,7 @@ import {
   communityCommentPost
 } from "@/api/community";
 import { getMember, getMemberForum, getMemberComm } from "@/api/personal";
+import { myPublish_activity,myPublish_vote,myPublish_solicit } from "@/api/my";
 import { getDateDiff } from "@/utils/getDateDiff";
 import navigationBar from "@/components/navigationBar";
 import activityItem from "@/components/activityItem";
@@ -122,7 +122,7 @@ export default {
       mid: "", // 用户ID
       sixinValue: "",
       maskVal: false, //私信显示判断
-      navType: 0, 
+      navType: 0,
       memberInfo: {},
       forumList: [],
       showZanAndPinglunNum: null, //点击是那个  将评论点赞显示出来
@@ -144,12 +144,30 @@ export default {
         pageSize: 3, //一页显示条数
         pageIndex: 0, //页码
         total: 0 //总条数
-      }
+      },
+      voteList: [],
+      voPage: {
+        pageSize: 5, //一页显示条数
+        pageIndex: 0, //页码
+        total: 0 //总条数
+      },
+      acticityList: [],
+      acPage: {
+        pageSize: 5, //一页显示条数
+        pageIndex: 0, //页码
+        total: 0 //总条数
+      },
+      consultList: [],
+      coPage: {
+        pageSize: 5, //一页显示条数
+        pageIndex: 0, //页码
+        total: 0 //总条数
+      },
     };
   },
   onLoad(options) {
     this.mid = options.createrId;
-    this.delId = wx.getStorageSync('authId');
+    this.delId = wx.getStorageSync("authId");
     this.fetchMember(options.createrId);
     this.fetchMemberForum(options.createrId);
     this.fetchMemberComm(options.createrId);
@@ -192,7 +210,7 @@ export default {
             let dateStr = item.createTime;
             item.createTime = getDateDiff(dateStr);
           }
-          return item
+          return item;
         });
         if (_this.ffPage.pageIndex > 0) {
           _this.forumList = _this.forumList.concat(forResult);
@@ -200,6 +218,45 @@ export default {
           // 第一页则直接赋值 （下拉刷新）
           _this.forumList = forResult;
         }
+      }
+    },
+    // 获取活动列表
+    async fetchActivity() {
+      let _this = this;
+      let data = {
+        pageSize: _this.acPage.pageSize,
+        pageIndex: _this.acPage.pageIndex
+      };
+      let acRes = await myPublish_activity(data);
+      console.log("acRes--", acRes);
+      if (acRes.status == 200) {
+        this.acticityList = acRes.result.data;
+      }
+    },
+    // 获取投票列表
+    async fetchVote() {
+      let _this = this;
+      let data = {
+        pageSize: _this.acPage.pageSize,
+        pageIndex: _this.acPage.pageIndex
+      };
+      let voRes = await myPublish_vote(data);
+      console.log("voRes--", voRes);
+      if (voRes.status == 200) {
+        this.voteList = voRes.result.data;
+      }
+    },
+    // 获取征寻列表
+    async fetchSolicit() {
+      let _this = this;
+      let data = {
+        pageSize: _this.acPage.pageSize,
+        pageIndex: _this.acPage.pageIndex
+      };
+      let soRes = await myPublish_solicit(data);
+      console.log("soRes--", soRes);
+      if (soRes.status == 200) {
+        this.consultList = soRes.result.data;
       }
     },
     delOneSelf(id, index) {
@@ -276,6 +333,23 @@ export default {
     // 动态，社区切换
     itemToggle(num) {
       this.navType = num;
+      switch (num) {
+        case "0":
+          this.fetchMemberForum(this.mid);
+          break;
+        case "1":
+          this.fetchVote()
+          break;
+        case "2":
+          this.fetchActivity();
+          break;
+        case "3":
+          this.fetchSolicit();
+          break;
+
+        default:
+          break;
+      }
     },
     // 展开收起
     requireTxt(index) {
@@ -548,7 +622,7 @@ export default {
           color: #111;
           font-weight: 600;
         }
-        p{
+        p {
           font-weight: 600;
           color: #333;
         }

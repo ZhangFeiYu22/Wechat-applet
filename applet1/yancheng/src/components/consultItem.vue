@@ -10,7 +10,7 @@
         <div class="left">
           <div class="top">
             <div class="headImg">
-              <img v-if="item.coverImage" :src="item.coverImage" mode="aspectFill" />
+              <img v-if="item.images" :src="item.images" mode="aspectFill" />
             </div>
             <div class="wordBox">
               <p class="title">{{item.title}}</p>
@@ -18,15 +18,15 @@
                 人数:
                 <span>{{item.num}}</span>
               </p>
-              <p class="time">
+              <p class="createTime">
                 时间:
-                <span>{{item.time}}</span>
+                <span>{{item.createTime}}</span>
               </p>
             </div>
           </div>
-          <div class="info">{{item.info}}</div>
+          <div class="content">{{item.content}}</div>
         </div>
-        <div class="right">+{{item.price}}砖</div>
+        <div class="right">+{{item.integral}}砖</div>
         <div class="bottom" v-if="handle == 1">
           <p class="status" v-if="item.status == 1">已完成</p>
           <p class="status" v-else-if="item.status == 2">已放弃</p>
@@ -56,66 +56,22 @@
 <script>
 import { activitysGet } from "@/api/activity";
 export default {
-  props: ["handle"],
+  props: ["handle",'consultList'],
   data() {
     return {
-      consultList: [
-        {
-          coverImage: `${this.$store.state.imgUrlHttp}/head.png`,
-          title: "点碧昂砍价活动",
-          num: "20/50",
-          time: "6小时",
-          info:
-            "拼多多砍价任务，砍成功给20砖。做过这种任务的来，马上提交，马上完成",
-          price: 20,
-          status: 1,
-          status2: 1
-        },
-        {
-          coverImage: `${this.$store.state.imgUrlHttp}/head.png`,
-          title: "点碧昂砍价活动",
-          num: "20/50",
-          time: "6小时",
-          info:
-            "拼多多砍价任务，砍成功给20砖。做过这种任务的来，马上提交，马上完成",
-          price: 20,
-          status: 5,
-          status2: 1
-        },
-        {
-          coverImage: `${this.$store.state.imgUrlHttp}/head.png`,
-          title: "点碧昂砍价活动",
-          num: "20/50",
-          time: "6小时",
-          info:
-            "拼多多砍价任务，砍成功给20砖。做过这种任务的来，马上提交，马上完成",
-          price: 20,
-          status: 2,
-          status2: 2
-        },
-        {
-          coverImage: `${this.$store.state.imgUrlHttp}/head.png`,
-          title: "点碧昂砍价活动",
-          num: "20/50",
-          time: "6小时",
-          info:
-            "拼多多砍价任务，砍成功给20砖。做过这种任务的来，马上提交，马上完成",
-          price: 20,
-          status: 3,
-          status2: 3
-        },
-        {
-          coverImage: `${this.$store.state.imgUrlHttp}/head.png`,
-          title: "点碧昂砍价活动",
-          num: "20/50",
-          time: "6小时",
-          info:
-            "拼多多砍价任务，砍成功给20砖。做过这种任务的来，马上提交，马上完成",
-          price: 20,
-          status: 4,
-          status2: 3
-        }
-      ]
+      // consultList: [
+      //   {
+      //     images: `${this.$store.state.imgUrlHttp}/head.png`,
+      //     title: "点碧昂砍价活动",
+      //     num: "20/50",
+      //     createTime: "6小时",
+      //     content:
+      //       "拼多多砍价任务，砍成功给20砖。做过这种任务的来，马上提交，马上完成",
+      //     integral: 20,
+      //     status: 1,
+      //     status2: 1
+      //   }
+      // ]
     };
   },
   mounted() {
@@ -216,14 +172,14 @@ export default {
                 color: #8e8e8e;
               }
             }
-            .time {
+            .createTime {
               font-size: 12px;
               color: #8e8e8e;
               line-height: 14px;
             }
           }
         }
-        .info {
+        .content {
           margin-top: 9px;
           font-size: 12px;
           line-height: 16px;

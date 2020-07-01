@@ -40,8 +40,16 @@
         <div class="line">
           <div class="left">有效时间：</div>
           <div class="right">
-            <picker @change="bindDateChange" v-model="publishFormData.validDay" :index='tIndex' :range="timeArray">
-              <view class="picker" :class="tIndex?'hasColor':''">{{ tIndex ? timeArray[tIndex] : '选择有效时间'}} </view>
+            <picker
+              @change="bindDateChange"
+              v-model="publishFormData.validDay"
+              :index="tIndex"
+              :range="timeArray"
+            >
+              <view
+                class="picker"
+                :class="tIndex?'hasColor':''"
+              >{{ tIndex ? timeArray[tIndex] : '选择有效时间'}}（单位：天）</view>
             </picker>
           </div>
         </div>
@@ -123,8 +131,8 @@ export default {
   },
   data() {
     return {
-      timeArray:['30分钟','1小时','6小时','1天','2天','3天'],
-      tIndex: '',
+      timeArray: ["1", "2", "3", "4", "5", "6"],
+      tIndex: "",
       publishFormData: {
         title: "",
         num: "",
@@ -144,6 +152,17 @@ export default {
   },
   mounted() {
     let systemInfo = wx.getSystemInfoSync();
+    this.publishFormData = {
+      title: "",
+      num: "",
+      integral: "",
+      validDay: "",
+      needPic: 1,
+      rank: "",
+      needReal: 1,
+      content: "",
+      images: ""
+    };
   },
   methods: {
     changeTextStatus() {
@@ -219,12 +238,21 @@ export default {
             duration: 2000
           });
           return;
+        }
+        if (Number(this.publishFormData.rank) > 6) {
+          wx.showToast({
+            title: "等级要求最高为6级",
+            icon: "none",
+            duration: 2000
+          });
+          return;
         } else {
           this.publishFormData.images = this.imgArr2.join("|");
           this.publishFormData.num == Number(this.publishFormData.num);
           this.publishFormData.integral ==
             Number(this.publishFormData.integral);
           this.publishFormData.rank == Number(this.publishFormData.rank);
+          console.log("this.publishFormData", this.publishFormData);
           solicitAdd(this.publishFormData).then(res => {
             if (res.status == 200) {
               this.globalData.homeShowNum = 2;
@@ -348,9 +376,9 @@ export default {
             }
           }
         }
-        .picker{
+        .picker {
           color: #dcdcdc;
-          &.hasColor{
+          &.hasColor {
             color: #343434;
           }
         }

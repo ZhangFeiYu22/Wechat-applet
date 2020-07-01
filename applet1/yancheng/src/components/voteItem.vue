@@ -99,7 +99,8 @@ export default {
             `${this.$store.state.imgUrlHttp}/a6.png`,
           ]
         }
-      ]
+      ],
+      
     };
   },
   methods: {

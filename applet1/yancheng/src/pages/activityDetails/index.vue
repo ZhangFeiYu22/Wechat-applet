@@ -43,7 +43,7 @@
           <i class="iconfont icon-fenxiang"></i>
           <span>分享</span>
         </button>
-        <p>
+        <p @click.stop="callPhone">
           <i class="iconfont icon-kefu"></i>
           <span>客服</span>
         </p>
@@ -72,14 +72,23 @@
           <i class="iconfont icon-shouji"></i>
           <span>18512341234</span>
         </p>
-        <p class="btn" :class="likeAct?'btnH':''" @click.stop="likeFun(acDetails.id)">{{likeAct ? '取消关注' : '关注活动'}}</p>
+        <p
+          class="btn"
+          :class="likeAct?'btnH':''"
+          @click.stop="likeFun(acDetails.id)"
+        >{{likeAct ? '取消关注' : '关注活动'}}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { activityDetailsGet, activitysFollow,activitysFollowNo } from "@/api/activity";
+import {
+  activityDetailsGet,
+  isLikeActivity,
+  activitysFollow,
+  activitysFollowNo
+} from "@/api/activity";
 import navigationBar from "@/components/navigationBar";
 export default {
   components: {
@@ -87,6 +96,7 @@ export default {
   },
   data() {
     return {
+      tel:'18570373920',
       acDetails: {},
       likeAct: false,
       joinMaskShow: false,
@@ -96,13 +106,17 @@ export default {
   },
   onLoad(options) {
     activityDetailsGet(options.activityId).then(res => {
-      console.log(res);
       if (res.status == 200) {
         var resData = res.result;
         if (resData.content !== "") {
           resData.content = resData.content.split(";");
         }
         this.acDetails = resData;
+      }
+    });
+    isLikeActivity(options.activityId).then(res => {
+      if (res.status == 200) {
+        this.likeAct = res.result;
       }
     });
   },
@@ -112,47 +126,37 @@ export default {
         url: "/pages/personal/main"
       });
     },
+    callPhone() {
+      wx.makePhoneCall({
+        phoneNumber: this.tel //仅为示例，并非真实的电话号码
+      });
+    },
     joinMaskToggle() {
       this.joinMaskShow = !this.joinMaskShow;
     },
-    likeFun() {
-      this.joinMaskShow = !this.joinMaskShow;
-      // var _this = this;
-      // if (isLike == 2) {
-      //   activitysFollow(id).then(res => {
-      //     if (res.status == 200) {
-      //       acDetails.isLike = 1;
-      //       wx.showToast({
-      //         title: "关注成功",
-      //         icon: "none",
-      //         duration: 1500
-      //       });
-      //     }
-      //   });
-      // } else {
-      //   activitysFollowNo(id).then(res => {
-      //     if (res.status == 200) {
-      //       acDetails.isLike = 2;
-      //       wx.showToast({
-      //         title: "取消关注",
-      //         icon: "none",
-      //         duration: 1500
-      //       });
-      //     }
-      //   });
-      // }
-      this.likeAct = !this.likeAct;
-      if (this.likeAct) {
-        wx.showToast({
-          title: "关注成功",
-          icon: "none",
-          duration: 1500
+    likeFun(id) {
+      var _this = this;
+      if (_this.likeAct) {
+        activitysFollowNo(id).then(res => {
+          if (res.status == 200) {
+            _this.likeAct = false;
+            wx.showToast({
+              title: "取消关注",
+              icon: "none",
+              duration: 1500
+            });
+          }
         });
       } else {
-        wx.showToast({
-          title: "取消关注",
-          icon: "none",
-          duration: 1500
+        activitysFollow(id).then(res => {
+          if (res.status == 200) {
+            _this.likeAct = true;
+            wx.showToast({
+              title: "关注成功",
+              icon: "none",
+              duration: 1500
+            });
+          }
         });
       }
     }
@@ -345,7 +349,7 @@ export default {
         text-align: center;
         letter-spacing: 2px;
         border-radius: 5px;
-        &.btnH{
+        &.btnH {
           background-color: #ccc;
           color: #fff;
         }

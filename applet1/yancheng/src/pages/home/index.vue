@@ -75,6 +75,7 @@ import {
 } from "@/api/home";
 import { activitysGet } from "@/api/activity";
 import { voteListGet } from "@/api/vote";
+import { solicitListGet } from "@/api/solicit";
 import { getDateDiff } from "@/utils/getDateDiff";
 import navigationBar from "@/components/navigationBar";
 import vueTabBar from "@/components/vueTabBar";
@@ -113,6 +114,17 @@ export default {
       adList: [],
       acticityList: [],
       voteLists: [],
+      votePage: {
+        pageSize: 5, //一页显示条数
+        pageIndex: 0, //页码
+        total: 0 //总条数
+      },
+      solicitLists: [],
+      solicitPage: {
+        pageSize: 5, //一页显示条数
+        pageIndex: 0, //页码
+        total: 0 //总条数
+      },
       indicatorDots: false,
       autoplay: true,
       interval: 3000,
@@ -125,12 +137,7 @@ export default {
       menuFixed: false,
       scrollTop: 0,
       menuTop: "",
-      navBar_Height: "",
-      votePage: {
-        pageSize: 5, //一页显示条数
-        pageIndex: 0, //页码
-        total: 0 //总条数
-      }
+      navBar_Height: ""
     };
   },
   onShow() {
@@ -202,6 +209,7 @@ export default {
           this.fetchVoteData();
           break;
         case 2:
+          this.fetchSolicitData();
           break;
         case 3:
           wx.navigateTo({
@@ -241,7 +249,14 @@ export default {
       };
       let ares = await voteListGet(data);
       this.voteLists = ares.result.data
-      console.log(ares.result.data);
+    },
+    async fetchSolicitData() {
+      var data = {
+        pageSize: this.solicitPage.pageSize,
+        pageIndex: this.solicitPage.pageIndex
+      };
+      let ares = await solicitListGet(data);
+      this.solicitLists = ares.result.data
     },
     goActivityDetails(id) {
       wx.navigateTo({
