@@ -2,7 +2,7 @@
   <div class="community" @click.stop="hideZanAndPinglun">
     <navigation-bar :title="'社区'" :navBackgroundColor="'#fff'" :publish-visible="2"></navigation-bar>
     <div class="contentList w94">
-      <div class="contentItem" v-for="(item,index) in communityFriendsList" :key="item.id">
+      <div class="contentItem" v-for="(item,index) in communityFriendsList" :key="index">
         <!-- 头像 -->
         <div class="headName" @click.stop="goPersonal(item.memberId)">
           <img v-if="item.memberAvatar" :src="item.memberAvatar" mode="aspectFill" />
@@ -51,7 +51,7 @@
           <div
             class="imgLi"
             v-for="(comLikeItem,comLikeIndex) in item.properties.communityLikeList"
-            :key="comLikeItem.id"
+            :key="comLikeIndex"
           >
             <img
               v-if="comLikeItem.avatar && comLikeIndex<3"

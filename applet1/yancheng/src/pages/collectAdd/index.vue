@@ -20,7 +20,7 @@
           <div class="right">
             <input
               v-model="publishFormData.num"
-              type="text"
+              type="number"
               placeholder="需要多少人帮你完成"
               placeholder-style="color:#D1CFCF"
             />
@@ -31,8 +31,8 @@
           <div class="right">
             <input
               v-model="publishFormData.integral"
-              type="text"
-              placeholder="为没人给与多少砖头"
+              type="number"
+              placeholder="为每人给与多少砖头"
               placeholder-style="color:#D1CFCF"
             />
           </div>
@@ -135,11 +135,11 @@ export default {
       tIndex: "",
       publishFormData: {
         title: "",
-        num: "",
-        integral: "",
-        validDay: "",
+        num: 0,
+        integral: 0,
+        validDay: 1,
         needPic: 1,
-        rank: "",
+        rank: 0,
         needReal: 1,
         content: "",
         images: ""
@@ -154,15 +154,17 @@ export default {
     let systemInfo = wx.getSystemInfoSync();
     this.publishFormData = {
       title: "",
-      num: "",
-      integral: "",
-      validDay: "",
+      num: 0,
+      integral: 0,
+      validDay: 1,
       needPic: 1,
-      rank: "",
+      rank: 0,
       needReal: 1,
       content: "",
       images: ""
     };
+    (this.realTextValue = "请填写征寻的详细要求（100字以内）"),
+      (this.imgArr2 = []);
   },
   methods: {
     changeTextStatus() {
@@ -209,6 +211,7 @@ export default {
       this.publishFormData.needReal = e.mp.detail.value;
     },
     publishFun() {
+      console.log("1---", this.publishFormData);
       if (
         this.publishFormData.title == "" ||
         this.publishFormData.num == "" ||
@@ -217,8 +220,7 @@ export default {
         this.publishFormData.needPic == "" ||
         this.publishFormData.rank == "" ||
         this.publishFormData.needReal == "" ||
-        this.publishFormData.content == "" ||
-        this.imgArr2.length == 0
+        this.publishFormData.content == ""
       ) {
         wx.showToast({
           title: "请检查信息是否填写完整",
@@ -266,6 +268,19 @@ export default {
                   });
                 }
               });
+              // wx.showModal({
+              //   title: "提示",
+              //   content: "发布成功，是否返回界面",
+              //   success(res) {
+              //     if (res.confirm) {
+              //       wx.switchTab({
+              //         url: `/pages/home/main`
+              //       });
+              //     } else if (res.cancel) {
+              //       console.log("用户点击取消");
+              //     }
+              //   }
+              // });
             }
           });
         }

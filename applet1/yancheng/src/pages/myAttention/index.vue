@@ -6,7 +6,7 @@
       <div class="navI" :class="itemActive == '1' ? 'active' : ''" @click="itemToggle('1')">活动</div>
     </div>
     <div class="friendsList list" v-if="itemActive == 0">
-      <div class="friendsItem item" v-for="item in mfDataList" :key="item.id" @click="goPersonal(item.followId)">
+      <div class="friendsItem item" v-for="item in mfDataList" :key="item" @click="goPersonal(item.followId)">
         <div class="imgBox">
           <img v-if="item.properties.avatar" :src="item.properties.avatar" mode="aspectFill" />
         </div>
@@ -22,40 +22,6 @@
       </div>
     </div>
     <activityItem :acticityList="acticityList" v-else></activityItem>
-    <!-- <div class="activityList list" v-else>
-      <div class="activityItem item" @click="goActivityDetails">
-        <div class="imgBox">
-          <img :src="actImg1" mode="aspectFill" />
-        </div>
-        <div class="wordBox">
-          <p class="title">安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和</p>
-          <p class="address">
-            <i class="iconfont icon-dingwei"></i>
-            <span>江苏省南京市大行宫</span>
-          </p>
-          <p class="time">
-            <i class="iconfont icon-shijian"></i>
-            <span>2019.09.09-12.21</span>
-          </p>
-        </div>
-      </div>
-      <div class="activityItem item" @click="goActivityDetails">
-        <div class="imgBox">
-          <img :src="actImg2" mode="aspectFill" />
-        </div>
-        <div class="wordBox">
-          <p class="title">安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和</p>
-          <p class="address">
-            <i class="iconfont icon-dingwei"></i>
-            <span>江苏省南京市大行宫</span>
-          </p>
-          <p class="time">
-            <i class="iconfont icon-shijian"></i>
-            <span>2019.09.09-12.21</span>
-          </p>
-        </div>
-      </div>
-    </div> -->
   </div>
 </template>
 

@@ -141,9 +141,7 @@ export default {
     },
     publishFun() {
       var _this = this;
-      _this.optionsData.options = _this.options
-        .map(item => item.optionsContent)
-        .join("|");
+      _this.optionsData.options = JSON.stringify(_this.options)
       _this.optionsData.images = _this.imgArr.join("|");
       wx.showModal({
         title: "确定发布？",
@@ -151,7 +149,7 @@ export default {
           voteAdd(_this.optionsData).then(res => {
             console.log(res);
             if (res.status == 200) {
-              this.globalData.homeShowNum = 1
+              _this.globalData.homeShowNum = 1
               wx.switchTab({
                 url: `/pages/home/main`
               });

@@ -47,17 +47,20 @@
         >{{navItem.name}}</view>
       </block>
     </scroll-view>
+    <div v-if="menuFixed" style="height: 45px"></div>
+    <!-- 填充高度 -->
     <!-- 内容列表 -->
     <!-- 活动 -->
-    <div class="tabContent" v-show="currentTab == 0">
+    <div class="tabContent act" v-if="currentTab == 0">
       <activityItem :acticityList="acticityList"></activityItem>
     </div>
     <!-- 投票 -->
-    <div class="tabContent" v-show="currentTab == 1">
+    <div class="tabContent" v-if="currentTab == 1">
       <voteItem :voteLists="voteLists"></voteItem>
     </div>
-    <div class="tabContent" v-show="currentTab == 2">
-      <consultItem></consultItem>
+    <!-- 征寻 -->
+    <div class="tabContent" v-if="currentTab == 2">
+      <consultItem :handle="0" :consultList="solicitLists"></consultItem>
     </div>
     <div style="height:20px"></div>
     <vue-tab-bar :selectNavIndex="3"></vue-tab-bar>
@@ -93,7 +96,6 @@ export default {
   data() {
     return {
       delId: "",
-      numA: [0, 1, 2, 3, 4, 5],
       navItemList: [
         {
           name: "活动"
@@ -199,7 +201,9 @@ export default {
       if (this.currentTab == cur) {
         return false;
       } else {
-        this.currentTab = cur;
+        if (cur < this.navItemList.length - 2) {
+          this.currentTab = cur;
+        }
       }
       switch (cur) {
         case 0:
@@ -248,15 +252,25 @@ export default {
         pageIndex: this.votePage.pageIndex
       };
       let ares = await voteListGet(data);
-      this.voteLists = ares.result.data
+      let voteLists = ares.result.data;
+      // 转换options数组传给组件使用
+      this.voteLists = voteLists.map(vo => {
+        if (vo.options) {
+          vo.options = vo.options.split("|");
+        }
+        if (vo.images) {
+          vo.images = vo.images.split("|");
+        }
+        return vo;
+      });
     },
     async fetchSolicitData() {
       var data = {
         pageSize: this.solicitPage.pageSize,
         pageIndex: this.solicitPage.pageIndex
       };
-      let ares = await solicitListGet(data);
-      this.solicitLists = ares.result.data
+      let soRres = await solicitListGet(data);
+      this.solicitLists = soRres.result.data;
     },
     goActivityDetails(id) {
       wx.navigateTo({
@@ -341,8 +355,6 @@ export default {
     font-size: 16px;
     white-space: nowrap;
     padding: 5px 10px;
-    position: sticky;
-    top: 0;
     &.fixedTop {
       width: 100%;
       position: fixed;
@@ -363,7 +375,10 @@ export default {
 
   .tabContent {
     overflow-y: scroll;
-    padding: 10px 0 20px;
+    // padding: 10px 0 20px;
+    &.act {
+      margin: 10px 0 20px;
+    }
     .activityList {
       width: 90%;
       margin: 0 auto;

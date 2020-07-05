@@ -47,7 +47,7 @@ export default {
 .activity {
   // 活动
   .activityList {
-    width: 90%;
+    width: 94%;
     margin: 0 auto;
     .activityItem {
       font-size: 13px;

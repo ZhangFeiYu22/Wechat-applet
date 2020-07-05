@@ -20,7 +20,7 @@
               </p>
               <p class="createTime">
                 时间:
-                <span>{{item.createTime}}</span>
+                <span>{{item.validDay}}天</span>
               </p>
             </div>
           </div>
@@ -37,57 +37,32 @@
             <p class="f" @click.stop="abandonFun">放弃</p>
           </div>
         </div>
-        <div class="bottom" v-if="handle == 2">
+        <!-- <div class="bottom" v-if="handle == 2">
           <p class="status2" v-if="item.status2 == 1">审核</p>
           <div class="status2Other" v-else-if="item.status2 == 2">
             <p class="f">已完成</p>
-            <p class="d"  @click.stop="againFun">再来一单</p>
+            <p class="d" @click.stop="againFun">再来一单</p>
           </div>
           <div class="status2Other" v-else>
             <p class="f">已过期</p>
             <p class="d" @click.stop="againFun">再来一单</p>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { activitysGet } from "@/api/activity";
 export default {
-  props: ["handle",'consultList'],
+  props: ["handle", "consultList"],
   data() {
-    return {
-      // consultList: [
-      //   {
-      //     images: `${this.$store.state.imgUrlHttp}/head.png`,
-      //     title: "点碧昂砍价活动",
-      //     num: "20/50",
-      //     createTime: "6小时",
-      //     content:
-      //       "拼多多砍价任务，砍成功给20砖。做过这种任务的来，马上提交，马上完成",
-      //     integral: 20,
-      //     status: 1,
-      //     status2: 1
-      //   }
-      // ]
-    };
-  },
-  mounted() {
-    // this.fetchData();
+    return {};
   },
   methods: {
-    fetchData() {
-      activitysGet().then(res => {
-        if (res.status == 200) {
-          this.consultList = res.result.data;
-        }
-      });
-    },
     goConsultDetails(id) {
       wx.navigateTo({
-        url: `/pages/consultDetails/main`
+        url: `/pages/consultDetails/main?soId=${id}`
       });
     },
     abandonFun() {
@@ -102,7 +77,7 @@ export default {
         }
       });
     },
-    againFun(){
+    againFun() {
       wx.showModal({
         content: "确定再来一单吗",
         success: res => {
@@ -183,6 +158,13 @@ export default {
           margin-top: 9px;
           font-size: 12px;
           line-height: 16px;
+          display: -webkit-box;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          word-wrap: break-word;
+          white-space: normal !important;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
         }
       }
       .right {
@@ -226,7 +208,6 @@ export default {
           p {
             color: #fff;
             &.f {
-              
               color: #989898;
             }
             &.d {

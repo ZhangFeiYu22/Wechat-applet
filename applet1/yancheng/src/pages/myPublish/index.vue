@@ -57,7 +57,7 @@
     </div>
     <!-- 投票 -->
     <div class="contentList contentList_2" v-if="navType == '1'">
-      <voteItem :voteLists="voteList"></voteItem>
+      <voteItem :voteLists="voteLists"></voteItem>
     </div>
     <!-- 活动 -->
     <div class="contentList contentList_2" v-if="navType == '2'">
@@ -65,7 +65,7 @@
     </div>
     <!-- 征寻 -->
     <div class="contentList contentList_2" v-else>
-      <consultItem :handle="2" :consultList='consultList'></consultItem>
+      <consultItem :handle="2" :consultList='solicitLists'></consultItem>
     </div>
 
     <div v-if="showPinLun" class="pinlunB">
@@ -145,7 +145,7 @@ export default {
         pageIndex: 0, //页码
         total: 0 //总条数
       },
-      voteList: [],
+      voteLists: [],
       voPage: {
         pageSize: 5, //一页显示条数
         pageIndex: 0, //页码
@@ -157,8 +157,8 @@ export default {
         pageIndex: 0, //页码
         total: 0 //总条数
       },
-      consultList: [],
-      coPage: {
+      solicitLists: [],
+      soPage: {
         pageSize: 5, //一页显示条数
         pageIndex: 0, //页码
         total: 0 //总条数
@@ -243,7 +243,7 @@ export default {
       let voRes = await myPublish_vote(data);
       console.log("voRes--", voRes);
       if (voRes.status == 200) {
-        this.voteList = voRes.result.data;
+        this.voteLists = voRes.result.data;
       }
     },
     // 获取征寻列表
@@ -256,7 +256,7 @@ export default {
       let soRes = await myPublish_solicit(data);
       console.log("soRes--", soRes);
       if (soRes.status == 200) {
-        this.consultList = soRes.result.data;
+        this.solicitLists = soRes.result.data;
       }
     },
     delOneSelf(id, index) {
