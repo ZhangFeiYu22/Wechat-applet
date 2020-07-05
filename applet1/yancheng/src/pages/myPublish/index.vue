@@ -57,14 +57,14 @@
     </div>
     <!-- 投票 -->
     <div class="contentList contentList_2" v-if="navType == '1'">
-      <voteItem :voteLists="voteLists"></voteItem>
+      <voteItem :headShow="false" :voteLists="voteLists"></voteItem>
     </div>
     <!-- 活动 -->
     <div class="contentList contentList_2" v-if="navType == '2'">
       <activityItem :acticityList="acticityList"></activityItem>
     </div>
     <!-- 征寻 -->
-    <div class="contentList contentList_2" v-else>
+    <div class="contentList contentList_2" v-if="navType == '3'">
       <consultItem :handle="2" :consultList='solicitLists'></consultItem>
     </div>
 
@@ -243,7 +243,18 @@ export default {
       let voRes = await myPublish_vote(data);
       console.log("voRes--", voRes);
       if (voRes.status == 200) {
-        this.voteLists = voRes.result.data;
+        let voteLists = voRes.result.data;
+        this.voteLists = voteLists.map(vo => {
+        if (vo.options) {
+          // vo.options = JSON.parse(vo.options);
+          vo.options = vo.options.split("|");
+        }
+        if (vo.images) {
+          vo.images = vo.images.split("|");
+        }
+       
+        return vo;
+      });
       }
     },
     // 获取征寻列表

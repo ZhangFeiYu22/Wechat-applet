@@ -3,7 +3,7 @@
     <!-- 内容列表 -->
     <div class="contentList">
       <div class="contentItem w94" v-for="(voteItem,index) in voteLists" :key="index">
-        <div class="headName" @click="goPersonal(voteItem.createId)">
+        <div class="headName" @click="goPersonal(voteItem.createId)" v-if="headShow">
           <div class="headImg">
             <img :src="voteItem.avatar" mode="aspectFill" />
           </div>
@@ -47,7 +47,7 @@
           >
             <i class="sel"></i>
             <p class="miaosu">{{litem}}</p>
-            <p class="bili">100%</p>
+            <!-- <p class="bili">100%</p> -->
           </div>
         </div>
 
@@ -64,7 +64,7 @@
 
 <script>
 export default {
-  props: ["voteLists"],
+  props: ["headShow","voteLists"],
   data() {
     return {
       maskVal: false,
@@ -118,7 +118,7 @@ export default {
 .vote {
   padding-bottom: 30px;
   .contentList {
-    width: 95%;
+    width: 94%;
     margin: 10px auto;
     box-shadow: 0 0 2px 2px #eee;
     padding-top: 15px;

@@ -2,22 +2,22 @@
   <div class="consultDetails">
     <navigation-bar :title="'征寻'" :navBackgroundColor="'#fff'" :back-visible="true"></navigation-bar>
     <!-- <div class="headBg"></div> -->
-    <div class="head">
+    <div class="head" @click.stop="goPersonal(solicitDetails.createId)">
       <div class="headImg">
-        <img v-if="myInfo.avatar" :src="myInfo.avatar" mode="aspectFill" />
+        <img v-if="solicitDetails.avatar" :src="solicitDetails.avatar" mode="aspectFill" />
       </div>
       <div class="headName">
-        <p class="name">{{myInfo.nickName}}</p>
+        <p class="name">{{solicitDetails.nickName}}</p>
         <p class="phone">
-          <i class="iconfont icon-nan" v-if="myInfo.gender == 1"></i>
-          <i class="iconfont icon-nv" v-else-if="myInfo.gender == 2"></i>
+          <i class="iconfont icon-nan" v-if="solicitDetails.gender == 1"></i>
+          <i class="iconfont icon-nv" v-else-if="solicitDetails.gender == 2"></i>
           <i class="iconfont" v-else></i>
-          <span>18211112222</span>
+          <span>{{solicitDetails.mobile}}</span>
         </p>
       </div>
       <div class="lvBox">
         <img :src="levUrl" alt />
-        <p>Lv5</p>
+        <p>Lv{{solicitDetails.grade}}</p>
       </div>
     </div>
 
@@ -54,13 +54,11 @@
 
     <div class="detailsBox">
       <h5>详情</h5>
-      <div class="edit-text">{{solicitDetails.content}}</div>
-      <div class="edit-img">
-        <div class="imgbox" v-for="(item,index) in imgArr2" :key="index">
+      <div class="detail-cont">{{solicitDetails.content}}</div>
+      <div class="detail-imgList">
+        <div class="imgbox" v-for="(item,index) in solicitDetails.images" :key="index">
           <image v-if="item" :src="item" mode="aspectFill" />
-          <i class="close iconfont icon-iconless" @click.stop="closeFunTwo(item,index)"></i>
         </div>
-        <div class="iconfont icon-jiahao" @click.stop="chooseImageTwo"></div>
       </div>
     </div>
     <div class="btnGroup">
@@ -75,8 +73,8 @@
     <div class="mask" @click.stop="closeMask" v-if="maskVal"></div>
     <div class="maskCont" v-if="maskVal">
       <div class="title">
-        <img v-if="myInfo.avatar" :src="myInfo.avatar" mode="aspectFill" />
-        <span>{{myInfo.nickName}}</span>
+        <img v-if="solicitDetails.avatar" :src="solicitDetails.avatar" mode="aspectFill" />
+        <span>{{solicitDetails.nickName}}</span>
       </div>
       <div class="textaCont">
         <textarea
@@ -94,6 +92,7 @@
 </template>
 
 <script>
+import { messageTo } from "@/api/home";
 import { solicitDetailsGet } from "@/api/solicit";
 import { imgsUpload } from "@/utils/imgsUpload";
 import navigationBar from "@/components/navigationBar";
@@ -108,6 +107,7 @@ export default {
       imgArr2: [],
       maskVal: false, //私信显示判断
       myInfo: {},
+      sixinValue: "",
       levUrl: `${this.$store.state.commonImgHttp}/lv5.png`
     };
   },
@@ -119,9 +119,18 @@ export default {
     async fetchDetails(id) {
       let soRes = await solicitDetailsGet(id);
       if (soRes.status == 200) {
-        this.solicitDetails = soRes.result;
+        let solicitDetails = soRes.result;
+        if (solicitDetails.images) {
+          solicitDetails.images = solicitDetails.images.split("|");
+        }
+        this.solicitDetails = solicitDetails;
         console.log(this.solicitDetails);
       }
+    },
+    goPersonal(id) {
+      wx.navigateTo({
+        url: `/pages/personal/main?createrId=${id}`
+      });
     },
     // 私信弹窗
     sixinFun() {
@@ -136,7 +145,7 @@ export default {
     conBtnPut() {
       let data = {
         msg: this.sixinValue,
-        recipient: this.memberInfo.id
+        recipient: this.solicitDetails.createId
       };
       messageTo(data).then(res => {
         if (res.status == 200) {
@@ -157,44 +166,25 @@ export default {
       //     duration: 2000
       //   });
       // } else {
-        self.$store.dispatch("getOssData", { dir: "city/solicit/real" });
-        wx.chooseImage({
-          count: 1,
-          sizeType: "compressed",
-          sourceType: ["album", "camera"],
-          success(res) {
-            let newArr = [];
-            for (var i = 0; i < res.tempFilePaths.length; i++) {
-              imgsUpload(res.tempFilePaths[i]).then(rere => {
-                newArr.push(rere);
-                self.imgArr1 = newArr;
-              });
-            }
-          }
-        });
-      // }
-    },
-    closeFunOne(item, index) {
-      this.imgArr1.splice(index, 1);
-    },
-    chooseImageTwo() {
-      let self = this;
-      self.$store.dispatch("getOssData", { dir: "city/activityContent" });
+      self.$store.dispatch("getOssData", { dir: "city/solicit/real" });
       wx.chooseImage({
-        count: 5,
+        count: 1,
         sizeType: "compressed",
         sourceType: ["album", "camera"],
         success(res) {
+          let newArr = [];
           for (var i = 0; i < res.tempFilePaths.length; i++) {
             imgsUpload(res.tempFilePaths[i]).then(rere => {
-              self.imgArr2.push(rere);
+              newArr.push(rere);
+              self.imgArr1 = newArr;
             });
           }
         }
       });
+      // }
     },
-    closeFunTwo(item, index) {
-      this.imgArr2.splice(index, 1);
+    closeFunOne(item, index) {
+      this.imgArr1.splice(index, 1);
     }
   }
 };
@@ -311,14 +301,27 @@ export default {
     h5 {
       font-size: 14px;
     }
+    .detail-cont {
+      padding: 2px 0;
+      width: 100%;
+      font-size: 13px;
+      color: #989898;
+      padding: 10px 0;
+    }
+    .detail-imgList {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-content: space-between;
+      margin-bottom: 10px;
+      image {
+        width: 75px;
+        height: 75px;
+        margin: 0 10px 5px 0;
+      }
+    }
   }
 
-  .edit-text {
-    padding: 2px 0;
-    width: 100%;
-    font-size: 14px;
-    color: #989898;
-  }
   .edit-textShow {
     box-sizing: border-box;
   }
@@ -360,6 +363,7 @@ export default {
       text-align: center;
     }
   }
+
   .btnGroup {
     position: fixed;
     display: flex;

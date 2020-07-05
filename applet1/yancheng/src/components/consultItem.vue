@@ -97,7 +97,7 @@ export default {
 .consult {
   // 活动
   .consultList {
-    width: 90%;
+    width: 94%;
     margin: 0 auto;
     .consultItem {
       font-size: 13px;

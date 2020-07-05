@@ -56,10 +56,10 @@
     </div>
     <!-- 投票 -->
     <div class="tabContent" v-if="currentTab == 1">
-      <voteItem :voteLists="voteLists"></voteItem>
+      <voteItem :headShow="true" :voteLists="voteLists"></voteItem>
     </div>
     <!-- 征寻 -->
-    <div class="tabContent" v-if="currentTab == 2">
+    <div class="tabContent act" v-if="currentTab == 2">
       <consultItem :handle="0" :consultList="solicitLists"></consultItem>
     </div>
     <div style="height:20px"></div>
@@ -145,6 +145,13 @@ export default {
   onShow() {
     if (this.globalData.homeShowNum) {
       this.currentTab = this.globalData.homeShowNum;
+      if (this.currentTab == 0) {
+        this.fetchActiveData();
+      } else if (this.currentTab == 1) {
+        this.fetchVoteData();
+      } else if (this.currentTab == 2) {
+        this.fetchSolicitData();
+      }
     }
   },
   mounted() {
@@ -256,6 +263,7 @@ export default {
       // 转换options数组传给组件使用
       this.voteLists = voteLists.map(vo => {
         if (vo.options) {
+          // vo.options = JSON.parse(vo.options);
           vo.options = vo.options.split("|");
         }
         if (vo.images) {
@@ -377,7 +385,7 @@ export default {
     overflow-y: scroll;
     // padding: 10px 0 20px;
     &.act {
-      margin: 10px 0 20px;
+      padding: 10px 0 20px;
     }
     .activityList {
       width: 90%;
