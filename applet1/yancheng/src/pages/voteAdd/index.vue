@@ -77,6 +77,22 @@ export default {
       realTextValue: "请输入投票内容简述..."
     };
   },
+  mounted() {
+    this.imgArr = [];
+    this.optionsData = {
+      content: "",
+      options: "",
+      images: ""
+    };
+    this.options = [
+      { optionsContent: "" },
+      { optionsContent: "" },
+      { optionsContent: "" }
+    ];
+    this.textStatus = false;
+    this.textNoColor = "#dcdcdc";
+    this.realTextValue = "请输入投票内容简述...";
+  },
   methods: {
     changeTextStatus() {
       this.realTextValue = "";
@@ -141,7 +157,7 @@ export default {
     },
     publishFun() {
       var _this = this;
-      _this.optionsData.options = JSON.stringify(_this.options)
+      _this.optionsData.options = JSON.stringify(_this.options);
       _this.optionsData.images = _this.imgArr.join("|");
       wx.showModal({
         title: "确定发布？",
@@ -149,14 +165,19 @@ export default {
           voteAdd(_this.optionsData).then(res => {
             console.log(res);
             if (res.status == 200) {
-              _this.globalData.homeShowNum = 1
-              wx.switchTab({
-                url: `/pages/home/main`
-              });
+              _this.globalData.homeShowNum = 1;
               wx.showToast({
                 title: "发布成功",
-                duration: 1500,
-                icon: "none"
+                icon: "none",
+                duration: 1000,
+                success(data) {
+                  setTimeout(function() {
+                    //要延时执行的代码
+                    wx.switchTab({
+                      url: `/pages/home/main`
+                    });
+                  }, 1000); //延迟时间
+                }
               });
             }
           });

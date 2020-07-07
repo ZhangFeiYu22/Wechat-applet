@@ -37,9 +37,17 @@ export default {
         wx.showToast({
           title: "感谢您的反馈，谢谢",
           icon: "none",
-          duration: 2000
+          duration: 1000,
+          success(data) {
+            setTimeout(function() {
+              this.msg = "";
+              //要延时执行的代码
+              wx.navigateBack({
+                delta: 1
+              });
+            }, 1000); //延迟时间
+          }
         });
-        this.msg = ''
       }
     }
   }

@@ -65,7 +65,7 @@
     </div>
     <!-- 征寻 -->
     <div class="contentList contentList_2" v-if="navType == '3'">
-      <consultItem :handle="2" :consultList='solicitLists'></consultItem>
+      <consultItem :statusShow="true" :consultList="solicitLists"></consultItem>
     </div>
 
     <div v-if="showPinLun" class="pinlunB">
@@ -103,7 +103,11 @@ import {
   communityCommentPost
 } from "@/api/community";
 import { getMember, getMemberForum, getMemberComm } from "@/api/personal";
-import { myPublish_activity,myPublish_vote,myPublish_solicit } from "@/api/my";
+import {
+  myPublish_activity,
+  myPublish_vote,
+  myPublish_solicit
+} from "@/api/my";
 import { getDateDiff } from "@/utils/getDateDiff";
 import navigationBar from "@/components/navigationBar";
 import activityItem from "@/components/activityItem";
@@ -132,37 +136,17 @@ export default {
       pinglunIndex: "",
       placeholderPL: "评论",
       show_back: 1, //1位留言  2为回复
+
       communityFriendsList: [],
-      // 话题分页
-      ffPage: {
-        pageSize: 5, //一页显示条数
-        pageIndex: 0, //页码
-        total: 0 //总条数
-      },
-      // 社区分页
-      cfPage: {
-        pageSize: 3, //一页显示条数
-        pageIndex: 0, //页码
-        total: 0 //总条数
-      },
       voteLists: [],
-      voPage: {
-        pageSize: 5, //一页显示条数
-        pageIndex: 0, //页码
-        total: 0 //总条数
-      },
       acticityList: [],
-      acPage: {
-        pageSize: 5, //一页显示条数
-        pageIndex: 0, //页码
-        total: 0 //总条数
-      },
       solicitLists: [],
-      soPage: {
+      // 分页数据
+      pageData: {
         pageSize: 5, //一页显示条数
         pageIndex: 0, //页码
         total: 0 //总条数
-      },
+      }
     };
   },
   onLoad(options) {
@@ -188,13 +172,13 @@ export default {
     async fetchMemberForum(id) {
       let _this = this;
       let data = {
-        pageSize: _this.ffPage.pageSize,
-        pageIndex: _this.ffPage.pageIndex
+        pageSize: _this.pageData.pageSize,
+        pageIndex: _this.pageData.pageIndex
       };
       let ffRes = await getMemberForum(id, data);
       if (ffRes.status == 200) {
         var forumRes = ffRes.result.data;
-        _this.ffPage.total = ffRes.result.total;
+        _this.pageData.total = ffRes.result.total;
         var forResult = forumRes.map(item => {
           if (item.images !== "" && item.images) {
             item.images = item.images.split(";");
@@ -212,7 +196,7 @@ export default {
           }
           return item;
         });
-        if (_this.ffPage.pageIndex > 0) {
+        if (_this.pageData.pageIndex > 0) {
           _this.forumList = _this.forumList.concat(forResult);
         } else {
           // 第一页则直接赋值 （下拉刷新）
@@ -224,50 +208,66 @@ export default {
     async fetchActivity() {
       let _this = this;
       let data = {
-        pageSize: _this.acPage.pageSize,
-        pageIndex: _this.acPage.pageIndex
+        pageSize: _this.pageData.pageSize,
+        pageIndex: _this.pageData.pageIndex
       };
       let acRes = await myPublish_activity(data);
       console.log("acRes--", acRes);
       if (acRes.status == 200) {
-        this.acticityList = acRes.result.data;
+        let acticityList = acRes.result.data;
+        _this.pageData.total = acRes.result.total;
+        if (_this.pageData.pageIndex > 0) {
+          _this.acticityList = _this.acticityList.concat(acticityList);
+        } else {
+          _this.acticityList = acticityList;
+        }
       }
     },
     // 获取投票列表
     async fetchVote() {
       let _this = this;
       let data = {
-        pageSize: _this.acPage.pageSize,
-        pageIndex: _this.acPage.pageIndex
+        pageSize: _this.pageData.pageSize,
+        pageIndex: _this.pageData.pageIndex
       };
       let voRes = await myPublish_vote(data);
+      _this.pageData.total = voRes.result.total;
       console.log("voRes--", voRes);
       if (voRes.status == 200) {
-        let voteLists = voRes.result.data;
-        this.voteLists = voteLists.map(vo => {
-        if (vo.options) {
-          // vo.options = JSON.parse(vo.options);
-          vo.options = vo.options.split("|");
+        let voteListsMap = voRes.result.data;
+        let voteLists = voteListsMap.map(vo => {
+          if (vo.options) {
+            vo.options = JSON.parse(vo.options);
+          }
+          if (vo.images) {
+            vo.images = vo.images.split("|");
+          }
+          return vo;
+        });
+        if (_this.pageData.pageIndex > 0) {
+          _this.voteLists = _this.voteLists.concat(voteLists);
+        } else {
+          _this.voteLists = voteLists;
         }
-        if (vo.images) {
-          vo.images = vo.images.split("|");
-        }
-       
-        return vo;
-      });
       }
     },
     // 获取征寻列表
     async fetchSolicit() {
       let _this = this;
       let data = {
-        pageSize: _this.acPage.pageSize,
-        pageIndex: _this.acPage.pageIndex
+        pageSize: _this.pageData.pageSize,
+        pageIndex: _this.pageData.pageIndex
       };
       let soRes = await myPublish_solicit(data);
       console.log("soRes--", soRes);
       if (soRes.status == 200) {
-        this.solicitLists = soRes.result.data;
+        _this.pageData.total = soRes.result.total;
+        let solicitLists = soRes.result.data;
+        if (_this.pageData.pageIndex > 0) {
+          _this.solicitLists = _this.solicitLists.concat(solicitLists);
+        } else {
+          _this.solicitLists = solicitLists;
+        }
       }
     },
     delOneSelf(id, index) {
@@ -309,13 +309,13 @@ export default {
     async fetchMemberComm(id) {
       let _this = this;
       let data = {
-        pageSize: _this.cfPage.pageSize,
-        pageIndex: _this.cfPage.pageIndex
+        pageSize: _this.pageData.pageSize,
+        pageIndex: _this.pageData.pageIndex
       };
       let cfRes = await getMemberComm(id, data);
       if (cfRes.status == 200) {
         var comRes = cfRes.result.data;
-        _this.cfPage.total = cfRes.result.total;
+        _this.pageData.total = cfRes.result.total;
         var resResult = comRes.map(item => {
           if (item.images !== "") {
             item.images = item.images.split(";");
@@ -331,7 +331,7 @@ export default {
           }
           return item;
         });
-        if (_this.cfPage.pageIndex > 0) {
+        if (_this.pageData.pageIndex > 0) {
           _this.communityFriendsList = _this.communityFriendsList.concat(
             resResult
           );
@@ -341,15 +341,20 @@ export default {
         }
       }
     },
-    // 动态，社区切换
+    // nav 切换
     itemToggle(num) {
       this.navType = num;
+      this.pageData = {
+        pageSize: 5,
+        pageIndex: 0,
+        total: 0
+      };
       switch (num) {
         case "0":
           this.fetchMemberForum(this.mid);
           break;
         case "1":
-          this.fetchVote()
+          this.fetchVote();
           break;
         case "2":
           this.fetchActivity();
@@ -579,25 +584,58 @@ export default {
   },
   onReachBottom: function() {
     if (this.navType == 0) {
-      if (this.forumList.length >= this.ffPage.total) {
+      if (this.forumList.length >= this.pageData.total) {
         wx.showToast({
           title: "到底了",
           icon: "none",
           duration: 2000
         });
       } else {
-        this.ffPage.pageIndex++;
+        this.pageData.pageIndex++;
         this.fetchMemberForum(this.mid);
       }
-    } else {
-      if (this.communityFriendsList.length >= this.cfPage.total) {
+    }else if (this.navType == 1) {
+      if (this.voteLists.length >= this.pageData.total) {
         wx.showToast({
           title: "到底了",
           icon: "none",
           duration: 2000
         });
       } else {
-        this.cfPage.pageIndex++;
+        this.pageData.pageIndex++;
+        this.fetchVote();
+      }
+    } else if (this.navType == 2) {
+      if (this.acticityList.length >= this.pageData.total) {
+        wx.showToast({
+          title: "到底了",
+          icon: "none",
+          duration: 2000
+        });
+      } else {
+        this.pageData.pageIndex++;
+        this.fetchActivity();
+      }
+    } else if (this.navType == 3) {
+      if (this.solicitLists.length >= this.pageData.total) {
+        wx.showToast({
+          title: "到底了",
+          icon: "none",
+          duration: 2000
+        });
+      } else {
+        this.pageData.pageIndex++;
+        this.fetchSolicit();
+      }
+    } else {
+      if (this.communityFriendsList.length >= this.pageData.total) {
+        wx.showToast({
+          title: "到底了",
+          icon: "none",
+          duration: 2000
+        });
+      } else {
+        this.pageData.pageIndex++;
         this.fetchMemberComm(this.mid);
       }
     }

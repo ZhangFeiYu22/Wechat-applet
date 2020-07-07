@@ -18,7 +18,7 @@
     <div class="medalList">
       <div class="medalItem" v-for="(item,index) in myMedal" :key="index">
         <img v-if="item.image" :src="item.image" mode="aspectFill">
-        <p class="info">{{item.status}}</p>
+        <p class="info">连续登陆一周</p>
       </div>
     </div>
   </div>

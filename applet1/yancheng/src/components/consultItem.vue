@@ -27,27 +27,14 @@
           <div class="content">{{item.content}}</div>
         </div>
         <div class="right">+{{item.integral}}砖</div>
-        <div class="bottom" v-if="handle == 1">
+        <div class="bottom" v-if="statusShow">
           <p class="status" v-if="item.status == 1">已完成</p>
-          <p class="status" v-else-if="item.status == 2">已放弃</p>
-          <p class="status" v-else-if="item.status == 3">审核中</p>
-          <p class="status" v-else-if="item.status == 4">未通过</p>
+          <p class="status" v-else-if="item.status == 2">待审核</p>
           <div class="statusOther" v-else>
             <p class="d">待提交</p>
             <p class="f" @click.stop="abandonFun">放弃</p>
           </div>
         </div>
-        <!-- <div class="bottom" v-if="handle == 2">
-          <p class="status2" v-if="item.status2 == 1">审核</p>
-          <div class="status2Other" v-else-if="item.status2 == 2">
-            <p class="f">已完成</p>
-            <p class="d" @click.stop="againFun">再来一单</p>
-          </div>
-          <div class="status2Other" v-else>
-            <p class="f">已过期</p>
-            <p class="d" @click.stop="againFun">再来一单</p>
-          </div>
-        </div> -->
       </div>
     </div>
   </div>
@@ -55,7 +42,7 @@
 
 <script>
 export default {
-  props: ["handle", "consultList"],
+  props: ["statusShow", "consultList"],
   data() {
     return {};
   },

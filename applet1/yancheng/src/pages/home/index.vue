@@ -60,7 +60,7 @@
     </div>
     <!-- 征寻 -->
     <div class="tabContent act" v-if="currentTab == 2">
-      <consultItem :handle="0" :consultList="solicitLists"></consultItem>
+      <consultItem :statusShow="false" :consultList="solicitLists"></consultItem>
     </div>
     <div style="height:20px"></div>
     <vue-tab-bar :selectNavIndex="3"></vue-tab-bar>
@@ -263,8 +263,7 @@ export default {
       // 转换options数组传给组件使用
       this.voteLists = voteLists.map(vo => {
         if (vo.options) {
-          // vo.options = JSON.parse(vo.options);
-          vo.options = vo.options.split("|");
+          vo.options = JSON.parse(vo.options);
         }
         if (vo.images) {
           vo.images = vo.images.split("|");

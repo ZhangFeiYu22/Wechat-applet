@@ -145,6 +145,26 @@ export default {
   },
   mounted() {
     let systemInfo = wx.getSystemInfoSync();
+    this.publishFormData = {
+      activityAddress: "",
+      activityFee: "",
+      activityTime: "",
+      content: "",
+      coverImage: "",
+      feeType: 0,
+      subTitle: "",
+      title: ""
+    };
+    this.textNoColor = "#dcdcdc";
+    this.realTextValue = "标题";
+    this.textStatus = false;
+    this.textNoColor2 = "#dcdcdc";
+    this.realTextValue2 = "请填写活动须知";
+    this.textStatus2 = false;
+    this.imgArr1 = [];
+    this.imgArrCenter = [];
+    this.imgArr2 = [];
+    this.detailAddress = "";
   },
   methods: {
     changeTextStatus() {
@@ -257,14 +277,18 @@ export default {
           this.publishFormData.activityAddress + " " + this.detailAddress;
         activitysPost(this.publishFormData).then(res => {
           if (res.status == 200) {
+            this.globalData.homeShowNum = 0;
             wx.showToast({
               title: "发布成功",
               icon: "none",
-              duration: 1500,
-              success: function() {
-                wx.navigateTo({
-                  url: "/pages/activity/main"
-                });
+              duration: 1000,
+              success(data) {
+                setTimeout(function() {
+                  //要延时执行的代码
+                  wx.switchTab({
+                    url: `/pages/home/main`
+                  });
+                }, 1000); //延迟时间
               }
             });
           }
@@ -404,6 +428,7 @@ export default {
     text-align: center;
     border-radius: 30px;
     position: fixed;
+    z-index: 999;
     bottom: 5%;
     left: 35%;
   }
