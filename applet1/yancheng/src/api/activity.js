@@ -19,3 +19,7 @@ export const isLikeActivity = (id) => request.get(`/followActivity/check/${id}`)
 
 // 活动 取消关注
 export const activitysFollowNo = (id) => request.delete(`/followActivity/${id}`)
+
+
+// 活动  参加活动   =>活动订单 
+export const activitysJoin = (data) => request.post(`/activityOrder`,data)

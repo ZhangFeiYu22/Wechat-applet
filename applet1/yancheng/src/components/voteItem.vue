@@ -44,11 +44,19 @@
               v-for="(litem,lindex) in voteItem.options"
               :key="lindex"
               color="#1097FF"
-              :class="itemsNum == lindex ? 'active' : ''"
-              @click="selectOne(lindex)"
+              @click="selectOne(voteItem,litem)"
             >
-              <i class="sel"></i>
-              <p class="miaosu">{{litem.optionsContent}}</p>
+              <div
+                v-if="voteItem.myAnswer && voteItem.myAnswer.answer && (voteItem.myAnswer.answer == litem.optionsContent)"
+                class="act"
+              >
+                <i class="sel"></i>
+                <p class="miaosu">{{litem.optionsContent}}</p>
+              </div>
+              <div v-else class="noAct">
+                <i class="sel"></i>
+                <p class="miaosu">{{litem.optionsContent}}</p>
+              </div>
               <!-- <p class="bili">100%</p> -->
             </div>
           </div>
@@ -66,12 +74,12 @@
 </template>
 
 <script>
+import { voteListSel } from "../api/vote";
 export default {
   props: ["headShow", "voteLists"],
   data() {
     return {
-      maskVal: false,
-      itemsNum: ""
+      maskVal: false
     };
   },
   methods: {
@@ -99,19 +107,42 @@ export default {
         urls: imgArr // 需要预览的图片http链接列表
       });
     },
-    selectOne(num) {
+    selectOne(vItem, item) {
       var _this = this;
-      wx.showModal({
-        title: "提示",
-        content: "是否确定投票？",
-        success(res) {
-          if (res.confirm) {
-            _this.itemsNum = num;
-          } else if (res.cancel) {
-            console.log("用户点击取消");
+      let authInfo = wx.getStorageSync("authInfo");
+      if (vItem.myAnswer && vItem.myAnswer.answer) {
+        wx.showToast({
+          title: "您已参与，请勿重复投票",
+          icon: "none",
+          duration: 1500
+        });
+      } else {
+        wx.showModal({
+          title: "提示",
+          content: "是否确定投票？",
+          success(res) {
+            if (res.confirm) {
+              let answerForm = {
+                answer: item.optionsContent,
+                createId: vItem.createId,
+                memberId: authInfo.id,
+                voteId: vItem.id
+              };
+              voteListSel(answerForm).then(res => {
+                if (res.status == 200) {
+                  wx.showToast({
+                    title: "投票成功",
+                    icon: "none",
+                    duration: 1500
+                  });
+                }
+              });
+            } else if (res.cancel) {
+              console.log("用户点击取消");
+            }
           }
-        }
-      });
+        });
+      }
     }
   }
 };
@@ -225,9 +256,6 @@ export default {
         }
         .selectBox {
           .selList {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             margin-bottom: 10px;
             i {
               width: 12px;
@@ -248,7 +276,15 @@ export default {
               font-size: 12px;
               color: #737373;
             }
-            &.active {
+            .noAct {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            }
+            .act {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
               i {
                 position: relative;
                 background-color: #1097ff;

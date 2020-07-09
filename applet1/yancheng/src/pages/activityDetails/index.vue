@@ -75,8 +75,8 @@
         <p
           class="btn"
           :class="likeAct?'btnH':''"
-          @click.stop="likeFun(acDetails.id)"
-        >{{likeAct ? '取消关注' : '关注活动'}}</p>
+          @click.stop="joinActivity(acDetails)"
+        >{{likeAct ? '您已参加' : '参加活动'}}</p>
       </div>
     </div>
   </div>
@@ -87,7 +87,8 @@ import {
   activityDetailsGet,
   isLikeActivity,
   activitysFollow,
-  activitysFollowNo
+  activitysFollowNo,
+  activitysJoin
 } from "@/api/activity";
 import navigationBar from "@/components/navigationBar";
 export default {
@@ -96,7 +97,7 @@ export default {
   },
   data() {
     return {
-      tel:'18570373920',
+      tel: "18570373920",
       acDetails: {},
       likeAct: false,
       joinMaskShow: false,
@@ -159,6 +160,20 @@ export default {
           }
         });
       }
+    },
+    joinActivity(detail) {
+      console.log(detail)
+      let authInfo = wx.getStorageSync("authInfo");
+      let data = {
+        activityId: detail.id,
+        memberId: authInfo.id,
+        payFee: 0,
+        payMode: "string",
+        payTime: "string",
+        payType: 0,
+        properties: {},
+        status: 0
+      };
     }
   },
   onShareAppMessage: function(res) {

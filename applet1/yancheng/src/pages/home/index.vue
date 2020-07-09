@@ -204,7 +204,6 @@ export default {
       var cur = event.target.dataset.current;
       var singleNavWidth = this.windowWidth / 6;
       this.avScrollLeft = (cur - 2) * singleNavWidth;
-      console.log("cur", cur);
       if (this.currentTab == cur) {
         return false;
       } else {
@@ -248,7 +247,6 @@ export default {
     fetchActiveData() {
       activitysGet().then(res => {
         if (res.status == 200) {
-          console.log(0);
           this.acticityList = res.result.data;
         }
       });
