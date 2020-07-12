@@ -74,9 +74,9 @@
         </p>
         <p
           class="btn"
-          :class="likeAct?'btnH':''"
+          :class="acDetails.isBuy?'btnH':''"
           @click.stop="joinActivity(acDetails)"
-        >{{likeAct ? '您已参加' : '参加活动'}}</p>
+        >{{acDetails.isBuy ? '您已参加' : '参加活动'}}</p>
       </div>
     </div>
   </div>
@@ -162,18 +162,24 @@ export default {
       }
     },
     joinActivity(detail) {
-      console.log(detail)
+      console.log(detail);
       let authInfo = wx.getStorageSync("authInfo");
       let data = {
         activityId: detail.id,
         memberId: authInfo.id,
         payFee: 0,
-        payMode: "string",
-        payTime: "string",
-        payType: 0,
-        properties: {},
-        status: 0
+        payType: 1
       };
+      activitysJoin(data).then(res => {
+        console.log(res);
+        if (res.status == 200) {
+          wx.showToast({
+            title: "参加成功",
+            icon: "none",
+            duration: 1500
+          });
+        }
+      });
     }
   },
   onShareAppMessage: function(res) {
