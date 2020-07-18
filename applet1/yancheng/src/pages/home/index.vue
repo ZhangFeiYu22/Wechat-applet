@@ -55,7 +55,7 @@
       <activityItem :acticityList="acticityList"></activityItem>
     </div>
     <!-- 投票 -->
-    <div class="tabContent" v-if="currentTab == 1">
+    <div class="tabContent act" v-if="currentTab == 1">
       <voteItem :headShow="true" :voteLists="voteLists"></voteItem>
     </div>
     <!-- 征寻 -->
@@ -64,6 +64,14 @@
     </div>
     <div style="height:20px"></div>
     <vue-tab-bar :selectNavIndex="3"></vue-tab-bar>
+
+    <!-- 弹窗广告 -->
+    <div class="adPop" v-show="adPopShow">
+      <div class="popBox">
+        <img src="../../../static/images/pop.png" alt />
+        <i class="iconfont icon-close" @click="closeAdPop"></i>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -95,6 +103,7 @@ export default {
   },
   data() {
     return {
+      adPopShow: true,
       delId: "",
       navItemList: [
         {
@@ -116,13 +125,9 @@ export default {
       adList: [],
       acticityList: [],
       voteLists: [],
-      votePage: {
-        pageSize: 5, //一页显示条数
-        pageIndex: 0, //页码
-        total: 0 //总条数
-      },
       solicitLists: [],
-      solicitPage: {
+      // 分页数据
+      pageData: {
         pageSize: 5, //一页显示条数
         pageIndex: 0, //页码
         total: 0 //总条数
@@ -167,6 +172,9 @@ export default {
     this.initClientRect();
   },
   methods: {
+    closeAdPop(){
+      this.adPopShow = false;
+    },
     // 获取广告位
     async fetchAd() {
       let adres = await adGet();
@@ -204,6 +212,11 @@ export default {
       var cur = event.target.dataset.current;
       var singleNavWidth = this.windowWidth / 6;
       this.avScrollLeft = (cur - 2) * singleNavWidth;
+      this.pageData = {
+        pageSize: 5,
+        pageIndex: 0,
+        total: 0
+      };
       if (this.currentTab == cur) {
         return false;
       } else {
@@ -244,38 +257,67 @@ export default {
         that.menuTop = res[0].top - that.navBar_Height;
       });
     },
-    fetchActiveData() {
-      activitysGet().then(res => {
-        if (res.status == 200) {
-          this.acticityList = res.result.data;
+    async fetchActiveData() {
+      let _this = this;
+      var data = {
+        pageSize: this.pageData.pageSize,
+        pageIndex: this.pageData.pageIndex
+      };
+      let acRes = await activitysGet(data);
+      if (acRes.status == 200) {
+        _this.pageData.total = acRes.result.total;
+        let acticityList = acRes.result.data;
+        if (_this.pageData.pageIndex > 0) {
+          _this.acticityList = _this.acticityList.concat(acticityList);
+        } else {
+          _this.acticityList = acticityList;
         }
-      });
+      }
     },
     async fetchVoteData() {
+      let _this = this;
       var data = {
-        pageSize: this.votePage.pageSize,
-        pageIndex: this.votePage.pageIndex
+        pageSize: this.pageData.pageSize,
+        pageIndex: this.pageData.pageIndex
       };
-      let ares = await voteListGet(data);
-      let voteLists = ares.result.data;
-      // 转换options数组传给组件使用
-      this.voteLists = voteLists.map(vo => {
-        if (vo.options) {
-          vo.options = JSON.parse(vo.options);
+      let voRes = await voteListGet(data);
+      if (voRes.status == 200) {
+        _this.pageData.total = voRes.result.total;
+        let voteListsMap = voRes.result.data;
+        let voteLists = voteListsMap.map(vo => {
+          if (vo.options) {
+            vo.options = JSON.parse(vo.options);
+          }
+          if (vo.images) {
+            vo.images = vo.images.split("|");
+          }
+          return vo;
+        });
+        if (_this.pageData.pageIndex > 0) {
+          console.log("加载");
+          _this.voteLists = _this.voteLists.concat(voteLists);
+        } else {
+          console.log("==");
+          _this.voteLists = voteLists;
         }
-        if (vo.images) {
-          vo.images = vo.images.split("|");
-        }
-        return vo;
-      });
+      }
     },
     async fetchSolicitData() {
+      let _this = this;
       var data = {
-        pageSize: this.solicitPage.pageSize,
-        pageIndex: this.solicitPage.pageIndex
+        pageSize: this.pageData.pageSize,
+        pageIndex: this.pageData.pageIndex
       };
-      let soRres = await solicitListGet(data);
-      this.solicitLists = soRres.result.data;
+      let soRes = await solicitListGet(data);
+      if (soRes.status == 200) {
+        _this.pageData.total = soRes.result.total;
+        let solicitLists = soRes.result.data;
+        if (_this.pageData.pageIndex > 0) {
+          _this.solicitLists = _this.solicitLists.concat(solicitLists);
+        } else {
+          _this.solicitLists = solicitLists;
+        }
+      }
     },
     goActivityDetails(id) {
       wx.navigateTo({
@@ -297,6 +339,42 @@ export default {
   //下拉刷新
   onPullDownRefresh: function() {
     console.log("下拉刷新");
+  },
+  onReachBottom: function() {
+    if (this.currentTab == 0) {
+      if (this.acticityList.length >= this.pageData.total) {
+        wx.showToast({
+          title: "到底了",
+          icon: "none",
+          duration: 2000
+        });
+      } else {
+        this.pageData.pageIndex++;
+        this.fetchActiveData();
+      }
+    } else if (this.currentTab == 1) {
+      if (this.voteLists.length >= this.pageData.total) {
+        wx.showToast({
+          title: "到底了",
+          icon: "none",
+          duration: 2000
+        });
+      } else {
+        this.pageData.pageIndex++;
+        this.fetchVoteData();
+      }
+    } else if (this.currentTab == 2) {
+      if (this.solicitLists.length >= this.pageData.total) {
+        wx.showToast({
+          title: "到底了",
+          icon: "none",
+          duration: 2000
+        });
+      } else {
+        this.pageData.pageIndex++;
+        this.fetchSolicitData();
+      }
+    }
   }
 };
 </script>
@@ -452,6 +530,33 @@ export default {
           padding: 0 5px;
           border-radius: 5px;
         }
+      }
+    }
+  }
+  // 广告弹窗
+  .adPop {
+    position: fixed;
+    top: 0;
+    bottom:0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0,0,0,0.3);
+    .popBox {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      .icon-close{
+        display: inline-block;
+        border: 1px solid #fff;
+        padding: 4px;
+        font-size: 18px;
+        border-radius: 100%;
+        color: #fff;
+        position: relative;
+        font-weight: 600;
+        left: 50%;
+        transform: translateX(-50%);
       }
     }
   }

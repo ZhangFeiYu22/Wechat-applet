@@ -162,24 +162,31 @@ export default {
       }
     },
     joinActivity(detail) {
-      console.log(detail);
-      let authInfo = wx.getStorageSync("authInfo");
-      let data = {
-        activityId: detail.id,
-        memberId: authInfo.id,
-        payFee: 0,
-        payType: 1
-      };
-      activitysJoin(data).then(res => {
-        console.log(res);
-        if (res.status == 200) {
-          wx.showToast({
-            title: "参加成功",
-            icon: "none",
-            duration: 1500
-          });
-        }
-      });
+      if (detail.isBuy) {
+        wx.showToast({
+          title: "您已参加，请勿重复参加",
+          icon: "none",
+          duration: 1500
+        });
+      } else {
+        let authInfo = wx.getStorageSync("authInfo");
+        let data = {
+          activityId: detail.id,
+          memberId: authInfo.id,
+          payFee: 0,
+          payType: 1
+        };
+        activitysJoin(data).then(res => {
+          if (res.status == 200) {
+            this.acDetails.isBuy = !this.acDetails.isBuy;
+            wx.showToast({
+              title: "参加成功",
+              icon: "none",
+              duration: 1500
+            });
+          }
+        });
+      }
     }
   },
   onShareAppMessage: function(res) {

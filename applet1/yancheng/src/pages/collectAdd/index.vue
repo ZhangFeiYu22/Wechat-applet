@@ -7,7 +7,7 @@
           <div class="left">名称：</div>
           <div class="right">
             <input
-              v-model="publishFormData.title"
+              v-model="formData.title"
               type="text"
               placeholder="请填写征寻名称（12个字符以内)"
               maxlength="12"
@@ -19,7 +19,7 @@
           <div class="left">征集人数：</div>
           <div class="right">
             <input
-              v-model="publishFormData.num"
+              v-model="formData.num"
               type="number"
               placeholder="需要多少人帮你完成"
               placeholder-style="color:#D1CFCF"
@@ -30,7 +30,7 @@
           <div class="left">奖励砖数：</div>
           <div class="right">
             <input
-              v-model="publishFormData.integral"
+              v-model="formData.integral"
               type="number"
               placeholder="为每人给与多少砖头"
               placeholder-style="color:#D1CFCF"
@@ -42,7 +42,7 @@
           <div class="right">
             <picker
               @change="bindDateChange"
-              v-model="publishFormData.validDay"
+              v-model="formData.validDay"
               :index="tIndex"
               :range="timeArray"
             >
@@ -57,10 +57,10 @@
           <div class="left">图片证明：</div>
           <div class="right isno">
             <radio-group class="radio-group" @change="needPicChange">
-              <radio class="radio" :checked="publishFormData.needPic == 1" value="1">
+              <radio class="radio" :checked="formData.needPic == 1" value="1">
                 <text>需要</text>
               </radio>
-              <radio class="radio" :checked="publishFormData.needPic == 0" value="0">
+              <radio class="radio" :checked="formData.needPic == 0" value="0">
                 <text>不需要</text>
               </radio>
             </radio-group>
@@ -70,8 +70,8 @@
           <div class="left">等级要求：</div>
           <div class="right isno">
             <input
-              class="publishFormData"
-              v-model="publishFormData.rank"
+              class="formData"
+              v-model="formData.rank"
               type="number"
               placeholder="需要达到多少等级"
               placeholder-style="color:#D1CFCF"
@@ -82,10 +82,10 @@
           <div class="left">实名要求：</div>
           <div class="right isno">
             <radio-group class="radio-group" @change="needRealChange">
-              <radio class="radio" :checked="publishFormData.needReal == 1" value="1">
+              <radio class="radio" :checked="formData.needReal == 1" value="1">
                 <text>需要</text>
               </radio>
-              <radio class="radio" :checked="publishFormData.needReal == 0" value="0">
+              <radio class="radio" :checked="formData.needReal == 0" value="0">
                 <text>不需要</text>
               </radio>
             </radio-group>
@@ -96,7 +96,7 @@
           class="edit-text edit-textShow"
           auto-focus
           @blur="bindblurTextStatus"
-          v-model="publishFormData.content"
+          v-model="formData.content"
         ></textarea>
         <div
           v-else
@@ -133,6 +133,17 @@ export default {
     return {
       timeArray: ["1", "2", "3", "4", "5", "6"],
       tIndex: "",
+      formData: {
+        title: "",
+        num: 0,
+        integral: 0,
+        validDay: 1,
+        needPic: 1,
+        rank: 0,
+        needReal: 1,
+        content: "",
+        images: ""
+      },
       publishFormData: {
         title: "",
         num: 0,
@@ -152,7 +163,7 @@ export default {
   },
   mounted() {
     let systemInfo = wx.getSystemInfoSync();
-    this.publishFormData = {
+    this.formData = {
       title: "",
       num: 0,
       integral: 0,
@@ -163,20 +174,48 @@ export default {
       content: "",
       images: ""
     };
-    (this.realTextValue = "请填写征寻的详细要求（100字以内）"),
-      (this.imgArr2 = []);
+    this.realTextValue = "请填写征寻的详细要求（100字以内）";
+    this.imgArr2 = [];
   },
   methods: {
+    restData() {
+      this.formData = {
+        title: "",
+        num: 0,
+        integral: 0,
+        validDay: 1,
+        needPic: 1,
+        rank: 0,
+        needReal: 1,
+        content: "",
+        images: ""
+      };
+      this.publishFormData = {
+        title: "",
+        num: 0,
+        integral: 0,
+        validDay: 1,
+        needPic: 1,
+        rank: 0,
+        needReal: 1,
+        content: "",
+        images: ""
+      };
+      this.textNoColor = "#dcdcdc";
+      this.realTextValue = "请填写征寻的详细要求（100字以内）";
+      this.textStatus = false;
+      this.imgArr2 = [];
+    },
     changeTextStatus() {
       this.realTextValue = "";
       this.textStatus = true;
     },
     bindblurTextStatus() {
-      if (this.publishFormData.content.length == 0) {
+      if (this.formData.content.length == 0) {
         this.realTextValue = "请填写征寻的详细要求（100字以内）";
         this.textNoColor = "#dcdcdc";
       } else {
-        this.realTextValue = this.publishFormData.content;
+        this.realTextValue = this.formData.content;
         this.textNoColor = "#353535";
       }
       this.textStatus = false;
@@ -202,25 +241,51 @@ export default {
     },
     bindDateChange(e) {
       this.tIndex = e.mp.detail.value;
-      this.publishFormData.validDay = this.timeArray[e.mp.detail.value];
+      this.formData.validDay = this.timeArray[e.mp.detail.value];
     },
     needPicChange(e) {
-      this.publishFormData.needPic = e.mp.detail.value;
+      this.formData.needPic = e.mp.detail.value;
     },
     needRealChange(e) {
-      this.publishFormData.needReal = e.mp.detail.value;
+      this.formData.needReal = e.mp.detail.value;
+    },
+    isEmpty(v) {
+      switch (typeof v) {
+        case "undefined":
+          return true;
+        case "string":
+          if (v.replace(/(^[ \t\n\r]*)|([ \t\n\r]*$)/g, "").length == 0)
+            return true;
+          break;
+        case "boolean":
+          if (!v) return true;
+          break;
+        case "number":
+          if (0 === v) {
+            return false;
+          } else if (isNaN(v)) {
+            return true;
+          }
+          break;
+        case "object":
+          if (null === v || v.length === 0) return true;
+          for (var i in v) {
+            return false;
+          }
+          return true;
+      }
+      return false;
     },
     publishFun() {
-      console.log("1---", this.publishFormData);
       if (
-        this.publishFormData.title == "" ||
-        this.publishFormData.num == "" ||
-        this.publishFormData.integral == "" ||
-        this.publishFormData.validDay == "" ||
-        this.publishFormData.needPic == "" ||
-        this.publishFormData.rank == "" ||
-        this.publishFormData.needReal == "" ||
-        this.publishFormData.content == ""
+        this.isEmpty(this.formData.title) ||
+        this.isEmpty(this.formData.num) ||
+        this.isEmpty(this.formData.integral) ||
+        this.isEmpty(this.formData.validDay) ||
+        this.isEmpty(this.formData.needPic) ||
+        this.isEmpty(this.formData.rank) ||
+        this.isEmpty(this.formData.needReal) ||
+        this.isEmpty(this.formData.content)
       ) {
         wx.showToast({
           title: "请检查信息是否填写完整",
@@ -229,8 +294,7 @@ export default {
         });
         return;
       } else {
-        let needIntegral =
-          this.publishFormData.num * this.publishFormData.integral;
+        let needIntegral = this.formData.num * this.formData.integral;
         let authInfo = wx.getStorageSync("authInfo");
         let authIntegral = authInfo.points;
         if (needIntegral > authIntegral) {
@@ -241,7 +305,7 @@ export default {
           });
           return;
         }
-        if (Number(this.publishFormData.rank) > 6) {
+        if (Number(this.formData.rank) > 6) {
           wx.showToast({
             title: "等级要求最高为6级",
             icon: "none",
@@ -249,15 +313,21 @@ export default {
           });
           return;
         } else {
-          this.publishFormData.images = this.imgArr2.join("|");
-          this.publishFormData.num == Number(this.publishFormData.num);
-          this.publishFormData.integral ==
-            Number(this.publishFormData.integral);
-          this.publishFormData.rank == Number(this.publishFormData.rank);
-          console.log("this.publishFormData", this.publishFormData);
+          this.publishFormData = {
+            title: this.formData.title,
+            num: Number(this.formData.num),
+            integral: Number(this.formData.integral),
+            validDay: Number(this.formData.validDay),
+            needPic: Number(this.formData.needPic),
+            rank: Number(this.formData.rank),
+            needReal: Number(this.formData.needReal),
+            content: this.formData.content,
+            images: this.imgArr2.join("|")
+          };
           solicitAdd(this.publishFormData).then(res => {
             if (res.status == 200) {
               this.globalData.homeShowNum = 2;
+              this.restData();
               wx.showToast({
                 title: "发布成功",
                 icon: "none",

@@ -1,9 +1,10 @@
 <template>
   <div class="activity">
-    <div class="activityList">
+    <div class="noDataStyle" v-if="acticityList.length == 0">暂无数据</div>
+    <div v-else class="activityList">
       <div
         class="activityItem"
-        @click="goActivityDetails(item.id)"
+        @click="goActivityDetails(item)"
         v-for="(item,acIndex) in acticityList"
         :key="acIndex"
       >
@@ -34,7 +35,13 @@ export default {
     return {};
   },
   methods: {
-    goActivityDetails(id) {
+    goActivityDetails(item) {
+      var id;
+      if (item.id) {
+        id = item.id;
+      } else {
+        id = item.activityId;
+      }
       wx.navigateTo({
         url: `/pages/activityDetails/main?activityId=${id}`
       });
@@ -115,6 +122,10 @@ export default {
         border-radius: 5px;
       }
     }
+  }
+  .noDataStyle {
+    text-align: center;
+    color: #bbb;
   }
 }
 </style>

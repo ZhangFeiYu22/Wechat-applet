@@ -7,150 +7,125 @@
       <div class="navI" :class="itemActive == '2' ? 'active' : ''" @click="itemToggle('2')">征寻</div>
     </div>
     <div class="activityList list" v-if="itemActive == 1">
-      <div class="activityItem item" @click="goActivityDetails">
-        <div class="imgBox">
-          <img :src="actImg1" mode="aspectFill" />
-        </div>
-        <div class="wordBox">
-          <p class="title">安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和</p>
-          <p class="address">
-            <i class="iconfont icon-dingwei"></i>
-            <span>江苏省南京市大行宫</span>
-          </p>
-          <p class="time">
-            <i class="iconfont icon-shijian"></i>
-            <span>2019.09.09-12.21</span>
-          </p>
-        </div>
-      </div>
-      <div class="activityItem item" @click="goActivityDetails">
-        <div class="imgBox">
-          <img :src="actImg2" mode="aspectFill" />
-        </div>
-        <div class="wordBox">
-          <p class="title">安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和安徽科大好看阿看到回复开水房啥快递合法啥会计师的看法和</p>
-          <p class="address">
-            <i class="iconfont icon-dingwei"></i>
-            <span>江苏省南京市大行宫</span>
-          </p>
-          <p class="time">
-            <i class="iconfont icon-shijian"></i>
-            <span>2019.09.09-12.21</span>
-          </p>
-        </div>
-      </div>
+      <activityItem :acticityList="acticityList"></activityItem>
     </div>
     <div class="voteList list" v-if="itemActive == 0">
-      <div class="contentItem" v-for="(item,index) in ItemList" :key="index">
-        <div class="headName" @click="goPersonal">
-          <div class="headImg">
-            <img :src="item.headImg" mode="aspectFill" />
-          </div>
-          <div class="nameTime">
-            <p class="name">张小凡</p>
-          </div>
-        </div>
-        <div
-          class="content"
-          id="contentInfo"
-          :class="item.showEllip ? 'ellip' : ''"
-        >{{item.content}}</div>
-        <div v-if="item.showEllip" class="toggleBox">
-          <div class="more_txt" @click.stop="requireTxt(index)">
-            <span>{{item.showEllip ? '展开' : '收起'}}</span>
-          </div>
-        </div>
-
-        <div
-          class="imgsList"
-          v-if="item.picList!== undefined && item.picList!== null && item.picList .length>0"
-        >
-          <div
-            class="imgsItem"
-            v-for="(picItem,picIndex) in item.picList"
-            :key="picIndex"
-            @click.stop="showImg(index,picIndex)"
-          >
-            <img :src="picItem" mode="aspectFill" />
-          </div>
-        </div>
-        <div class="imgsList" v-else></div>
-        <div class="selectBox">
-          <div
-            class="selList"
-            v-for="(litem,lindex) in listItems"
-            :key="lindex"
-            color="#1097FF"
-            :class="itemsNum == lindex ? 'active' : ''"
-          >
-            <i class="sel"></i>
-            <p class="miaosu">{{litem.value}}</p>
-            <p class="bili">100%</p>
-          </div>
-        </div>
-
-        <div class="timeHandle">
-          <div class="time">2019.12.12 12:12</div>
-          <div class="joinNum">
-            <span>5</span>人参与投票
-          </div>
-        </div>
-      </div>
+      <voteItem :headShow="true" :voteLists="voteLists"></voteItem>
     </div>
-    <div class="consultList" v-else>
-      <consultItem :handle="1"></consultItem>
+    <div class="consultList" v-if="itemActive == 2">
+      <consultItem :statusShow="false" :consultList="solicitLists"></consultItem>
     </div>
   </div>
 </template>
 
 <script>
+import { activitysRecord } from "@/api/activity";
+import { solicitRecord } from "@/api/solicit";
+import { voteRecord } from "@/api/vote";
 import navigationBar from "@/components/navigationBar";
 import consultItem from "@/components/consultItem";
+import voteItem from "@/components/voteItem";
+import activityItem from "@/components/activityItem";
 export default {
   components: {
     navigationBar,
-    consultItem
+    activityItem,
+    consultItem,
+    voteItem
   },
   data() {
     return {
-      actImg1: `${this.$store.state.imgUrlHttp}/d1.png`,
-      actImg2: `${this.$store.state.imgUrlHttp}/d1.png`,
       itemActive: 1,
-      listItems: [
-        { name: "USA", value: "美国" },
-        { name: "CHN", value: "中国" },
-        { name: "BRA", value: "巴西" },
-        { name: "JPN", value: "日本" },
-        { name: "ENG", value: "英国" },
-        { name: "FRA", value: "法国" }
-      ],
-      ItemList: [
-        {
-          showEllip: false,
-          headImg: `${this.$store.state.imgUrlHttp}/head.png`,
-          content:
-            "细雨秀江南，江南多雨，尤其是江南春天的烟雨，就像那吴侬软语一般，透着水乡特有的滋润，雨是江南水乡的灵气，在江南，充满浪漫气息的雨，元宵节前后的雨叫灯花雨，灯花雨往往是初春的第一场雨"
-        },
-        {
-          showEllip: true,
-          headImg: `${this.$store.state.imgUrlHttp}/head.png`,
-          content:
-            "细雨秀江南，江南多雨，尤其是江南春天的烟雨，就像那吴侬软语一般，透着水乡特有的滋润，雨是江南水乡的灵气，在江南，充满浪漫气息的雨，元宵节前后的雨叫灯花雨，灯花雨往往是初春的第一场雨，淅淅沥沥的春雨就飘然而至，莺飞草长，一泓碧水粼粼而起，杨柳拂堤，碧草如丝，繁花似锦，飞泉鸣溅，古寺的梵音在石缝间流淌，雨后的空气溢出清新的芳香。而后是杏花雨，梨花雨，暮春过后，连绵不断的黄梅雨又弥漫江南。夜晚的雨声，清晨的花香，清绝的令人深深沉醉，秀雅的让人不舍离去。纷飞的细雨沾湿了一袭素裙，润透了江南女子的心。两袖的花香，轻舞出江南的独特风韵",
-          picList: [
-            `${this.$store.state.imgUrlHttp}/a1.png`,
-            `${this.$store.state.imgUrlHttp}/a2.png`,
-            `${this.$store.state.imgUrlHttp}/a3.png`,
-            `${this.$store.state.imgUrlHttp}/a4.png`,
-            `${this.$store.state.imgUrlHttp}/a5.png`,
-            `${this.$store.state.imgUrlHttp}/a6.png`
-          ]
-        }
-      ]
+      acticityList: [],
+      solicitLists: [],
+      voteLists: [],
+      // 分页数据
+      pageData: {
+        pageSize: 5, //一页显示条数
+        pageIndex: 0, //页码
+        total: 0 //总条数
+      }
     };
   },
+  mounted() {
+    this.itemActive = 1;
+    this.fetchActivitysRecord();
+  },
   methods: {
+    async fetchActivitysRecord() {
+      let _this = this;
+      let data = {
+        pageSize: _this.pageData.pageSize,
+        pageIndex: _this.pageData.pageIndex
+      };
+      let arRes = await activitysRecord(data);
+      if (arRes.status == 200) {
+        _this.pageData.total = arRes.result.total;
+        let acticityList = arRes.result.data;
+        if (_this.pageData.pageIndex > 0) {
+          _this.acticityList = _this.acticityList.concat(acticityList);
+        } else {
+          _this.acticityList = acticityList;
+        }
+      }
+    },
+    async fetchSolicitRecord() {
+      let _this = this;
+      let data = {
+        pageSize: _this.pageData.pageSize,
+        pageIndex: _this.pageData.pageIndex
+      };
+      let srRes = await solicitRecord(data);
+      if (srRes.status == 200) {
+        _this.pageData.total = srRes.result.total;
+        let solicitLists = srRes.result.data;
+        if (_this.pageData.pageIndex > 0) {
+          _this.solicitLists = _this.solicitLists.concat(solicitLists);
+        } else {
+          _this.solicitLists = solicitLists;
+        }
+      }
+    },
+    async fetchVoteRecord() {
+      let _this = this;
+      let data = {
+        pageSize: _this.pageData.pageSize,
+        pageIndex: _this.pageData.pageIndex
+      };
+      let vrRes = await voteRecord(data);
+      if (vrRes.status == 200) {
+        _this.pageData.total = vrRes.result.total;
+        let voteListsMap = vrRes.result.data;
+        let voteLists = voteListsMap.map(vo => {
+          if (vo.options) {
+            vo.options = JSON.parse(vo.options);
+          }
+          if (vo.images) {
+            vo.images = vo.images.split("|");
+          }
+          return vo;
+        });
+        if (_this.pageData.pageIndex > 0) {
+          _this.voteLists = _this.voteLists.concat(voteLists);
+        } else {
+          _this.voteLists = voteLists;
+        }
+      }
+    },
     itemToggle(num) {
       this.itemActive = num;
+      this.pageData = {
+        pageSize: 5,
+        pageIndex: 0,
+        total: 0
+      };
+      if (num == 1) {
+        this.fetchActivitysRecord();
+      } else if (num == 2) {
+        this.fetchSolicitRecord();
+      } else {
+        this.fetchVoteRecord();
+      }
     },
     goPersonal() {
       wx.navigateTo({
@@ -162,6 +137,42 @@ export default {
         url: "/pages/activityDetails/main"
       });
     }
+  },
+  onReachBottom: function() {
+    if (this.itemActive == 1) {
+      if (this.acticityList.length >= this.pageData.total) {
+        wx.showToast({
+          title: "到底了",
+          icon: "none",
+          duration: 2000
+        });
+      } else {
+        this.pageData.pageIndex++;
+        this.fetchActivitysRecord();
+      }
+    } else if (this.navType == 2) {
+      if (this.solicitLists.length >= this.pageData.total) {
+        wx.showToast({
+          title: "到底了",
+          icon: "none",
+          duration: 2000
+        });
+      } else {
+        this.pageData.pageIndex++;
+        this.fetchSolicitRecord();
+      }
+    } else {
+      if (this.voteLists.length >= this.pageData.total) {
+        wx.showToast({
+          title: "到底了",
+          icon: "none",
+          duration: 2000
+        });
+      } else {
+        this.pageData.pageIndex++;
+        this.fetchVoteRecord();
+      }
+    }
   }
 };
 </script>
@@ -171,7 +182,7 @@ export default {
   .navToggle {
     display: flex;
     justify-content: space-around;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
     .navI {
       text-align: center;
       padding: 10px 0 20px;
@@ -197,8 +208,6 @@ export default {
     }
   }
   .list {
-    width: 94%;
-    margin: 0 auto;
     .item {
       font-size: 13px;
       display: flex;
@@ -211,7 +220,6 @@ export default {
   }
   // 投票
   .voteList {
-    width: 94%;
     margin: 10px auto;
     // 内容列表
     .contentItem {

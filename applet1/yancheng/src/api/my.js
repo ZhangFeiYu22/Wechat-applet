@@ -31,3 +31,10 @@ export const userInfoGet = () => request.get(`/app-user/me`)
 
 // 我的信息  修改
 export const userInfoPost = (data) => request.post(`/app-user/me`,data)
+
+
+// 认证   发送验证码
+export const sendCodeGet = (data) => request.get(`/member/vcode/${data.mobile}`)
+
+// 认证  验证验证码
+export const validationCode = (data) => request.post(`/member/auth/${data.code}/${data.mobile}`)

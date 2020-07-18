@@ -212,10 +212,9 @@ export default {
         pageIndex: _this.pageData.pageIndex
       };
       let acRes = await myPublish_activity(data);
-      console.log("acRes--", acRes);
       if (acRes.status == 200) {
-        let acticityList = acRes.result.data;
         _this.pageData.total = acRes.result.total;
+        let acticityList = acRes.result.data;
         if (_this.pageData.pageIndex > 0) {
           _this.acticityList = _this.acticityList.concat(acticityList);
         } else {
@@ -231,9 +230,8 @@ export default {
         pageIndex: _this.pageData.pageIndex
       };
       let voRes = await myPublish_vote(data);
-      _this.pageData.total = voRes.result.total;
-      console.log("voRes--", voRes);
       if (voRes.status == 200) {
+        _this.pageData.total = voRes.result.total;
         let voteListsMap = voRes.result.data;
         let voteLists = voteListsMap.map(vo => {
           if (vo.options) {
@@ -259,7 +257,6 @@ export default {
         pageIndex: _this.pageData.pageIndex
       };
       let soRes = await myPublish_solicit(data);
-      console.log("soRes--", soRes);
       if (soRes.status == 200) {
         _this.pageData.total = soRes.result.total;
         let solicitLists = soRes.result.data;
@@ -594,7 +591,7 @@ export default {
         this.pageData.pageIndex++;
         this.fetchMemberForum(this.mid);
       }
-    }else if (this.navType == 1) {
+    } else if (this.navType == 1) {
       if (this.voteLists.length >= this.pageData.total) {
         wx.showToast({
           title: "到底了",

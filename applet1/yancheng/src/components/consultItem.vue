@@ -1,6 +1,7 @@
 <template>
   <div class="consult">
-    <div class="consultList">
+    <div class="noDataStyle" v-if="consultList.length == 0">暂无数据</div>
+    <div v-else class="consultList">
       <div
         class="consultItem"
         @click.stop="goConsultDetails(item.id)"
@@ -205,6 +206,10 @@ export default {
         }
       }
     }
+  }
+  .noDataStyle {
+    text-align: center;
+    color: #bbb;
   }
 }
 </style>

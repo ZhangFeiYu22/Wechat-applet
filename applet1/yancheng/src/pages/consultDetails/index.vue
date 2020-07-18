@@ -39,16 +39,6 @@
         <p class="pl">实名:</p>
         <p class="pr">{{solicitDetails.needReal == '1' ? '需要' : '不需要'}}</p>
       </div>
-      <div class="line" v-if="solicitDetails.needReal == '1'">
-        <p class="pl">认证图片:</p>
-        <div class="edit-img">
-          <div class="imgbox" v-for="(item,index) in imgArr1" :key="index">
-            <image v-if="item" :src="item" mode="aspectFill" />
-            <i class="close iconfont icon-iconless" @click.stop="closeFunOne(item,index)"></i>
-          </div>
-          <div class="iconfont icon-jiahao" @click.stop="chooseImageOne"></div>
-        </div>
-      </div>
       <div class="PriceNum">+{{solicitDetails.integral}}砖</div>
     </div>
 
@@ -65,8 +55,13 @@
       <div class="btnContact" @click="sixinFun">
         <i class="iconfont icon-sixin"></i>私信
       </div>
-      <div class="btnMe">
-        <i class="iconfont icon-aixin"></i>算我一个
+      <div class="btnMe" v-if="isBuy" @click="joinConsult2">
+        <i class="iconfont icon-aixin"></i>
+        提交参加信息
+      </div>
+      <div class="btnMe" v-else @click="joinConsult(solicitDetails)">
+        <i class="iconfont icon-aixin"></i>
+        算我一个
       </div>
     </div>
 
@@ -88,12 +83,44 @@
       </div>
       <button class="contBtn" @click="conBtnPut">发送</button>
     </div>
+
+    <div class="mask" v-if="joinMask"></div>
+    <div class="joinDialog" v-if="joinMask">
+      <div class="joinClose" @click.stop="closeJoinMask">X</div>
+      <h5 class="joinTitle">请填写参加信息</h5>
+      <div class="joinContent">
+        <div class="line">
+          <p class="pl">认证内容:</p>
+          <textarea
+            class="textAns"
+            auto-focus
+            placeholder="请输入认证内容"
+            v-model="answerValue"
+            placeholder-style="color:#b8b8b8"
+          ></textarea>
+        </div>
+        <div class="line" v-if="solicitDetails.needReal == '1'">
+          <p class="pl">认证图片:</p>
+          <div class="edit-img">
+            <div class="imgbox" v-for="(item,index) in imgArr1" :key="index">
+              <image v-if="item" :src="item" mode="aspectFill" />
+              <i class="close iconfont icon-iconless" @click.stop="closeFunOne(item,index)"></i>
+            </div>
+            <div class="iconfont icon-jiahao" @click.stop="chooseImageOne"></div>
+          </div>
+        </div>
+        <div class="btnG">
+          <div class="btn cancl" @click.stop="closeJoinMask">取消</div>
+          <div class="btn sure" @click.stop="sureJoin(solicitDetails)">确认参加</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { messageTo } from "@/api/home";
-import { solicitDetailsGet } from "@/api/solicit";
+import { solicitDetailsGet, solicitJoin, solicitSureJoin } from "@/api/solicit";
 import { imgsUpload } from "@/utils/imgsUpload";
 import navigationBar from "@/components/navigationBar";
 export default {
@@ -104,16 +131,22 @@ export default {
     return {
       solicitDetails: {},
       imgArr1: [],
-      imgArr2: [],
       maskVal: false, //私信显示判断
       myInfo: {},
       sixinValue: "",
-      levUrl: `${this.$store.state.commonImgHttp}/lv5.png`
+      levUrl: `${this.$store.state.commonImgHttp}/lv5.png`,
+      isBuy: false, //是否已参加
+      answerValue: "",
+      joinMask: false,
+      joinId: "" //参加的ID值
     };
   },
   onLoad(options) {
     this.fetchDetails(options.soId);
     this.myInfo = wx.getStorageSync("authInfo");
+  },
+  mounted() {
+    this.imgArr1 = [];
   },
   methods: {
     async fetchDetails(id) {
@@ -124,7 +157,12 @@ export default {
           solicitDetails.images = solicitDetails.images.split("|");
         }
         this.solicitDetails = solicitDetails;
-        console.log(this.solicitDetails);
+        if (this.solicitDetails.mySolicit) {
+          this.isBuy = true;
+          this.joinId = this.solicitDetails.mySolicit.id
+        } else {
+          this.isBuy = false;
+        }
       }
     },
     goPersonal(id) {
@@ -185,6 +223,77 @@ export default {
     },
     closeFunOne(item, index) {
       this.imgArr1.splice(index, 1);
+    },
+    joinConsult(detail) {
+      if (detail.mySolicit) {
+        wx.showToast({
+          title: "您已参加，请勿重复参加",
+          icon: "none",
+          duration: 1500
+        });
+      } else {
+        let authInfo = wx.getStorageSync("authInfo");
+        let data = {
+          solicitId: detail.id,
+          needReal: detail.needReal,
+          rank: detail.rank,
+          title: detail.title
+        };
+        solicitJoin(data).then(res => {
+          if (res.status == 200) {
+            this.isBuy = true;
+            this.joinId = res.result;
+            wx.showToast({
+              title: "报名成功",
+              icon: "none",
+              duration: 1500
+            });
+          }
+        });
+      }
+    },
+    joinConsult2() {
+      this.joinMask = true;
+    },
+    closeJoinMask() {
+      this.joinMask = false;
+    },
+    sureJoin(detail) {
+      if (this.answerValue == "") {
+        wx.showToast({
+          title: "请填写认证内容",
+          icon: "none",
+          duration: 1500
+        });
+        return;
+      }
+      if (detail.needReal > 0) {
+        if (this.imgArr1.length == 0) {
+          wx.showToast({
+            title: "该征寻需要认证，请上传认证图片",
+            icon: "none",
+            duration: 1500
+          });
+          return;
+        }
+      }
+      let data = {
+        id: this.joinId,
+        answer: this.answerValue
+      };
+      if (detail.needReal > 0) {
+        data["authImage"] = String(this.imgArr1[0]);
+      }
+      solicitSureJoin(data).then(res => {
+        if (res.status == 200) {
+          this.joinMask = false;
+          wx.showToast({
+            title: "参加成功",
+            icon: "none",
+            duration: 1500
+          });
+        }
+      });
     }
   }
 };
@@ -276,12 +385,12 @@ export default {
         color: #989898;
         margin-right: 5px;
       }
-      .edit-img {
-        display: inline-block;
-        vertical-align: top;
-        margin-left: 10px;
-        margin-top: 5px;
-      }
+      // .edit-img {
+      //   display: inline-block;
+      //   vertical-align: top;
+      //   margin-left: 10px;
+      //   margin-top: 5px;
+      // }
     }
     .PriceNum {
       position: absolute;
@@ -326,44 +435,6 @@ export default {
     box-sizing: border-box;
   }
 
-  .edit-img {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-content: space-between;
-    margin-bottom: 20px;
-    .imgbox {
-      position: relative;
-      .close {
-        position: absolute;
-        border-radius: 15px;
-        width: 18px;
-        height: 18px;
-        font-size: 16px;
-        line-height: 16px;
-        text-align: center;
-        color: #da4b47;
-        right: 14px;
-        top: 0px;
-      }
-    }
-    image {
-      width: 75px;
-      height: 75px;
-      margin: 0 15px 5px 0;
-    }
-    .icon-jiahao {
-      width: 75px;
-      height: 75px;
-      border: 1px solid #909090;
-      border-radius: 4px;
-      font-size: 18px;
-      color: #888;
-      line-height: 75px;
-      text-align: center;
-    }
-  }
-
   .btnGroup {
     position: fixed;
     display: flex;
@@ -387,6 +458,9 @@ export default {
       background-color: #b1a1a3;
       color: #fff;
       width: 70%;
+      &.is {
+        background-color: #ddd;
+      }
     }
   }
   // 私信弹窗
@@ -453,6 +527,103 @@ export default {
       font-size: 15px;
       &::after {
         border: none;
+      }
+    }
+  }
+  //参加回答图片盒子
+  .joinDialog {
+    position: fixed;
+    z-index: 99;
+    background: #fff;
+    box-shadow: 0 0 2px 2px #ddd;
+    width: 80%;
+    top: 25%;
+    left: 10%;
+    border-radius: 5px;
+    padding: 20px 10px;
+    .joinClose {
+      position: absolute;
+      right: 10px;
+      top: 6px;
+      font-size: 16px;
+    }
+    .joinTitle {
+      font-size: 16px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .joinContent {
+      .line {
+        .pl {
+          font-size: 14px;
+          line-height: 36px;
+        }
+        .textAns {
+          font-size: 13px;
+          height: 80px;
+          padding: 5px 10px;
+          overflow-y: scroll;
+          box-sizing: border-box;
+          width: 100%;
+          border: 1px solid #eee;
+          border-radius: 3px;
+          text-align: justify;
+        }
+        .edit-img {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: flex-start;
+          align-content: space-between;
+          margin-bottom: 10px;
+          .imgbox {
+            position: relative;
+            .close {
+              position: absolute;
+              border-radius: 15px;
+              width: 18px;
+              height: 18px;
+              font-size: 16px;
+              line-height: 16px;
+              text-align: center;
+              color: #da4b47;
+              right: 14px;
+              top: 0px;
+            }
+          }
+          image {
+            width: 75px;
+            height: 75px;
+            margin: 0 15px 5px 0;
+          }
+          .icon-jiahao {
+            width: 75px;
+            height: 75px;
+            border: 1px solid #909090;
+            border-radius: 3px;
+            font-size: 18px;
+            color: #888;
+            line-height: 75px;
+            text-align: center;
+          }
+        }
+      }
+      .btnG {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 20px;
+        .btn {
+          padding: 5px 15px;
+          min-width: 60px;
+          font-size: 14px;
+          border-radius: 3px;
+        }
+        .cancl {
+          background-color: #eee;
+        }
+        .sure {
+          background-color: #ff8282;
+          color: #fff;
+        }
       }
     }
   }
