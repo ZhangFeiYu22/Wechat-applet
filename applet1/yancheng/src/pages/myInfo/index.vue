@@ -35,6 +35,7 @@
       <div class="infoItem">
         <p class="ll">城市</p>
         <picker
+          class="cc"
           mode="multiSelector"
           @change="bindCityChange"
           :value="multiIndex"

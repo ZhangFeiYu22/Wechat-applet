@@ -16,7 +16,7 @@
         </p>
       </div>
       <div class="lvBox">
-        <img :src="levUrl" alt />
+        <img :src="levUrl[solicitDetails.grade]" alt />
         <p>Lv{{solicitDetails.grade}}</p>
       </div>
     </div>
@@ -55,9 +55,9 @@
       <div class="btnContact" @click="sixinFun">
         <i class="iconfont icon-sixin"></i>私信
       </div>
-      <div class="btnMe" v-if="isBuy" @click="joinConsult2">
+      <div class="btnMe" :class="isJoin?'isJoin':''" v-if="isEnroll" @click="joinConsult2">
         <i class="iconfont icon-aixin"></i>
-        提交参加信息
+        {{isJoin?'您已参加':'提交参加信息'}}
       </div>
       <div class="btnMe" v-else @click="joinConsult(solicitDetails)">
         <i class="iconfont icon-aixin"></i>
@@ -134,8 +134,16 @@ export default {
       maskVal: false, //私信显示判断
       myInfo: {},
       sixinValue: "",
-      levUrl: `${this.$store.state.commonImgHttp}/lv5.png`,
-      isBuy: false, //是否已参加
+      levUrl: [
+        ``,
+        `${this.$store.state.commonImgHttp}/lv1.png`,
+        `${this.$store.state.commonImgHttp}/lv2.png`,
+        `${this.$store.state.commonImgHttp}/lv3.png`,
+        `${this.$store.state.commonImgHttp}/lv4.png`,
+        `${this.$store.state.commonImgHttp}/lv5.png`
+      ],
+      isEnroll: false, //是否已报名
+      isJoin: false, //是否已参加
       answerValue: "",
       joinMask: false,
       joinId: "" //参加的ID值
@@ -158,10 +166,15 @@ export default {
         }
         this.solicitDetails = solicitDetails;
         if (this.solicitDetails.mySolicit) {
-          this.isBuy = true;
-          this.joinId = this.solicitDetails.mySolicit.id
+          this.isEnroll = true;
+          this.joinId = this.solicitDetails.mySolicit.id;
+          if (this.solicitDetails.mySolicit.status == 2) {
+            this.isJoin = false;
+          } else if (this.solicitDetails.mySolicit.status == 3) {
+            this.isJoin = true;
+          }
         } else {
-          this.isBuy = false;
+          this.isEnroll = false;
         }
       }
     },
@@ -225,14 +238,8 @@ export default {
       this.imgArr1.splice(index, 1);
     },
     joinConsult(detail) {
-      if (detail.mySolicit) {
-        wx.showToast({
-          title: "您已参加，请勿重复参加",
-          icon: "none",
-          duration: 1500
-        });
-      } else {
-        let authInfo = wx.getStorageSync("authInfo");
+      let authInfo = wx.getStorageSync("authInfo");
+      if (authInfo.isAuth) {
         let data = {
           solicitId: detail.id,
           needReal: detail.needReal,
@@ -241,19 +248,46 @@ export default {
         };
         solicitJoin(data).then(res => {
           if (res.status == 200) {
-            this.isBuy = true;
-            this.joinId = res.result;
             wx.showToast({
               title: "报名成功",
               icon: "none",
               duration: 1500
+              // success(data) {
+              //   setTimeout(function() {
+              //     this.isEnroll = true;
+              //     this.joinId = res.result;
+              //   }, 1000); //延迟时间
+              // }
             });
+            this.isEnroll = true;
+            this.joinId = res.result;
+          }
+        });
+      } else {
+        wx.showToast({
+          title: "请先进行实名认证",
+          icon: "none",
+          duration: 1500,
+          success(data) {
+            setTimeout(function() {
+              wx.navigateTo({
+                url: `/pages/myAttestation/main`
+              });
+            }, 1500); //延迟时间
           }
         });
       }
     },
     joinConsult2() {
-      this.joinMask = true;
+      if (this.isJoin) {
+        wx.showToast({
+          title: "您已参加，请勿重复参加",
+          icon: "none",
+          duration: 1500
+        });
+      } else {
+        this.joinMask = true;
+      }
     },
     closeJoinMask() {
       this.joinMask = false;
@@ -460,6 +494,9 @@ export default {
       width: 70%;
       &.is {
         background-color: #ddd;
+      }
+      &.isJoin {
+        background-color: #ccc;
       }
     }
   }

@@ -34,12 +34,12 @@
         </div>
         <div class="issueIcon issue_collect" :animation="animation3" @click="goPush('collect')">
           <img src="../../static/images/issue_collect.png" mode="aspectFill" />
-          <p>征集发布</p>
+          <p>征集/寻求发布</p>
         </div>
-        <div class="issueIcon issue_seek" :animation="animation4" @click="goPush('seek')">
+        <!-- <div class="issueIcon issue_seek" :animation="animation4" @click="goPush('seek')">
           <img src="../../static/images/issue_seek.png" mode="aspectFill" />
           <p>寻求发布</p>
-        </div>
+        </div>-->
       </div>
       <i v-if="closeShow" class="close iconfont icon-close" @click="closeFun"></i>
     </div>
@@ -284,27 +284,34 @@ export default {
       margin-left: -60px;
     }
     .issueIcon {
-      width: 50px;
+      // width: 50px;
+      width: 80px;
       height: 50px;
       position: absolute;
       bottom: -100px;
+      text-align: center;
       img {
-        width: 100%;
-        height: 100%;
+        width: 50px;
+        height: 50px;
+        display: inline-block;
       }
-      p{
+      p {
         font-size: 12px;
-        color: #2E2E2E;
+        color: #2e2e2e;
       }
     }
     .issue_activity {
-      left: 10%;
+      // left: 10%;
+      left: 15%;
     }
     .issue_vote {
-      left: 32%;
+      // left: 32%;
+      left: 50%;
+      margin-left: -40px;
     }
     .issue_collect {
-      right: 32%;
+      // right: 32%;
+      right: 15%;
     }
     .issue_seek {
       right: 10%;

@@ -172,7 +172,7 @@ export default {
     this.initClientRect();
   },
   methods: {
-    closeAdPop(){
+    closeAdPop() {
       this.adPopShow = false;
     },
     // 获取广告位
@@ -265,6 +265,7 @@ export default {
       };
       let acRes = await activitysGet(data);
       if (acRes.status == 200) {
+        wx.stopPullDownRefresh();
         _this.pageData.total = acRes.result.total;
         let acticityList = acRes.result.data;
         if (_this.pageData.pageIndex > 0) {
@@ -282,6 +283,7 @@ export default {
       };
       let voRes = await voteListGet(data);
       if (voRes.status == 200) {
+        wx.stopPullDownRefresh();
         _this.pageData.total = voRes.result.total;
         let voteListsMap = voRes.result.data;
         let voteLists = voteListsMap.map(vo => {
@@ -310,6 +312,7 @@ export default {
       };
       let soRes = await solicitListGet(data);
       if (soRes.status == 200) {
+        wx.stopPullDownRefresh();
         _this.pageData.total = soRes.result.total;
         let solicitLists = soRes.result.data;
         if (_this.pageData.pageIndex > 0) {
@@ -338,6 +341,15 @@ export default {
   },
   //下拉刷新
   onPullDownRefresh: function() {
+    this.fetchAd();
+    if (this.currentTab == 0) {
+      this.fetchActiveData();
+    } else if (this.currentTab == 1) {
+      this.fetchVoteData();
+    } else if (this.currentTab == 2) {
+      this.fetchSolicitData();
+    }
+
     console.log("下拉刷新");
   },
   onReachBottom: function() {
@@ -537,16 +549,16 @@ export default {
   .adPop {
     position: fixed;
     top: 0;
-    bottom:0;
+    bottom: 0;
     left: 0;
     right: 0;
-    background-color: rgba(0,0,0,0.3);
+    background-color: rgba(0, 0, 0, 0.3);
     .popBox {
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%,-50%);
-      .icon-close{
+      transform: translate(-50%, -50%);
+      .icon-close {
         display: inline-block;
         border: 1px solid #fff;
         padding: 4px;

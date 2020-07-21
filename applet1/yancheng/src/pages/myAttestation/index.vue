@@ -8,7 +8,7 @@
         type="number"
         maxlength="11"
         :value="mobile"
-        @input="blurPhone"
+        @change="blurPhone"
       />
       <text
         class="dongtaima"
@@ -47,6 +47,14 @@ export default {
       inter: ""
     };
   },
+  mounted() {
+    let authInfo = wx.getStorageSync("authInfo");
+    if (authInfo.isAuth) {
+      this.mobile = authInfo.mobile;
+      this.teltrue = true;
+      this.hui = false;
+    }
+  },
   methods: {
     // 手机号验证
     blurPhone(e) {
@@ -78,7 +86,7 @@ export default {
           console.log(res);
           if (res.status == 200) {
             wx.showToast({
-              title: '发送成功',
+              title: "发送成功",
               icon: "none",
               duration: 2000
             });

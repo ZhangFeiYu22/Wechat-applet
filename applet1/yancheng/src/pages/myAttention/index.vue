@@ -6,7 +6,12 @@
       <div class="navI" :class="itemActive == '1' ? 'active' : ''" @click="itemToggle('1')">活动</div>
     </div>
     <div class="friendsList list" v-if="itemActive == 0">
-      <div class="friendsItem item" v-for="item in mfDataList" :key="item" @click="goPersonal(item.followId)">
+      <div
+        class="friendsItem item"
+        v-for="item in mfDataList"
+        :key="item"
+        @click="goPersonal(item.followId)"
+      >
         <div class="imgBox">
           <img v-if="item.properties.avatar" :src="item.properties.avatar" mode="aspectFill" />
         </div>
@@ -41,11 +46,14 @@ export default {
       headImg2: `${this.$store.state.imgUrlHttp}/a5.png`,
       actImg1: `${this.$store.state.imgUrlHttp}/d1.png`,
       actImg2: `${this.$store.state.imgUrlHttp}/d1.png`,
-      pageSize: 3, //一页显示条数
-      pageIndex: 1, //页码
-      total: 0, //总条数
+      // 分页数据
+      pageData: {
+        pageSize: 5, //一页显示条数
+        pageIndex: 0, //页码
+        total: 0 //总条数
+      },
       mfDataList: [],
-      acticityList:[]
+      acticityList: []
     };
   },
   mounted() {
@@ -53,31 +61,49 @@ export default {
   },
   methods: {
     async fetchFollowPeople() {
+      let _this = this;
       var data = {
-        pageSize: this.pageSize,
-        pageIndex: this.pageIndex
+        pageSize: this.pageData.pageSize,
+        pageIndex: this.pageData.pageIndex
       };
-      let mfRes = await myFollow();
+      let mfRes = await myFollow(data);
       if (mfRes.status == 200) {
-        this.mfDataList = mfRes.result.data;
+        let mfDataList = mfRes.result.data;
+        if (_this.pageData.pageIndex > 0) {
+          _this.mfDataList = _this.mfDataList.concat(mfDataList);
+        } else {
+          _this.mfDataList = mfDataList;
+        }
       }
-    }, 
+    },
     async fetchFollowActicity() {
+      let _this = this;
       var data = {
-        pageSize: this.pageSize,
-        pageIndex: this.pageIndex
+        pageSize: this.pageData.pageSize,
+        pageIndex: this.pageData.pageIndex
       };
-      let mfRes = await myFollowActivity();
+      let mfRes = await myFollowActivity(data);
+      _this.pageData.total = mfRes.result.total;
       if (mfRes.status == 200) {
-        this.acticityList = mfRes.result.data;
+        let acticityList = mfRes.result.data;
+        if (_this.pageData.pageIndex > 0) {
+          _this.acticityList = _this.acticityList.concat(acticityList);
+        } else {
+          _this.acticityList = acticityList;
+        }
       }
     },
 
     itemToggle(num) {
       this.itemActive = num;
-      if(num == '0'){
-        this.fetchFollowPeople()
-      }else if(num == '1'){
+      this.pageData = {
+        pageSize: 5,
+        pageIndex: 0,
+        total: 0
+      };
+      if (num == "0") {
+        this.fetchFollowPeople();
+      } else if (num == "1") {
         this.fetchFollowActicity();
       }
     },
@@ -90,6 +116,31 @@ export default {
       wx.navigateTo({
         url: "/pages/activityDetails/main"
       });
+    }
+  },
+  onReachBottom: function() {
+    if (this.itemActive == 0) {
+      if (this.mfDataList.length >= this.pageData.total) {
+        wx.showToast({
+          title: "到底了",
+          icon: "none",
+          duration: 2000
+        });
+      } else {
+        this.pageData.pageIndex++;
+        this.fetchFollowPeople();
+      }
+    } else if (this.itemActive == 1) {
+      if (this.acticityList.length >= this.pageData.total) {
+        wx.showToast({
+          title: "到底了",
+          icon: "none",
+          duration: 2000
+        });
+      } else {
+        this.pageData.pageIndex++;
+        this.fetchFollowActicity();
+      }
     }
   }
 };

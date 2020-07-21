@@ -14,7 +14,7 @@
               <i class="iconfont" v-else></i>
             </p>
           </div>
-          <p class="lv">LV5</p>
+          <p class="lv">LV{{userInfo.grade}}</p>
         </div>
       </div>
       <div class="rightIcon">
