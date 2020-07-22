@@ -1,10 +1,6 @@
 <template>
   <div class="aboutUs">
-    <navigation-bar
-      :title="'关于我们'"
-      :navBackgroundColor="'#fff'"
-      :back-visible="true"
-    ></navigation-bar>
+    <navigation-bar :title="'关于我们'" :navBackgroundColor="'#fff'" :back-visible="true"></navigation-bar>
     <div class="otherList">
       <div class="otherItem" @click="goAboutUs">
         <i class="iconfont icon-folder_icon iconLeft"></i>
@@ -22,23 +18,37 @@
 </template>
 
 <script>
+import { serviceHotlineGet } from "@/api/my.js";
 import navigationBar from "@/components/navigationBar";
 export default {
   components: {
     navigationBar
   },
   data() {
-    return {};
+    return {
+      phone: ""
+    };
   },
-  mounted () {
-    let xx = wx.getAccountInfoSync()
-    console.log(xx)
+  mounted() {
+    let xx = wx.getAccountInfoSync();
+    console.log(xx);
+    this.fetchPhone();
   },
   methods: {
+    async fetchPhone() {
+      let pRes = await serviceHotlineGet();
+      if (pRes.status == 200) {
+        this.phone = pRes.result;
+      }
+    },
     call() {
-      wx.makePhoneCall({
-        phoneNumber: "158XXXXXXXX"
-      });
+      wx
+        .makePhoneCall({
+          phoneNumber: this.phone
+        })
+        .catch(e => {
+          // console.log(e)  //用catch(e)来捕获错误{makePhoneCall:fail cancel}
+        });
     },
     goFeedBack() {
       wx.navigateTo({

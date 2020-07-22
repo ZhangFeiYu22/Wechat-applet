@@ -43,7 +43,7 @@
             v-for="(litem,lindex) in voteItem.options"
             :key="lindex"
             color="#1097FF"
-            @click="selectOne(voteItem,litem)"
+            @click="selectOne(voteItem,litem,index)"
           >
             <div
               v-if="voteItem.myAnswer && voteItem.myAnswer.answer && (voteItem.myAnswer.answer == litem.optionsContent)"
@@ -105,7 +105,7 @@ export default {
         urls: imgArr // 需要预览的图片http链接列表
       });
     },
-    selectOne(vItem, item) {
+    selectOne(vItem, item, vin) {
       var _this = this;
       let authInfo = wx.getStorageSync("authInfo");
       if (vItem.myAnswer && vItem.myAnswer.answer) {
@@ -128,6 +128,11 @@ export default {
               };
               voteListSel(answerForm).then(res => {
                 if (res.status == 200) {
+                  this.$nextTick(() => {
+                    this.voteLists[vin]["myAnswer"] = {
+                      answer: item.optionsContent
+                    };
+                  });
                   wx.showToast({
                     title: "投票成功",
                     icon: "none",

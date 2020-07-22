@@ -21,6 +21,9 @@ export const messageTo = (data) => request.post(`/message`,data)
 // 建议与反馈
 export const suggestionPost = (data) => request.post(`/suggestion`,data)
 
+// 客服热线电话
+export const serviceHotlineGet = (data) => request.get(`/app-user/getCustomPhone`,data) 
+
 
 // 我的勋章
 export const myMedalGet = (data) => request.get(`/myMedal`,data)

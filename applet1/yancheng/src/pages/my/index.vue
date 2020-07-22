@@ -34,10 +34,10 @@
       </div>-->
       <div class="inaword ellip">{{userInfo.introduction}}</div>
       <div class="other">
-        <p class="constellation">金牛座</p>
+        <p class="constellation">{{userInfo.constellation}}</p>
         <p class="address">{{userInfo.city}}</p>
         <p class="follower">15人关注</p>
-        <p class="autonym">已实名</p>
+        <p class="autonym">{{userInfo.isAuth ? '已实名' : '未实名'}}</p>
       </div>
     </div>
     <!-- <div class="wallet">
@@ -107,6 +107,7 @@
 </template>
 
 <script>
+import { constellation } from "@/utils/constellation";
 import navigationBar from "@/components/navigationBar";
 import vueTabBar from "@/components/vueTabBar";
 export default {
@@ -126,6 +127,9 @@ export default {
   onLoad() {
     if (wx.getStorageSync("isLogin")) {
       this.userInfo = wx.getStorageSync("authInfo");
+      this.$nextTick(() => {
+        this.userInfo["constellation"] = constellation(this.userInfo.birthday) + '座';
+      });
     } else {
       wx.navigateTo({
         url: "/pages/login/main"

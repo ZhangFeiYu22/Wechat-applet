@@ -19,11 +19,11 @@
         <p class="sex">
           <i class="iconfont" :class="memberInfo.gender == 1 ? 'icon-nan': 'icon-nv'"></i>
         </p>
-        <p class="phone">182****1234</p>
+        <p class="phone">{{memberInfo.mobile}}</p>
       </div>
       <div class="inaword">{{memberInfo.introduction}}</div>
       <div class="other">
-        <p class="constellation">金牛座</p>
+        <p class="constellation">{{memberInfo.constellation}}</p>
         <p class="address">{{memberInfo.city}}</p>
         <p class="follower">{{memberInfo.followNum > 0 ? memberInfo.followNum + '人关注' : '暂无关注'}}</p>
       </div>
@@ -230,6 +230,7 @@ import {
   followMemberDel
 } from "@/api/personal";
 import { getDateDiff } from "@/utils/getDateDiff";
+import { constellation } from "@/utils/constellation";
 import navigationBar from "@/components/navigationBar";
 export default {
   components: {
@@ -283,6 +284,10 @@ export default {
       let memRes = await getMember(id);
       if (memRes.status == 200) {
         this.memberInfo = memRes.result;
+        this.$nextTick(() => {
+          this.memberInfo["constellation"] =
+            constellation(this.memberInfo.birthday) + "座";
+        });
       }
     },
     // 获取话题列表
@@ -649,7 +654,7 @@ export default {
         };
       } else {
         pingD = {
-          comment: _this.commentValue + 'l',
+          comment: _this.commentValue + "l",
           communityId: _this.comItemData.communityId,
           // memberName: _this.communityFriendsList[_this.pinglunIndex].memberName,
           memberName: authInfo.nickName,
@@ -841,7 +846,7 @@ export default {
           color: #111;
           font-weight: 600;
         }
-        p{
+        p {
           font-weight: 600;
           color: #333;
         }
