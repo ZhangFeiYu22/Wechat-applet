@@ -1,20 +1,23 @@
 <template>
   <div class="my">
-    <navigation-bar :title="'我的'" :navBackgroundColor="'#fff'"></navigation-bar>
+    <navigation-bar
+      :title="'我的'"
+      :navBackgroundColor="'#fff'"
+    ></navigation-bar>
     <div class="head">
       <div class="headImg">
         <img :src="userInfo.avatar" mode="aspectFill" />
         <div class="hierarchy">
           <!-- <img :src="levUrl" mode="aspectFill" /> -->
           <div class="nameSex">
-            <p class="name">{{userInfo.nickName}}</p>
+            <p class="name">{{ userInfo.nickName }}</p>
             <p class="sex">
-              <i class="iconfont icon-nan" v-if="userInfo.gender==1"></i>
-              <i class="iconfont icon-nv" v-else-if="userInfo.gender==2"></i>
+              <i class="iconfont icon-nan" v-if="userInfo.gender == 1"></i>
+              <i class="iconfont icon-nv" v-else-if="userInfo.gender == 2"></i>
               <i class="iconfont" v-else></i>
             </p>
           </div>
-          <p class="lv">LV{{userInfo.grade}}</p>
+          <p class="lv">LV{{ userInfo.grade }}</p>
         </div>
       </div>
       <div class="rightIcon">
@@ -32,12 +35,18 @@
         </p>
         <p class="phone">182****1234</p>
       </div>-->
-      <div class="inaword ellip">{{userInfo.introduction}}</div>
+      <div class="inaword ellip">{{ userInfo.introduction }}</div>
       <div class="other">
-        <p class="constellation">{{userInfo.constellation}}</p>
-        <p class="address">{{userInfo.city}}</p>
-        <p class="follower">15人关注</p>
-        <p class="autonym">{{userInfo.isAuth ? '已实名' : '未实名'}}</p>
+        <p class="constellation">{{ userInfo.constellation }}</p>
+        <p class="address">{{ userInfo.city }}</p>
+        <p class="follower">
+          {{
+            userInfo.followCount > 0
+              ? userInfo.followCount + "人关注"
+              : "暂无关注"
+          }}
+        </p>
+        <p class="autonym">{{ userInfo.isAuth ? "已实名" : "未实名" }}</p>
       </div>
     </div>
     <!-- <div class="wallet">
@@ -55,8 +64,9 @@
     </div>-->
     <div class="wallet2">
       <p class="p1">我的砖头</p>
-      <p class="p2">
-        <i class="iconfont icon-zhuan3"></i>100.00
+      <p class="p2"><i class="iconfont icon-zhuan3"></i>100.00</p>
+      <p class="p3" @click="rechargeHandle">
+        充值<i class="iconfont icon-right iconRight"></i>
       </p>
     </div>
     <div class="otherList">
@@ -113,7 +123,7 @@ import vueTabBar from "@/components/vueTabBar";
 export default {
   components: {
     navigationBar,
-    vueTabBar
+    vueTabBar,
   },
   data() {
     return {
@@ -121,83 +131,103 @@ export default {
       userInfo: {},
       likeAct: false,
       itemActive: 0,
-      headImg: `${this.$store.state.imgUrlHttp}/head.png`
+      headImg: `${this.$store.state.imgUrlHttp}/head.png`,
     };
   },
   onLoad() {
     if (wx.getStorageSync("isLogin")) {
       this.userInfo = wx.getStorageSync("authInfo");
       this.$nextTick(() => {
-        this.userInfo["constellation"] = constellation(this.userInfo.birthday) + '座';
+        this.userInfo["constellation"] =
+          constellation(this.userInfo.birthday) + "座";
       });
     } else {
-      wx.navigateTo({
-        url: "/pages/login/main"
+      wx.showToast({
+        title: "您还未登录，请先登录",
+        icon: "none",
+        duration: 1500,
+        success(data) {
+          setTimeout(function () {
+            wx.navigateTo({
+              url: "/pages/login/main",
+            });
+          }, 1500);
+        },
       });
     }
   },
   onShow() {
-    console.log("1");
     this.userInfo = wx.getStorageSync("authInfo");
+    this.$nextTick(() => {
+      this.userInfo["constellation"] =
+        constellation(this.userInfo.birthday) + "座";
+    });
   },
   methods: {
+    rechargeHandle() {
+      wx.showToast({
+        title: "暂无操作",
+        icon: "none",
+        duration: 2000,
+      });
+    },
     goMyVip() {
       wx.navigateTo({
-        url: "/pages/myVip/main"
+        url: "/pages/myVip/main",
       });
     },
     goMessage() {
       wx.navigateTo({
-        url: "/pages/message/main"
+        url: "/pages/message/main",
       });
     },
     goPublish() {
       let authInfo = wx.getStorageSync("authInfo");
       wx.navigateTo({
-        url: `/pages/myPublish/main?createrId=${authInfo.id}`
+        url: `/pages/myPublish/main?createrId=${authInfo.id}`,
       });
     },
     goAttention() {
       wx.navigateTo({
-        url: "/pages/myAttention/main"
+        url: "/pages/myAttention/main",
       });
     },
     goRecord() {
       wx.navigateTo({
-        url: "/pages/myRecord/main"
+        url: "/pages/myRecord/main",
       });
     },
     goMyInfo() {
       wx.navigateTo({
-        url: "/pages/myInfo/main"
+        url: "/pages/myInfo/main",
       });
     },
     goTopic() {
       wx.navigateTo({
-        url: "/pages/topicDetails/main"
+        url: "/pages/topicDetails/main",
       });
     },
     goRecharge() {
       wx.navigateTo({
-        url: "/pages/recharge/main"
+        url: "/pages/recharge/main",
       });
     },
     goAttestation() {
       wx.navigateTo({
-        url: "/pages/myAttestation/main"
+        url: "/pages/myAttestation/main",
       });
     },
     goMedal() {
       wx.navigateTo({
-        url: "/pages/myMedal/main"
+        url: "/pages/myMedal/main",
       });
     },
     goAboutUs() {
       wx.navigateTo({
-        url: "/pages/aboutUs/main"
+        url: "/pages/aboutUs/main",
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -362,6 +392,11 @@ export default {
         display: inline-block;
         margin-right: 5px;
         font-size: 18px;
+      }
+    }
+    .p3 {
+      i {
+        display: inline-block;
       }
     }
   }

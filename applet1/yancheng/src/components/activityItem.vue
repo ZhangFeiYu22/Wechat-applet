@@ -5,24 +5,29 @@
       <div
         class="activityItem"
         @click="goActivityDetails(item)"
-        v-for="(item,acIndex) in acticityList"
+        v-for="(item, acIndex) in acticityList"
         :key="acIndex"
       >
         <div class="imgBox">
-          <img v-if="item.coverImage" :src="item.coverImage" mode="aspectFill" />
+          <img
+            v-if="item.coverImage"
+            :src="item.coverImage"
+            mode="aspectFill"
+          />
         </div>
         <div class="wordBox">
-          <p class="title">{{item.title}}</p>
+          <p class="title">{{ item.title }}</p>
           <p class="address">
             <i class="iconfont icon-dingwei"></i>
-            <span>{{item.activityAddress}}</span>
+            <span>{{ item.activityAddress }}</span>
           </p>
           <p class="time">
             <i class="iconfont icon-shijian"></i>
-            <span>{{item.activityTime}}</span>
+            <span>{{ item.activityTime }}</span>
           </p>
         </div>
-        <div class="priceBtn">￥{{item.activityFee}}</div>
+        <!-- <div class="priceBtn">￥{{ item.activityFee }}</div> -->
+        <div class="priceBtn">{{ item.activityFee }}</div>
       </div>
     </div>
   </div>
@@ -36,17 +41,32 @@ export default {
   },
   methods: {
     goActivityDetails(item) {
-      var id;
-      if (item.id) {
-        id = item.id;
+      if (wx.getStorageSync("isLogin")) {
+        var id;
+        if (item.id) {
+          id = item.id;
+        } else {
+          id = item.activityId;
+        }
+        wx.navigateTo({
+          url: `/pages/activityDetails/main?activityId=${id}`,
+        });
       } else {
-        id = item.activityId;
+        wx.showToast({
+          title: "您还未登录，请先登录",
+          icon: "none",
+          duration: 1000,
+          success(data) {
+            setTimeout(function () {
+              wx.navigateTo({
+                url: "/pages/login/main",
+              });
+            }, 1000);
+          },
+        });
       }
-      wx.navigateTo({
-        url: `/pages/activityDetails/main?activityId=${id}`
-      });
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -82,24 +82,38 @@ export default {
   },
   methods: {
     requireTxt(index) {
-      let val = this.ItemList[index].showEllip;
+      let val = this.voteLists[index].showEllip;
       if (val) {
-        this.ItemList[index].showEllip = false;
+        this.voteLists[index].showEllip = false;
       } else {
-        this.ItemList[index].showEllip = true;
+        this.voteLists[index].showEllip = true;
       }
     },
     goPersonal(id) {
-      wx.navigateTo({
-        url: `/pages/personal/main?createrId=${id}`
-      });
+      if (wx.getStorageSync("isLogin")) {
+        wx.navigateTo({
+          url: `/pages/personal/main?createrId=${id}`
+        });
+      } else {
+        wx.showToast({
+          title: "您还未登录，请先登录",
+          icon: "none",
+          duration: 1000,
+          success(data) {
+            setTimeout(function () {
+              wx.navigateTo({
+                url: "/pages/login/main",
+              });
+            }, 1000);
+          },
+        });
+      }
     },
     //点击朋友圈图片,弹出框预览大图
     showImg(index, imgIndex) {
       let outIdx = index;
       let inIdx = imgIndex;
-      let imgArr = this.ItemList[outIdx].picList;
-      console.log(imgArr);
+      let imgArr = this.voteLists[outIdx].images;
       wx.previewImage({
         current: imgArr[inIdx], // 当前显示图片的http链接
         urls: imgArr // 需要预览的图片http链接列表
@@ -107,7 +121,8 @@ export default {
     },
     selectOne(vItem, item, vin) {
       var _this = this;
-      let authInfo = wx.getStorageSync("authInfo");
+      if (wx.getStorageSync("isLogin")) {
+        let authInfo = wx.getStorageSync("authInfo");
       if (vItem.myAnswer && vItem.myAnswer.answer) {
         wx.showToast({
           title: "您已参与，请勿重复投票",
@@ -144,6 +159,20 @@ export default {
               console.log("用户点击取消");
             }
           }
+        });
+      }
+      } else {
+        wx.showToast({
+          title: "您还未登录，请先登录",
+          icon: "none",
+          duration: 1000,
+          success(data) {
+            setTimeout(function () {
+              wx.navigateTo({
+                url: "/pages/login/main",
+              });
+            }, 1000);
+          },
         });
       }
     }

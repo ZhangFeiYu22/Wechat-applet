@@ -1,6 +1,10 @@
 <template>
   <div class="home">
-    <navigation-bar :title="'话题'" :navBackgroundColor="'#fff'" :publish-visible="1"></navigation-bar>
+    <navigation-bar
+      :title="'话题'"
+      :navBackgroundColor="'#fff'"
+      :publish-visible="1"
+    ></navigation-bar>
     <!-- 轮播 -->
     <div class="carrousel w94">
       <swiper
@@ -13,15 +17,20 @@
         @change="swiperChange"
         v-if="adList.length != 0"
       >
-        <block v-for="(item,index) in adList" :key="index">
+        <block v-for="(item, index) in adList" :key="index">
           <swiper-item>
             <image :src="item.imgUrl" class="slide-image" mode="aspectFill" />
           </swiper-item>
         </block>
       </swiper>
-      <img v-else class="default-image" src="/static/images/default_ad.jpg" mode="aspectFill" />
+      <img
+        v-else
+        class="default-image"
+        src="/static/images/default_ad.jpg"
+        mode="aspectFill"
+      />
       <view class="dots">
-        <block v-for="(item,index) in adList" :key="index">
+        <block v-for="(item, index) in adList" :key="index">
           <view :class="index == current ? ' active' : ''" class="dot"></view>
         </block>
       </view>
@@ -35,19 +44,20 @@
       :class="menuFixed ? 'fixedTop' : ''"
       :scroll-left="navScrollLeft"
       :scroll-with-animation="true"
-      :style="{'top': menuFixed ? navBar_Height + 'px':0}"
+      :style="{ top: menuFixed ? navBar_Height + 'px' : 0 }"
       id="navFixTop"
     >
-      <block v-for="(navItem,idx) in navItemList" :key="idx">
+      <block v-for="(navItem, idx) in navItemList" :key="idx">
         <view
           class="nav-item"
-          :class="currentTab == idx ?'active':''"
+          :class="currentTab == idx ? 'active' : ''"
           @tap="switchNav"
           :data-current="idx"
-        >{{navItem.name}}</view>
+          >{{ navItem.name }}</view
+        >
       </block>
     </scroll-view>
-    <div v-if="menuFixed" style="height: 45px"></div>
+    <div v-if="menuFixed" style="height: 45px;"></div>
     <!-- 填充高度 -->
     <!-- 内容列表 -->
     <!-- 活动 -->
@@ -60,15 +70,18 @@
     </div>
     <!-- 征寻 -->
     <div class="tabContent act" v-if="currentTab == 2">
-      <consultItem :statusShow="false" :consultList="solicitLists"></consultItem>
+      <consultItem
+        :statusShow="false"
+        :consultList="solicitLists"
+      ></consultItem>
     </div>
-    <div style="height:20px"></div>
+    <div style="height: 20px;"></div>
     <vue-tab-bar :selectNavIndex="3"></vue-tab-bar>
 
     <!-- 弹窗广告 -->
     <div class="adPop" v-show="adPopShow">
       <div class="popBox">
-        <img src="../../../static/images/pop.png" alt />
+        <img v-if="popUrl" :src="popUrl" alt />
         <i class="iconfont icon-close" @click="closeAdPop"></i>
       </div>
     </div>
@@ -82,10 +95,10 @@ import {
   forumContentDel,
   forumContentGetLogin,
   forumLike,
-  forumLikeNo
+  forumLikeNo,
 } from "@/api/home";
 import { activitysGet } from "@/api/activity";
-import { voteListGet } from "@/api/vote";
+import { voteListHasLogin, voteListNoLogin } from "@/api/vote";
 import { solicitListGet } from "@/api/solicit";
 import { getDateDiff } from "@/utils/getDateDiff";
 import navigationBar from "@/components/navigationBar";
@@ -99,28 +112,29 @@ export default {
     vueTabBar,
     activityItem,
     voteItem,
-    consultItem
+    consultItem,
   },
   data() {
     return {
+      popUrl: "", //弹出广告图片地址
       adPopShow: true,
       delId: "",
       navItemList: [
         {
-          name: "活动"
+          name: "活动",
         },
         {
-          name: "投票"
+          name: "投票",
         },
         {
-          name: "征寻"
+          name: "征寻",
         },
         {
-          name: "骰子"
+          name: "骰子",
         },
         {
-          name: "真心话"
-        }
+          name: "真心话",
+        },
       ],
       adList: [],
       acticityList: [],
@@ -130,7 +144,7 @@ export default {
       pageData: {
         pageSize: 5, //一页显示条数
         pageIndex: 0, //页码
-        total: 0 //总条数
+        total: 0, //总条数
       },
       indicatorDots: false,
       autoplay: true,
@@ -144,7 +158,7 @@ export default {
       menuFixed: false,
       scrollTop: 0,
       menuTop: "",
-      navBar_Height: ""
+      navBar_Height: "",
     };
   },
   onShow() {
@@ -163,10 +177,10 @@ export default {
     this.fetchAd();
     this.fetchActiveData();
     wx.getSystemInfo({
-      success: res => {
+      success: (res) => {
         console.log(res);
         this.windowWidth = res.windowWidth;
-      }
+      },
     });
     this.navBar_Height = wx.getStorageSync("navBar_Height");
     this.initClientRect();
@@ -179,18 +193,23 @@ export default {
     async fetchAd() {
       let adres = await adGet();
       if (adres.status == 200) {
-        this.adList = adres.result.data;
+        let adres_result = adres.result.data;
+        this.adList = adres_result.filter((item) => item.type == 1);
+        let diaImgArr = adres_result.filter((item) => item.type == 3);
+        if (diaImgArr.length > 0) {
+          this.popUrl = diaImgArr[0].imgUrl;
+        }
       }
     },
     // 轮播切换时控制指示点切换
-    swiperChange: function(e) {
+    swiperChange: function (e) {
       this.current = e.mp.detail.current;
     },
     //小菜单跳转
     navJump(path) {
       if (wx.getStorageSync("isLogin")) {
         wx.navigateTo({
-          url: path
+          url: path,
         });
       } else {
         wx.showModal({
@@ -198,12 +217,12 @@ export default {
           success(res) {
             if (res.confirm) {
               wx.navigateTo({
-                url: "/pages/login/main"
+                url: "/pages/login/main",
               });
             } else if (res.cancel) {
               console.log("用户点击取消");
             }
-          }
+          },
         });
       }
     },
@@ -215,13 +234,14 @@ export default {
       this.pageData = {
         pageSize: 5,
         pageIndex: 0,
-        total: 0
+        total: 0,
       };
       if (this.currentTab == cur) {
         return false;
       } else {
         if (cur < this.navItemList.length - 2) {
           this.currentTab = cur;
+          this.globalData.homeShowNum = cur;
         }
       }
       switch (cur) {
@@ -236,12 +256,12 @@ export default {
           break;
         case 3:
           wx.navigateTo({
-            url: `/pages/game_dice/main`
+            url: `/pages/game_dice/main`,
           });
           break;
         case 4:
           wx.navigateTo({
-            url: `/pages/game_truchOrDare/main`
+            url: `/pages/game_truchOrDare/main`,
           });
           break;
 
@@ -253,7 +273,7 @@ export default {
       var that = this;
       var query = wx.createSelectorQuery();
       query.select("#navFixTop").boundingClientRect();
-      query.exec(function(res) {
+      query.exec(function (res) {
         that.menuTop = res[0].top - that.navBar_Height;
       });
     },
@@ -261,7 +281,7 @@ export default {
       let _this = this;
       var data = {
         pageSize: this.pageData.pageSize,
-        pageIndex: this.pageData.pageIndex
+        pageIndex: this.pageData.pageIndex,
       };
       let acRes = await activitysGet(data);
       if (acRes.status == 200) {
@@ -277,16 +297,23 @@ export default {
     },
     async fetchVoteData() {
       let _this = this;
+      let voRes;
       var data = {
         pageSize: this.pageData.pageSize,
-        pageIndex: this.pageData.pageIndex
+        pageIndex: this.pageData.pageIndex,
       };
-      let voRes = await voteListGet(data);
+
+      if (wx.getStorageSync("isLogin")) {
+        voRes = await voteListHasLogin(data);
+      } else {
+        voRes = await voteListNoLogin(data);
+      }
+
       if (voRes.status == 200) {
         wx.stopPullDownRefresh();
         _this.pageData.total = voRes.result.total;
         let voteListsMap = voRes.result.data;
-        let voteLists = voteListsMap.map(vo => {
+        let voteLists = voteListsMap.map((vo) => {
           if (vo.options) {
             vo.options = JSON.parse(vo.options);
           }
@@ -308,7 +335,7 @@ export default {
       let _this = this;
       var data = {
         pageSize: this.pageData.pageSize,
-        pageIndex: this.pageData.pageIndex
+        pageIndex: this.pageData.pageIndex,
       };
       let soRes = await solicitListGet(data);
       if (soRes.status == 200) {
@@ -322,11 +349,6 @@ export default {
         }
       }
     },
-    goActivityDetails(id) {
-      wx.navigateTo({
-        url: `/pages/activityDetails/main?activityId=${id}`
-      });
-    }
   },
   //监听屏幕滚动 判断上下滚动
   onPageScroll(scroll) {
@@ -340,7 +362,7 @@ export default {
     }
   },
   //下拉刷新
-  onPullDownRefresh: function() {
+  onPullDownRefresh: function () {
     this.fetchAd();
     if (this.currentTab == 0) {
       this.fetchActiveData();
@@ -352,13 +374,13 @@ export default {
 
     console.log("下拉刷新");
   },
-  onReachBottom: function() {
+  onReachBottom: function () {
     if (this.currentTab == 0) {
       if (this.acticityList.length >= this.pageData.total) {
         wx.showToast({
           title: "到底了",
           icon: "none",
-          duration: 2000
+          duration: 2000,
         });
       } else {
         this.pageData.pageIndex++;
@@ -369,7 +391,7 @@ export default {
         wx.showToast({
           title: "到底了",
           icon: "none",
-          duration: 2000
+          duration: 2000,
         });
       } else {
         this.pageData.pageIndex++;
@@ -380,12 +402,18 @@ export default {
         wx.showToast({
           title: "到底了",
           icon: "none",
-          duration: 2000
+          duration: 2000,
         });
       } else {
         this.pageData.pageIndex++;
         this.fetchSolicitData();
       }
+    }
+  },
+  onShareAppMessage(){
+    return{
+      title:"城谜",
+      path:"/pages/home/main"// 分享的页面路径，一般设置首页
     }
   }
 };

@@ -1,6 +1,10 @@
 <template>
   <scroll-view class="scrollView" scroll-y="true">
-    <navigation-bar :title="'征寻发布'" :navBackgroundColor="'#fff'" :back-visible="true"></navigation-bar>
+    <navigation-bar
+      :title="'征寻发布'"
+      :navBackgroundColor="'#fff'"
+      :back-visible="true"
+    ></navigation-bar>
     <div class="collectAdd">
       <div class="content w94">
         <div class="line detail">
@@ -46,10 +50,11 @@
               :index="tIndex"
               :range="timeArray"
             >
-              <view
-                class="picker"
-                :class="tIndex?'hasColor':''"
-              >{{ tIndex ? timeArray[tIndex] : '选择有效时间'}}（单位：天）</view>
+              <view class="picker" :class="tIndex ? 'hasColor' : ''"
+                >{{
+                  tIndex ? timeArray[tIndex] : "选择有效时间"
+                }}（单位：天）</view
+              >
             </picker>
           </div>
         </div>
@@ -101,17 +106,25 @@
         <div
           v-else
           class="edit-text edit-textNo"
-          :style="{color: textNoColor}"
+          :style="{ color: textNoColor }"
           @click="changeTextStatus"
-        >{{realTextValue}}</div>
+        >
+          {{ realTextValue }}
+        </div>
         <div class="bb">
           <p class="tt">示例图：</p>
           <div class="edit-img">
-            <div class="imgbox" v-for="(item,index) in imgArr2" :key="index">
+            <div class="imgbox" v-for="(item, index) in imgArr2" :key="index">
               <image :src="item" mode="aspectFill" />
-              <i class="close iconfont icon-iconless" @click.stop="closeFunTwo(item,index)"></i>
+              <i
+                class="close iconfont icon-iconless"
+                @click.stop="closeFunTwo(item, index)"
+              ></i>
             </div>
-            <div class="iconfont icon-jiahao" @click.stop="chooseImageTwo"></div>
+            <div
+              class="iconfont icon-jiahao"
+              @click.stop="chooseImageTwo"
+            ></div>
           </div>
         </div>
       </div>
@@ -127,7 +140,7 @@ import { imgsUpload } from "@/utils/imgsUpload";
 import navigationBar from "@/components/navigationBar";
 export default {
   components: {
-    navigationBar
+    navigationBar,
   },
   data() {
     return {
@@ -142,7 +155,7 @@ export default {
         rank: 0,
         needReal: 1,
         content: "",
-        images: ""
+        images: "",
       },
       publishFormData: {
         title: "",
@@ -153,12 +166,12 @@ export default {
         rank: 0,
         needReal: 1,
         content: "",
-        images: ""
+        images: "",
       },
       textNoColor: "#dcdcdc",
       realTextValue: "请填写征寻的详细要求（100字以内）",
       textStatus: false,
-      imgArr2: []
+      imgArr2: [],
     };
   },
   mounted() {
@@ -172,7 +185,7 @@ export default {
       rank: 0,
       needReal: 1,
       content: "",
-      images: ""
+      images: "",
     };
     this.realTextValue = "请填写征寻的详细要求（100字以内）";
     this.imgArr2 = [];
@@ -188,7 +201,7 @@ export default {
         rank: 0,
         needReal: 1,
         content: "",
-        images: ""
+        images: "",
       };
       this.publishFormData = {
         title: "",
@@ -199,7 +212,7 @@ export default {
         rank: 0,
         needReal: 1,
         content: "",
-        images: ""
+        images: "",
       };
       this.textNoColor = "#dcdcdc";
       this.realTextValue = "请填写征寻的详细要求（100字以内）";
@@ -229,11 +242,11 @@ export default {
         sourceType: ["album", "camera"],
         success(res) {
           for (var i = 0; i < res.tempFilePaths.length; i++) {
-            imgsUpload(res.tempFilePaths[i]).then(rere => {
+            imgsUpload(res.tempFilePaths[i]).then((rere) => {
               self.imgArr2.push(rere);
             });
           }
-        }
+        },
       });
     },
     closeFunTwo(item, index) {
@@ -290,7 +303,7 @@ export default {
         wx.showToast({
           title: "请检查信息是否填写完整",
           icon: "none",
-          duration: 2000
+          duration: 2000,
         });
         return;
       } else {
@@ -301,7 +314,7 @@ export default {
           wx.showToast({
             title: "您的砖头余额不足！",
             icon: "none",
-            duration: 2000
+            duration: 2000,
           });
           return;
         }
@@ -309,7 +322,7 @@ export default {
           wx.showToast({
             title: "等级要求最高为6级",
             icon: "none",
-            duration: 2000
+            duration: 2000,
           });
           return;
         } else {
@@ -322,21 +335,24 @@ export default {
             rank: Number(this.formData.rank),
             needReal: Number(this.formData.needReal),
             content: this.formData.content,
-            images: this.imgArr2.join("|")
+            images: this.imgArr2.join("|"),
           };
-          solicitAdd(this.publishFormData).then(res => {
+          solicitAdd(this.publishFormData).then((res) => {
             if (res.status == 200) {
               this.globalData.homeShowNum = 2;
               this.restData();
               wx.showToast({
                 title: "发布成功",
                 icon: "none",
-                duration: 1500,
-                success: function() {
-                  wx.switchTab({
-                    url: `/pages/home/main`
-                  });
-                }
+                duration: 1000,
+                success(data) {
+                  setTimeout(function () {
+                    //要延时执行的代码
+                    wx.switchTab({
+                      url: `/pages/home/main`,
+                    });
+                  }, 1000); //延迟时间
+                },
               });
               // wx.showModal({
               //   title: "提示",
@@ -355,8 +371,8 @@ export default {
           });
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

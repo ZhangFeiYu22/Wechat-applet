@@ -143,8 +143,17 @@ export default {
       this.fetchData();
       this.delId = wx.getStorageSync("authId");
     } else {
-      wx.navigateTo({
-        url: "/pages/login/main"
+      wx.showToast({
+        title: "您还未登录，请先登录",
+        icon: "none",
+        duration: 1500,
+        success(data) {
+          setTimeout(function () {
+            wx.navigateTo({
+              url: "/pages/login/main",
+            });
+          }, 1500);
+        },
       });
     }
   },

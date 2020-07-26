@@ -82,7 +82,7 @@ export default {
       let authinfo = wx.getStorageSync('authInfo');
       let data = {
         msg: this.commentValue,
-        recipient: authinfo.id
+        recipient: this.msgOne.creator
       };
       messageTo(data).then(res => {
         if (res.status == 200) {

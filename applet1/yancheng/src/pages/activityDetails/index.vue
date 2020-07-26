@@ -5,15 +5,16 @@
       <img v-if="acDetails.coverImage" :src="acDetails.coverImage" mode="aspectFill" />
     </div>
     <div class="content w94">
-      <h5 class="title">{{acDetails.title}}</h5>
-      <p class="price">{{acDetails.activityFee > 0 ? '￥'+acDetails.activityFee : '免费'}}</p>
+      <h5 class="title">{{ acDetails.title }}</h5>
+      <!-- <p class="price">{{ acDetails.activityFee > 0 ? "￥" + acDetails.activityFee : "免费" }}</p> -->
+      <p class="price">免费</p>
       <p class="infoLine">
         <i class="iconfont icon-dingwei"></i>
-        <span>{{acDetails.activityAddress}}</span>
+        <span>{{ acDetails.activityAddress }}</span>
       </p>
       <p class="infoLine">
         <i class="iconfont icon-shijian"></i>
-        <span>{{acDetails.activityTime}}</span>
+        <span>{{ acDetails.activityTime }}</span>
       </p>
       <p class="infoLine">
         <i class="iconfont icon-shouji"></i>
@@ -22,13 +23,13 @@
       <div class="contentCont">
         <p class="pp">活动详情</p>
         <div class="details">
-          <div v-for="(imgItem,imgIndex) in acDetails.content" :key="imgIndex">
+          <div v-for="(imgItem, imgIndex) in acDetails.content" :key="imgIndex">
             <img v-if="imgItem" :src="imgItem" mode="widthFix" />
           </div>
         </div>
         <p class="pp">活动须知</p>
         <div class="needKnow">
-          <p>{{acDetails.subTitle}}</p>
+          <p>{{ acDetails.subTitle }}</p>
         </div>
       </div>
     </div>
@@ -36,7 +37,7 @@
     <div class="footerBox">
       <div class="other">
         <p @click.stop="likeFun(acDetails.id)">
-          <i class="iconfont" :class="likeAct?'icon-aixin1':'icon-aixin0'"></i>
+          <i class="iconfont" :class="likeAct ? 'icon-aixin1' : 'icon-aixin0'"></i>
           <span>关注</span>
         </p>
         <button class="share" open-type="share">
@@ -62,11 +63,11 @@
         <p class="ppp">该线上活动不需要报名，请牢记活动信息，及时到场参加。如有疑问可咨询举办方</p>
         <p class="infoLine">
           <i class="iconfont icon-dingwei"></i>
-          <span>{{acDetails.activityAddress}}</span>
+          <span>{{ acDetails.activityAddress }}</span>
         </p>
         <p class="infoLine">
           <i class="iconfont icon-shijian"></i>
-          <span>{{acDetails.activityTime}}</span>
+          <span>{{ acDetails.activityTime }}</span>
         </p>
         <p class="infoLine">
           <i class="iconfont icon-shouji"></i>
@@ -74,9 +75,9 @@
         </p>
         <p
           class="btn"
-          :class="acDetails.isBuy?'btnH':''"
+          :class="acDetails.isBuy ? 'btnH' : ''"
           @click.stop="joinActivity(acDetails)"
-        >{{acDetails.isBuy ? '您已参加' : '参加活动'}}</p>
+        >{{ acDetails.isBuy ? "您已参加" : "参加活动" }}</p>
       </div>
     </div>
   </div>
@@ -88,12 +89,12 @@ import {
   isLikeActivity,
   activitysFollow,
   activitysFollowNo,
-  activitysJoin
+  activitysJoin,
 } from "@/api/activity";
 import navigationBar from "@/components/navigationBar";
 export default {
   components: {
-    navigationBar
+    navigationBar,
   },
   data() {
     return {
@@ -102,34 +103,45 @@ export default {
       likeAct: false,
       joinMaskShow: false,
       actImg: `${this.$store.state.imgUrlHttp}/d1.png`,
-      actContImg: `${this.$store.state.imgUrlHttp}/dc1.png`
+      actContImg: `${this.$store.state.imgUrlHttp}/dc1.png`,
     };
   },
-  onLoad(options) {
-    activityDetailsGet(options.activityId).then(res => {
-      if (res.status == 200) {
-        var resData = res.result;
-        if (resData.content !== "") {
-          resData.content = resData.content.split(";");
-        }
-        this.acDetails = resData;
-      }
-    });
-    isLikeActivity(options.activityId).then(res => {
-      if (res.status == 200) {
-        this.likeAct = res.result;
-      }
-    });
+  onShow() {
+    // 获取当前小程序的页面栈
+    let pages = getCurrentPages();
+    // 数组中索引最大的页面--当前页面
+    let currentPage = pages[pages.length - 1];
+    let options = currentPage.options;
+    this.fetchActDetail(options.activityId);
+    this.isLikeFun(options.activityId);
   },
   methods: {
+    fetchActDetail(aid) {
+      activityDetailsGet(aid).then((res) => {
+        if (res.status == 200) {
+          var resData = res.result;
+          if (resData.content !== "") {
+            resData.content = resData.content.split(";");
+          }
+          this.acDetails = resData;
+        }
+      });
+    },
+    isLikeFun(aid) {
+      isLikeActivity(aid).then((res) => {
+        if (res.status == 200) {
+          this.likeAct = res.result;
+        }
+      });
+    },
     goPersonal() {
       wx.navigateTo({
-        url: "/pages/personal/main"
+        url: "/pages/personal/main",
       });
     },
     callPhone() {
       wx.makePhoneCall({
-        phoneNumber: this.tel //仅为示例，并非真实的电话号码
+        phoneNumber: this.tel, //仅为示例，并非真实的电话号码
       });
     },
     joinMaskToggle() {
@@ -138,24 +150,24 @@ export default {
     likeFun(id) {
       var _this = this;
       if (_this.likeAct) {
-        activitysFollowNo(id).then(res => {
+        activitysFollowNo(id).then((res) => {
           if (res.status == 200) {
             _this.likeAct = false;
             wx.showToast({
               title: "取消关注",
               icon: "none",
-              duration: 1500
+              duration: 1500,
             });
           }
         });
       } else {
-        activitysFollow(id).then(res => {
+        activitysFollow(id).then((res) => {
           if (res.status == 200) {
             _this.likeAct = true;
             wx.showToast({
               title: "关注成功",
               icon: "none",
-              duration: 1500
+              duration: 1500,
             });
           }
         });
@@ -166,7 +178,7 @@ export default {
         wx.showToast({
           title: "您已参加，请勿重复参加",
           icon: "none",
-          duration: 1500
+          duration: 1500,
         });
       } else {
         let authInfo = wx.getStorageSync("authInfo");
@@ -174,29 +186,28 @@ export default {
           activityId: detail.id,
           memberId: authInfo.id,
           payFee: 0,
-          payType: 1
+          payType: 1,
         };
-        activitysJoin(data).then(res => {
+        activitysJoin(data).then((res) => {
           if (res.status == 200) {
             this.acDetails.isBuy = !this.acDetails.isBuy;
             wx.showToast({
               title: "参加成功",
               icon: "none",
-              duration: 1500
+              duration: 1500,
             });
           }
         });
       }
-    }
+    },
   },
-  onShareAppMessage: function(res) {
+  onShareAppMessage: function (res) {
     return {
-      title: "这是分享标题",
-      // path: `/pages/topicDetails/main?topic_id=${id}`,
-      path: `/pages/topicDetails/main?topic_id=6`,
-      imageUrl: `${this.$store.state.imgUrlHttp}/a6.png`
+      title: this.acDetails.title,
+      path: `/pages/topicDetails/main?topic_id=${this.acDetails.id}`,
+      imageUrl: this.acDetails.coverImage,
     };
-  }
+  },
 };
 </script>
 

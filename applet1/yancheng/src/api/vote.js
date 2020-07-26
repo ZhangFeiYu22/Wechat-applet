@@ -4,8 +4,10 @@ import request from '@/utils/request'
 export const voteAdd = (data) => request.post(`/vote`, data)
 
 
-// 获取 投票列表
-export const voteListGet = (data) => request.get(`/vote/getList`, data)
+// 获取 投票列表  需要登录的
+export const voteListHasLogin = (data) => request.get(`/vote/getList`, data)
+    //不需要登录
+export const voteListNoLogin = (data) => request.get(`/vote`, data)
 
 
 // 选择投票项 投票答案

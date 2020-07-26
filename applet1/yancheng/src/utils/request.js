@@ -4,7 +4,7 @@ const request = new Fly()
 const baseUrl = "https://api.chengmi.club";
 
 request.config.baseURL = baseUrl
-request.config.timeout = 5000
+request.config.timeout = 10000
 
 request.interceptors.request.use((request) => {
 

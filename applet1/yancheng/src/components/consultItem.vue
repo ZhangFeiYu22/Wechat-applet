@@ -5,7 +5,7 @@
       <div
         class="consultItem"
         @click.stop="goConsultDetails(item.id)"
-        v-for="(item,conIndex) in consultList"
+        v-for="(item, conIndex) in consultList"
         :key="conIndex"
       >
         <div class="left">
@@ -14,20 +14,20 @@
               <img v-if="item.images" :src="item.images" mode="aspectFill" />
             </div>
             <div class="wordBox">
-              <p class="title">{{item.title}}</p>
+              <p class="title">{{ item.title }}</p>
               <p class="peopleNum">
                 人数:
-                <span>{{item.num}}</span>
+                <span>{{ item.num }}</span>
               </p>
               <p class="createTime">
                 时间:
-                <span>{{item.validDay}}天</span>
+                <span>{{ item.validDay }}天</span>
               </p>
             </div>
           </div>
-          <div class="content">{{item.content}}</div>
+          <div class="content">{{ item.content }}</div>
         </div>
-        <div class="right">+{{item.integral}}砖</div>
+        <div class="right">+{{ item.integral }}砖</div>
         <div class="bottom" v-if="statusShow">
           <p class="status" v-if="item.status == 1">已完成</p>
           <p class="status" v-else-if="item.status == 2">待审核</p>
@@ -49,35 +49,50 @@ export default {
   },
   methods: {
     goConsultDetails(id) {
-      wx.navigateTo({
-        url: `/pages/consultDetails/main?soId=${id}`
-      });
+      if (wx.getStorageSync("isLogin")) {
+        wx.navigateTo({
+          url: `/pages/consultDetails/main?soId=${id}`,
+        });
+      } else {
+        wx.showToast({
+          title: "您还未登录，请先登录",
+          icon: "none",
+          duration: 1000,
+          success(data) {
+            setTimeout(function () {
+              wx.navigateTo({
+                url: "/pages/login/main",
+              });
+            }, 1000);
+          },
+        });
+      }
     },
     abandonFun() {
       wx.showModal({
         content: "确定要放弃征寻任务吗",
-        success: res => {
+        success: (res) => {
           if (res.confirm) {
             console.log("确定");
           } else if (res.cancel) {
             console.log("取消");
           }
-        }
+        },
       });
     },
     againFun() {
       wx.showModal({
         content: "确定再来一单吗",
-        success: res => {
+        success: (res) => {
           if (res.confirm) {
             console.log("确定");
           } else if (res.cancel) {
             console.log("取消");
           }
-        }
+        },
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

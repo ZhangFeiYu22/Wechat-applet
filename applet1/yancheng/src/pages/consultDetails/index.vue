@@ -149,7 +149,12 @@ export default {
       joinId: "" //参加的ID值
     };
   },
-  onLoad(options) {
+  onShow() {
+    // 获取当前小程序的页面栈
+    let pages = getCurrentPages();
+    // 数组中索引最大的页面--当前页面
+    let currentPage = pages[pages.length - 1];
+    let options = currentPage.options;
     this.fetchDetails(options.soId);
     this.myInfo = wx.getStorageSync("authInfo");
   },
