@@ -16,7 +16,8 @@
         <div v-if="publishVisible" class="bar-optionsBox">
           <div class="onlyBack">
             <div class="opt opt-add" @click="publishClick()">
-              <span  v-if="publishVisible == 1">发布</span>
+              <!-- <span  v-if="publishVisible == 1">发布</span> -->
+              <span  v-if="publishVisible == 1"></span>
                <i v-else  class="iconfont icon-publish1"></i>
             </div>
           </div>

@@ -141,18 +141,24 @@ export default {
                 memberId: authInfo.id,
                 voteId: vItem.id
               };
+              wx.showLoading({
+                  title: "投票中...",
+                });
               voteListSel(answerForm).then(res => {
                 if (res.status == 200) {
-                  this.$nextTick(() => {
-                    this.voteLists[vin]["myAnswer"] = {
+                  _this.$nextTick(() => {
+                    _this.voteLists[vin]["myAnswer"] = {
                       answer: item.optionsContent
                     };
                   });
-                  wx.showToast({
-                    title: "投票成功",
-                    icon: "none",
-                    duration: 1500
-                  });
+                  if(_this.voteLists[vin]["myAnswer"]){
+                    wx.showToast({
+                      title: "投票成功",
+                      icon: "none",
+                      duration: 1500
+                    });
+                    wx.hideLoading();
+                  }
                 }
               });
             } else if (res.cancel) {

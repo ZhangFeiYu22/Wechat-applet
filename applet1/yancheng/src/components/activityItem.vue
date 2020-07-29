@@ -26,8 +26,7 @@
             <span>{{ item.activityTime }}</span>
           </p>
         </div>
-        <!-- <div class="priceBtn">￥{{ item.activityFee }}</div> -->
-        <div class="priceBtn">{{ item.activityFee }}</div>
+        <div class="priceBtn">￥{{ item.activityFee }}</div>
       </div>
     </div>
   </div>

@@ -150,24 +150,14 @@ export default {
         title: "",
         num: 0,
         integral: 0,
-        validDay: 1,
-        needPic: 1,
+        validDay: '',
+        needPic: 0,
         rank: 0,
-        needReal: 1,
+        needReal: 0,
         content: "",
         images: "",
       },
-      publishFormData: {
-        title: "",
-        num: 0,
-        integral: 0,
-        validDay: 1,
-        needPic: 1,
-        rank: 0,
-        needReal: 1,
-        content: "",
-        images: "",
-      },
+      publishFormData: {},
       textNoColor: "#dcdcdc",
       realTextValue: "请填写征寻的详细要求（100字以内）",
       textStatus: false,
@@ -180,10 +170,10 @@ export default {
       title: "",
       num: 0,
       integral: 0,
-      validDay: 1,
-      needPic: 1,
+      validDay: '',
+      needPic: 0,
       rank: 0,
-      needReal: 1,
+      needReal: 0,
       content: "",
       images: "",
     };
@@ -196,21 +186,10 @@ export default {
         title: "",
         num: 0,
         integral: 0,
-        validDay: 1,
-        needPic: 1,
+        validDay: '',
+        needPic: 0,
         rank: 0,
-        needReal: 1,
-        content: "",
-        images: "",
-      };
-      this.publishFormData = {
-        title: "",
-        num: 0,
-        integral: 0,
-        validDay: 1,
-        needPic: 1,
-        rank: 0,
-        needReal: 1,
+        needReal: 0,
         content: "",
         images: "",
       };
@@ -290,86 +269,133 @@ export default {
       return false;
     },
     publishFun() {
-      if (
-        this.isEmpty(this.formData.title) ||
-        this.isEmpty(this.formData.num) ||
-        this.isEmpty(this.formData.integral) ||
-        this.isEmpty(this.formData.validDay) ||
-        this.isEmpty(this.formData.needPic) ||
-        this.isEmpty(this.formData.rank) ||
-        this.isEmpty(this.formData.needReal) ||
-        this.isEmpty(this.formData.content)
-      ) {
+      if (this.isEmpty(this.formData.title)) {
         wx.showToast({
-          title: "请检查信息是否填写完整",
+          title: "请完善征寻名称",
           icon: "none",
           duration: 2000,
         });
-        return;
+        return false;
+      }
+      if (this.isEmpty(this.formData.num)) {
+        wx.showToast({
+          title: "请完善征集人数",
+          icon: "none",
+          duration: 2000,
+        });
+        return false;
+      }
+      if (this.isEmpty(this.formData.integral)) {
+        wx.showToast({
+          title: "请完善奖励转数",
+          icon: "none",
+          duration: 2000,
+        });
+        return false;
+      }
+      if (this.isEmpty(this.formData.validDay)) {
+        wx.showToast({
+          title: "请完善有效天数",
+          icon: "none",
+          duration: 2000,
+        });
+        return false;
+      }
+      if (this.isEmpty(this.formData.needPic)) {
+        wx.showToast({
+          title: "请完善是否需要图片",
+          icon: "none",
+          duration: 2000,
+        });
+        return false;
+      }
+      if (this.isEmpty(this.formData.rank)) {
+        wx.showToast({
+          title: "请完善等级要求",
+          icon: "none",
+          duration: 2000,
+        });
+        return false;
+      }
+      if (this.isEmpty(this.formData.needReal)) {
+        wx.showToast({
+          title: "请完善实名要求",
+          icon: "none",
+          duration: 2000,
+        });
+        return false;
+      }
+      if (this.isEmpty(this.formData.content)) {
+        wx.showToast({
+          title: "请完善征寻详细要求",
+          icon: "none",
+          duration: 2000,
+        });
+        return false;
+      }
+      let needIntegral = this.formData.num * this.formData.integral;
+      let authInfo = wx.getStorageSync("authInfo");
+      let authIntegral = authInfo.points;
+      if (needIntegral > authIntegral) {
+        wx.showToast({
+          title: "您的砖头余额不足！",
+          icon: "none",
+          duration: 2000,
+        });
+        return false;
+      }
+      if (Number(this.formData.rank) > 6) {
+        wx.showToast({
+          title: "等级要求最高为6级",
+          icon: "none",
+          duration: 2000,
+        });
+        return false;
       } else {
-        let needIntegral = this.formData.num * this.formData.integral;
-        let authInfo = wx.getStorageSync("authInfo");
-        let authIntegral = authInfo.points;
-        if (needIntegral > authIntegral) {
-          wx.showToast({
-            title: "您的砖头余额不足！",
-            icon: "none",
-            duration: 2000,
-          });
-          return;
-        }
-        if (Number(this.formData.rank) > 6) {
-          wx.showToast({
-            title: "等级要求最高为6级",
-            icon: "none",
-            duration: 2000,
-          });
-          return;
-        } else {
-          this.publishFormData = {
-            title: this.formData.title,
-            num: Number(this.formData.num),
-            integral: Number(this.formData.integral),
-            validDay: Number(this.formData.validDay),
-            needPic: Number(this.formData.needPic),
-            rank: Number(this.formData.rank),
-            needReal: Number(this.formData.needReal),
-            content: this.formData.content,
-            images: this.imgArr2.join("|"),
-          };
-          solicitAdd(this.publishFormData).then((res) => {
-            if (res.status == 200) {
-              this.globalData.homeShowNum = 2;
-              this.restData();
-              wx.showToast({
-                title: "发布成功",
-                icon: "none",
-                duration: 1000,
-                success(data) {
-                  setTimeout(function () {
-                    //要延时执行的代码
-                    wx.switchTab({
-                      url: `/pages/home/main`,
-                    });
-                  }, 1000); //延迟时间
-                },
-              });
-              // wx.showModal({
-              //   title: "提示",
-              //   content: "发布成功，是否返回界面",
-              //   success(res) {
-              //     if (res.confirm) {
-              //       wx.switchTab({
-              //         url: `/pages/home/main`
-              //       });
-              //     } else if (res.cancel) {
-              //       console.log("用户点击取消");
-              //     }
-              //   }
-              // });
-            }
-          });
-        }
+        this.publishFormData = {
+          title: this.formData.title,
+          num: Number(this.formData.num),
+          integral: Number(this.formData.integral),
+          validDay: Number(this.formData.validDay),
+          needPic: Number(this.formData.needPic),
+          rank: Number(this.formData.rank),
+          needReal: Number(this.formData.needReal),
+          content: this.formData.content,
+          images: this.imgArr2.join("|"),
+        };
+        console.log('this.publishFormData----',this.publishFormData)
+        solicitAdd(this.publishFormData).then((res) => {
+          if (res.status == 200) {
+            this.globalData.homeShowNum = 2;
+            // this.restData();
+            wx.showToast({
+              title: "发布成功,后台审核中",
+              icon: "none",
+              duration: 2000,
+              success(data) {
+                setTimeout(function () {
+                  //要延时执行的代码
+                  wx.switchTab({
+                    url: `/pages/home/main`,
+                  });
+                }, 2000); //延迟时间
+              },
+            });
+            // wx.showModal({
+            //   title: "提示",
+            //   content: "发布成功，是否返回界面",
+            //   success(res) {
+            //     if (res.confirm) {
+            //       wx.switchTab({
+            //         url: `/pages/home/main`
+            //       });
+            //     } else if (res.cancel) {
+            //       console.log("用户点击取消");
+            //     }
+            //   }
+            // });
+          }
+        });
       }
     },
   },

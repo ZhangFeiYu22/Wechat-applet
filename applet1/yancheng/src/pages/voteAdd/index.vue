@@ -167,16 +167,16 @@ export default {
             if (res.status == 200) {
               _this.globalData.homeShowNum = 1;
               wx.showToast({
-                title: "发布成功",
+                title: "发布成功,后台审核中",
                 icon: "none",
-                duration: 1000,
+                duration: 2000,
                 success(data) {
                   setTimeout(function() {
                     //要延时执行的代码
                     wx.switchTab({
                       url: `/pages/home/main`
                     });
-                  }, 1000); //延迟时间
+                  }, 2000); //延迟时间
                 }
               });
             }

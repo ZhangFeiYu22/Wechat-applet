@@ -1,6 +1,10 @@
 <template>
   <scroll-view class="scrollView" scroll-y="true">
-    <navigation-bar :title="'活动添加'" :navBackgroundColor="'#fff'" :back-visible="true"></navigation-bar>
+    <navigation-bar
+      :title="'活动添加'"
+      :navBackgroundColor="'#fff'"
+      :back-visible="true"
+    ></navigation-bar>
     <div class="voteAdd">
       <!-- 内容列表 -->
       <div class="content w94">
@@ -14,21 +18,36 @@
         <div
           v-else
           class="edit-text edit-textNo"
-          :style="{color: textNoColor}"
+          :style="{ color: textNoColor }"
           @click="changeTextStatus"
-        >{{realTextValue}}</div>
+        >
+          {{ realTextValue }}
+        </div>
         <div class="edit-img">
-          <div class="imgbox" v-for="(item,index) in imgArr1" :key="index">
+          <div class="imgbox" v-for="(item, index) in imgArr1" :key="index">
             <image v-if="item" :src="item" mode="aspectFill" />
-            <i class="close iconfont icon-iconless" @click.stop="closeFunOne(item,index)"></i>
+            <i
+              class="close iconfont icon-iconless"
+              @click.stop="closeFunOne(item, index)"
+            ></i>
           </div>
           <div class="iconfont icon-jiahao" @click.stop="chooseImageOne"></div>
         </div>
         <div class="line">
           <div class="left">是否收费：</div>
           <div class="right isno">
-            <span class="bg" :class="publishFormData.feeType?'bg_a':''" @click="toggleBag('0')">是</span>
-            <span class="bg" :class="publishFormData.feeType?'':'bg_a'" @click="toggleBag('1')">否</span>
+            <span
+              class="bg"
+              :class="publishFormData.feeType ? 'bg_a' : ''"
+              @click="toggleBag('0')"
+              >是</span
+            >
+            <span
+              class="bg"
+              :class="publishFormData.feeType ? '' : 'bg_a'"
+              @click="toggleBag('1')"
+              >否</span
+            >
           </div>
         </div>
         <div class="line">
@@ -41,7 +60,12 @@
         <div class="line">
           <div class="left">时间：</div>
           <div class="right">
-            <picker mode="date" start="2000-01-01" end="2050-12-31" @change="bindDateChange">
+            <picker
+              mode="date"
+              start="2000-01-01"
+              end="2050-12-31"
+              @change="bindDateChange"
+            >
               <input
                 v-model="publishFormData.activityTime"
                 disabled
@@ -81,11 +105,17 @@
         <div class="bb">
           <p class="tt">活动详情</p>
           <div class="edit-img">
-            <div class="imgbox" v-for="(item,index) in imgArr2" :key="index">
+            <div class="imgbox" v-for="(item, index) in imgArr2" :key="index">
               <image :src="item" mode="aspectFill" />
-              <i class="close iconfont icon-iconless" @click.stop="closeFunTwo(item,index)"></i>
+              <i
+                class="close iconfont icon-iconless"
+                @click.stop="closeFunTwo(item, index)"
+              ></i>
             </div>
-            <div class="iconfont icon-jiahao" @click.stop="chooseImageTwo"></div>
+            <div
+              class="iconfont icon-jiahao"
+              @click.stop="chooseImageTwo"
+            ></div>
           </div>
         </div>
         <div class="bb">
@@ -100,9 +130,11 @@
           <div
             v-else
             class="edit-text edit-textNo"
-            :style="{color: textNoColor2}"
+            :style="{ color: textNoColor2 }"
             @click="changeTextStatus2"
-          >{{realTextValue2}}</div>
+          >
+            {{ realTextValue2 }}
+          </div>
         </div>
       </div>
 
@@ -117,7 +149,7 @@ import { imgsUpload } from "@/utils/imgsUpload";
 import navigationBar from "@/components/navigationBar";
 export default {
   components: {
-    navigationBar
+    navigationBar,
   },
   data() {
     return {
@@ -129,7 +161,7 @@ export default {
         coverImage: "",
         feeType: 0,
         subTitle: "",
-        title: ""
+        title: "",
       },
       textNoColor: "#dcdcdc",
       realTextValue: "标题",
@@ -140,7 +172,7 @@ export default {
       imgArr1: [],
       imgArrCenter: [],
       imgArr2: [],
-      detailAddress: ""
+      detailAddress: "",
     };
   },
   mounted() {
@@ -153,7 +185,7 @@ export default {
       coverImage: "",
       feeType: 0,
       subTitle: "",
-      title: ""
+      title: "",
     };
     this.textNoColor = "#dcdcdc";
     this.realTextValue = "标题";
@@ -208,12 +240,12 @@ export default {
         success(res) {
           let newArr = [];
           for (var i = 0; i < res.tempFilePaths.length; i++) {
-            imgsUpload(res.tempFilePaths[i]).then(rere => {
+            imgsUpload(res.tempFilePaths[i]).then((rere) => {
               newArr.push(rere);
               self.imgArr1 = newArr;
             });
           }
-        }
+        },
       });
     },
     closeFunOne(item, index) {
@@ -228,11 +260,11 @@ export default {
         sourceType: ["album", "camera"],
         success(res) {
           for (var i = 0; i < res.tempFilePaths.length; i++) {
-            imgsUpload(res.tempFilePaths[i]).then(rere => {
+            imgsUpload(res.tempFilePaths[i]).then((rere) => {
               self.imgArr2.push(rere);
             });
           }
-        }
+        },
       });
     },
     closeFunTwo(item, index) {
@@ -255,47 +287,63 @@ export default {
       this.publishFormData.activityAddress = regionString;
     },
     publishFun() {
-      if (
-        this.publishFormData.title == "" ||
-        this.imgArr1.length == 0 ||
-        this.imgArr2.length == 0 ||
-        this.publishFormData.activityTime == "" ||
-        this.publishFormData.activityAddress == "" ||
-        this.publishFormData.subTitle == ""
-      ) {
+      if (this.publishFormData.title == "") {
         wx.showToast({
-          title: "请检查信息是否填写完整",
+          title: "请完善活动标题",
           icon: "none",
-          duration: 2000
+          duration: 2000,
         });
         return;
-      } else {
-        this.publishFormData.coverImage = this.imgArr1[0];
-        let content = this.imgArr2.join(";");
-        this.publishFormData.content = content;
-        this.publishFormData.activityAddress =
-          this.publishFormData.activityAddress + " " + this.detailAddress;
-        activitysPost(this.publishFormData).then(res => {
-          if (res.status == 200) {
-            this.globalData.homeShowNum = 0;
-            wx.showToast({
-              title: "发布成功",
-              icon: "none",
-              duration: 1000,
-              success(data) {
-                setTimeout(function() {
-                  //要延时执行的代码
-                  wx.switchTab({
-                    url: `/pages/home/main`
-                  });
-                }, 1000); //延迟时间
-              }
-            });
-          }
-        });
       }
-    }
-  }
+      if (this.publishFormData.activityTime == "") {
+        wx.showToast({
+          title: "请完善活动时间",
+          icon: "none",
+          duration: 2000,
+        });
+        return;
+      }
+      if (this.publishFormData.activityAddress == "") {
+        wx.showToast({
+          title: "请完善活动地址",
+          icon: "none",
+          duration: 2000,
+        });
+        return;
+      }
+      if (this.publishFormData.subTitle == "") {
+        wx.showToast({
+          title: "请完善活动须知",
+          icon: "none",
+          duration: 2000,
+        });
+        return;
+      }
+      this.publishFormData.coverImage = this.imgArr1[0];
+      let content = this.imgArr2.join(";");
+      this.publishFormData.content = content;
+      this.publishFormData.activityAddress =
+        this.publishFormData.activityAddress + " " + this.detailAddress;
+      activitysPost(this.publishFormData).then((res) => {
+        if (res.status == 200) {
+          this.globalData.homeShowNum = 0;
+          wx.showToast({
+            title: "发布成功",
+            icon: "none",
+            duration: 1500,
+            success(data) {
+              setTimeout(function () {
+                //要延时执行的代码
+                wx.switchTab({
+                  url: `/pages/home/main`,
+                });
+              }, 1500); //延迟时间
+            },
+          });
+        }
+      });
+    },
+  },
 };
 </script>
 
@@ -394,6 +442,7 @@ export default {
             line-height: 20px;
             &.bg_a {
               background-color: #b1a1a3;
+              // background-color: #5AB04B;
               color: #fff;
               border: none;
               line-height: 22px;

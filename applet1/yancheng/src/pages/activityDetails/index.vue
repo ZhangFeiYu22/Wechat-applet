@@ -6,8 +6,7 @@
     </div>
     <div class="content w94">
       <h5 class="title">{{ acDetails.title }}</h5>
-      <!-- <p class="price">{{ acDetails.activityFee > 0 ? "￥" + acDetails.activityFee : "免费" }}</p> -->
-      <p class="price">免费</p>
+      <p class="price">{{ acDetails.activityFee > 0 ? "￥" + acDetails.activityFee : "免费" }}</p>
       <p class="infoLine">
         <i class="iconfont icon-dingwei"></i>
         <span>{{ acDetails.activityAddress }}</span>
@@ -16,10 +15,10 @@
         <i class="iconfont icon-shijian"></i>
         <span>{{ acDetails.activityTime }}</span>
       </p>
-      <p class="infoLine">
+      <!-- <p class="infoLine">
         <i class="iconfont icon-shouji"></i>
         <span>18512341234</span>
-      </p>
+      </p> -->
       <div class="contentCont">
         <p class="pp">活动详情</p>
         <div class="details">
