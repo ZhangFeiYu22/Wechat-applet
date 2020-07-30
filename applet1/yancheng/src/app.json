@@ -24,6 +24,7 @@
     "pages/activityDetails/main",
     "pages/activityAdd/main",
     "pages/voteAdd/main",
+    "pages/voteDetails/main",
     "pages/consultDetails/main",
     "pages/collectAdd/main",
     "pages/game_dice/main",

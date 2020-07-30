@@ -1,52 +1,54 @@
 <template>
-  <div class="vote">
-    <div class="noDataStyle" v-if="voteLists.length == 0">暂无数据</div>
-    <!-- 内容列表 -->
-    <div v-else class="contentList">
-      <div class="contentItem" v-for="(voteItem,index) in voteLists" :key="index" @click.stop="goVoteDetail(voteItem.id)">
-        <div class="headName" v-if="headShow">
-          <div class="headImg" @click.stop="goPersonal(voteItem.createId)">
-            <img :src="voteItem.avatar" mode="aspectFill" />
+  <div class="voteDetailsStyle">
+    <navigation-bar
+      :title="'投票详情'"
+      :navBackgroundColor="'#fff'"
+      :back-visible="true"
+    ></navigation-bar>
+      <div class="contentItem">
+    <div class="headName" v-if="headShow">
+          <div class="headImg" @click.stop="goPersonal(voteDetailsData.createId)">
+            <img v-if="voteDetailsData.avatar" :src="voteDetailsData.avatar" mode="aspectFill" />
           </div>
-          <div class="nameTime" @click.stop="goPersonal(voteItem.createId)">
-            <p class="name">{{voteItem.nickName}}</p>
+          <div class="nameTime" @click.stop="goPersonal(voteDetailsData.createId)">
+            <p class="name">{{voteDetailsData.nickName}}</p>
           </div>
         </div>
         <div
           class="content"
           id="contentInfo"
-          :class="voteItem.showEllip ? 'ellip' : ''"
-        >{{voteItem.content}}</div>
-        <div v-if="voteItem.showEllip" class="toggleBox">
+          :class="voteDetailsData.showEllip ? 'ellip' : ''"
+        >{{voteDetailsData.content}}</div>
+        <div v-if="voteDetailsData.showEllip" class="toggleBox">
           <div class="more_txt" @click.stop="requireTxt(index)">
-            <span>{{voteItem.showEllip ? '展开' : '收起'}}</span>
+            <span>{{voteDetailsData.showEllip ? '展开' : '收起'}}</span>
           </div>
         </div>
 
         <div
           class="imgsList"
-          v-if="voteItem.images!== undefined && voteItem.images!== null && voteItem.images .length>0"
+          v-if="voteDetailsData.images!== undefined && voteDetailsData.images!== null && voteDetailsData.images .length>0"
         >
           <div
             class="imgsItem"
-            v-for="(picItem,picIndex) in voteItem.images"
+            v-for="(picItem,picIndex) in voteDetailsData.images"
             :key="picIndex"
             @click.stop="showImg(index,picIndex)"
           >
-            <img :src="picItem" mode="aspectFill" />
+            <img v-if="picItem" :src="picItem" mode="aspectFill" />
           </div>
         </div>
         <div class="imgsList" v-else></div>
         <div class="selectBox">
           <div
             class="selList"
-            v-for="(litem,lindex) in voteItem.options"
+            v-for="(litem,lindex) in voteDetailsData.options"
             :key="lindex"
             color="#1097FF"
-            @click.stop="selectOne(voteItem,litem,index)"
+            @click.stop="selectOne(voteDetailsData,litem,index)"
           >
             <div
-              v-if="voteItem.myAnswer && voteItem.myAnswer.answer && (voteItem.myAnswer.answer == litem.optionsContent)"
+              v-if="voteDetailsData.myAnswer && voteDetailsData.myAnswer.answer && (voteDetailsData.myAnswer.answer == litem.optionsContent)"
               class="act"
             >
               <i class="sel"></i>
@@ -61,26 +63,111 @@
         </div>
 
         <div class="timeHandle">
-          <div class="time">{{voteItem.createTime}}</div>
+          <div class="time">{{voteDetailsData.createTime}}</div>
           <div class="joinNum">
-            <span>{{voteItem.answerCount}}</span>人参与投票
+            <span>{{voteDetailsData.answerCount}}</span>人参与投票
           </div>
         </div>
+    </div>
+    <div class="footerBox">
+      <div class="other">
+        <p @click.stop="likeFun(voteDetailsData.id)">
+          <i
+            class="iconfont"
+            :class="likeAct ? 'icon-aixin1' : 'icon-aixin0'"
+          ></i>
+          <span>关注</span>
+        </p>
+        <button class="share" open-type="share">
+          <i class="iconfont icon-fenxiang"></i>
+          <span>分享</span>
+        </button>
+        <p @click.stop="callPhone">
+          <i class="iconfont icon-kefu"></i>
+          <span>客服</span>
+        </p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { voteListSel } from "../api/vote";
+import { voteDetailsGet } from "@/api/vote";
+import navigationBar from "@/components/navigationBar";
 export default {
-  props: ["headShow", "voteLists"],
+  components: {
+    navigationBar,
+  },
   data() {
     return {
-      maskVal: false
+      tel: "18570373920",
+      voteDetailsData: {},
+      likeAct: false,
     };
   },
+  onShow() {
+    // 获取当前小程序的页面栈
+    let pages = getCurrentPages();
+    // 数组中索引最大的页面--当前页面
+    let currentPage = pages[pages.length - 1];
+    let options = currentPage.options;
+    this.fetchVoteDetail(options.voteId);
+    // this.isLikeFun(options.voteId);
+  },
   methods: {
+    fetchVoteDetail(aid) {
+      voteDetailsGet(aid).then((res) => {
+        if (res.status == 200) {
+          var resData = res.result;
+          if (resData.options) {
+            resData.options = JSON.parse(resData.options);
+          }
+          if (resData.images) {
+            resData.images = resData.images.split("|");
+          }
+          console.log(resData)
+          this.voteDetailsData = resData;
+        }
+      });
+    },
+    isLikeFun(aid) {
+      isLikeActivity(aid).then((res) => {
+        if (res.status == 200) {
+          this.likeAct = res.result;
+        }
+      });
+    },
+    callPhone() {
+      wx.makePhoneCall({
+        phoneNumber: this.tel, //仅为示例，并非真实的电话号码
+      });
+    },
+    likeFun(id) {
+      var _this = this;
+      if (_this.likeAct) {
+        activitysFollowNo(id).then((res) => {
+          if (res.status == 200) {
+            _this.likeAct = false;
+            wx.showToast({
+              title: "取消关注",
+              icon: "none",
+              duration: 1500,
+            });
+          }
+        });
+      } else {
+        activitysFollow(id).then((res) => {
+          if (res.status == 200) {
+            _this.likeAct = true;
+            wx.showToast({
+              title: "关注成功",
+              icon: "none",
+              duration: 1500,
+            });
+          }
+        });
+      }
+    },
     requireTxt(index) {
       let val = this.voteLists[index].showEllip;
       if (val) {
@@ -206,25 +293,23 @@ export default {
         });
       }
     }
-  }
+  },
+  onShareAppMessage: function (res) {
+    return {
+      title: this.voteDetailsData.title,
+      path: `/pages/topicDetails/main?topic_id=${this.voteDetailsData.id}`,
+      imageUrl: this.voteDetailsData.coverImage,
+    };
+  },
 };
 </script>
 
 <style lang="less" scoped>
-.vote {
+.voteDetailsStyle {
   padding-bottom: 30px;
-  .contentList {
-    width: 94%;
-    margin: 0px auto 10px;
-    box-shadow: 0 0 2px 2px #eee;
-    padding-top: 15px;
-    border-radius: 5px;
     // 内容列表
     .contentItem {
-      border-bottom: 1px solid #f1f1f1;
-      padding-bottom: 20px;
-      margin-bottom: 20px;
-      padding: 0 3% 20px;
+      padding: 20px 3%;
       .headName {
         display: flex;
         margin-bottom: 10px;
@@ -365,10 +450,66 @@ export default {
         }
       }
     }
-  }
+  
   .noDataStyle {
     text-align: center;
     color: #bbb;
+  }
+  // 底部
+  .footerBox {
+    position: fixed;
+    z-index: 2;
+    width: 100%;
+    bottom: 0;
+    background-color: #fff;
+    border-top: 1px solid #e0e0e0;
+    line-height: 30px;
+    padding: 6px 0;
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    i {
+      display: inline-block;
+      font-size: 20px;
+      color: #707070;
+      vertical-align: middle;
+      margin-right: 4px;
+    }
+    .join {
+      width: 25%;
+      vertical-align: middle;
+      border-left: 1px solid #e0e0e0;
+      span {
+        font-size: 14px;
+      }
+    }
+    .other {
+      width: 75%;
+      display: flex;
+      justify-content: space-around;
+      text-align: center;
+      p {
+        span {
+          font-size: 14px;
+          vertical-align: middle;
+          color: #393939;
+        }
+      }
+      .share {
+        vertical-align: middle;
+        line-height: 30px;
+        background-color: transparent;
+        border-radius: 0;
+        padding: 0;
+        margin: 0;
+        &::after {
+          border: none;
+        }
+        span {
+          font-size: 14px;
+        }
+      }
+    }
   }
 }
 </style>

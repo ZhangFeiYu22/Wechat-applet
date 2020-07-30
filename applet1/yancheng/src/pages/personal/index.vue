@@ -33,16 +33,14 @@
       </div>
     </div>
     <div class="linew"></div>
-    <div class="navBox">
+    <!-- <div class="navBox">
       <div class="navItem" :class="navType == '0' ? 'active' : ''" @click="itemToggle('0')">
-        <!-- <i class="iconfont icon-huati"></i> -->
         <p>话题</p>
       </div>
       <div class="navItem" :class="navType == '1' ? 'active' : ''" @click="itemToggle('1')">
-        <!-- <i class="iconfont icon-xiangji"></i> -->
         <p>社区</p>
       </div>
-    </div>
+    </div> -->
     <!-- 话题 -->
     <div class="contentList w94" v-if="navType == '0'">
       <div class="lengthNo" v-if="forumList.length == 0">该用户暂无话题动态</div>
@@ -273,7 +271,7 @@ export default {
     this.mid = options.createrId;
     this.fetchMember(options.createrId);
     this.fetchMemberForum(options.createrId);
-    this.fetchMemberComm(options.createrId);
+    // this.fetchMemberComm(options.createrId);
   },
   onShow() {
     this.delId = wx.getStorageSync("authId");

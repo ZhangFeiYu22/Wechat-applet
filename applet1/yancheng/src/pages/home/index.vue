@@ -195,9 +195,32 @@ export default {
       if (adres.status == 200) {
         let adres_result = adres.result.data;
         this.adList = adres_result.filter((item) => item.type == 1);
-        let diaImgArr = adres_result.filter((item) => item.type == 3);
-        if (diaImgArr.length > 0) {
-          this.popUrl = diaImgArr[0].imgUrl;
+        let adres_result_time = adres_result.map((item) => {
+          let time = new Date(item.createTime);
+          let time1 = Date.parse(time) / 1000;
+          item.createTime = time1;
+          return item;
+        });
+        let diaImgArr_2 = adres_result_time.filter((item) => item.type == 2);
+        let diaImgArr_3 = adres_result_time.filter((item) => item.type == 3);
+        if (diaImgArr_3.length > 0) {
+          const maxTime = Math.max.apply(
+            Math,
+            diaImgArr_3.map((item) => item.createTime)
+          );
+          let maxResult = diaImgArr_3.find(
+            (item) => maxTime == item.createTime
+          );
+          this.popUrl = maxResult.imgUrl;
+        } else {
+          const maxTime = Math.max.apply(
+            Math,
+            diaImgArr_2.map((item) => item.createTime)
+          );
+          let maxResult = diaImgArr_3.find(
+            (item) => maxTime == item.createTime
+          );
+          this.popUrl = maxResult.imgUrl;
         }
       }
     },
@@ -410,12 +433,12 @@ export default {
       }
     }
   },
-  onShareAppMessage(){
-    return{
-      title:"城谜",
-      path:"/pages/home/main"// 分享的页面路径，一般设置首页
-    }
-  }
+  onShareAppMessage() {
+    return {
+      title: "城谜",
+      path: "/pages/home/main", // 分享的页面路径，一般设置首页
+    };
+  },
 };
 </script>
 
