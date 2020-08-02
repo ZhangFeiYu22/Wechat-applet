@@ -30,13 +30,18 @@
             </div>
           </div>
           <!-- 返回键和home键 -->
-          <div v-if="backVisible && homeVisible" class="back_home">
+          <!-- <div v-if="backVisible && homeVisible" class="back_home">
             <div class="opt opt-back" @click="backClick()">
               <i class="iconfont icon-Left"></i>
             </div>
             <div class="line"></div>
             <div class="opt opt-home" @click="homeClick()">
-              <i class="iconfont icon-faxian"></i>
+              <i class="iconfont icon-icon-test"></i>
+            </div>
+          </div> -->
+          <div v-if="backVisible && homeVisible" class="back_home back_home2">
+            <div class="opt opt-home" @click="homeClick()">
+              <i class="iconfont icon-icon-test"></i>
             </div>
           </div>
         </div>
@@ -82,7 +87,7 @@ export default {
     // home按钮的路径
     homePath: {
       required: false,
-      default: "/pages/community/main"
+      default: "/pages/home/main"
     }
   },
   data() {
@@ -119,22 +124,19 @@ export default {
   },
   methods: {
     backClick() {
-      // if (getCurrentPages().length == 1) {
-      //   // 打开分享卡片无法回退
-      //   wx.redirectTo({
-      //     url: this.homePath
-      //   });
-      // } else {
-      //   wx.navigateBack({
-      //     delta: 1
-      //   });
-      // }
+      if (getCurrentPages().length == 1) {
+        // 打开分享卡片无法回退
+        wx.switchTab({
+          url: this.homePath
+        });
+      } else {
         wx.navigateBack({
           delta: 1
         });
+      }
     },
     homeClick() {
-      wx.redirectTo({
+      wx.switchTab({
         url: this.homePath
       });
     },
@@ -207,6 +209,10 @@ export default {
           border-radius: 27px;
           border: 1px solid #ddd;
           padding-right: 5rpx;
+          &.back_home2{
+            width: 46px;
+            padding-right: 0;
+          }
           .opt {
             width: 50rpx;
             height: 50rpx;

@@ -196,33 +196,25 @@ export default {
         let adres_result = adres.result.data;
         this.adList = adres_result.filter((item) => item.type == 1);
         let adres_result_time = adres_result.map((item) => {
-          let time = new Date(item.createTime);
-          let time1 = Date.parse(time) / 1000;
-          item.createTime = time1;
+          let time1 = item.createTime.replace(/-/g, "/");
+          let time2 = Date.parse(time1) / 1000;
+          item.createTime = time2;
           return item;
         });
-        let diaImgArr_2 = adres_result_time.filter((item) => item.type == 2);
-        let diaImgArr_3 = adres_result_time.filter((item) => item.type == 3);
-        if (diaImgArr_3.length > 0) {
-          const maxTime = Math.max.apply(
-            Math,
-            diaImgArr_3.map((item) => item.createTime)
-          );
-          let maxResult = diaImgArr_3.find(
-            (item) => maxTime == item.createTime
-          );
-          this.popUrl = maxResult.imgUrl;
-        } else {
-          const maxTime = Math.max.apply(
-            Math,
-            diaImgArr_2.map((item) => item.createTime)
-          );
-          let maxResult = diaImgArr_3.find(
-            (item) => maxTime == item.createTime
-          );
-          this.popUrl = maxResult.imgUrl;
+        console.log('adres_result_time---',adres_result_time)
+        let diaImgArr_2 = adres_result_time.filter((item) => item.type == 2 || item.type == 3);
+        console.log('diaImgArr_2----',diaImgArr_2)
+        const maxTime = Math.max.apply(
+          Math,
+          diaImgArr_2.map((item) => item.createTime)
+        );
+        let maxResult = diaImgArr_2.find(
+          (item) => maxTime == item.createTime
+        );
+        console.log('maxResult--图片弹窗显示-',maxResult)
+        this.popUrl = maxResult.imgUrl;
         }
-      }
+      
     },
     // 轮播切换时控制指示点切换
     swiperChange: function (e) {

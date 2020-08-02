@@ -1,6 +1,6 @@
 <template>
   <div class="consultDetails">
-    <navigation-bar :title="'征寻'" :navBackgroundColor="'#fff'" :back-visible="true"></navigation-bar>
+    <navigation-bar :title="'征寻'" :navBackgroundColor="'#fff'" :back-visible="true" :home-visible="homeVisible"></navigation-bar>
     <!-- <div class="headBg"></div> -->
     <div class="head" @click.stop="goPersonal(solicitDetails.createId)">
       <div class="headImg">
@@ -55,6 +55,10 @@
       <div class="btnContact" @click="sixinFun">
         <i class="iconfont icon-sixin"></i>私信
       </div>
+      <button class="share" open-type="share">
+        <i class="iconfont icon-fenxiang"></i>
+        <span>分享</span>
+      </button>
       <div class="btnMe" :class="isJoin?'isJoin':''" v-if="isEnroll" @click="joinConsult2">
         <i class="iconfont icon-aixin"></i>
         {{isJoin?'您已参加':'提交参加信息'}}
@@ -129,6 +133,7 @@ export default {
   },
   data() {
     return {
+      homeVisible: false,
       solicitDetails: {},
       imgArr1: [],
       maskVal: false, //私信显示判断
@@ -154,8 +159,13 @@ export default {
     let pages = getCurrentPages();
     // 数组中索引最大的页面--当前页面
     let currentPage = pages[pages.length - 1];
-    let options = currentPage.options;
-    this.fetchDetails(options.soId);
+    let getOptions = currentPage.options;
+    if(getOptions.isShareId == '1'){
+      this.homeVisible = true;
+    }else{
+      this.homeVisible = false;
+    }
+    this.fetchDetails(getOptions.soId);
     this.myInfo = wx.getStorageSync("authInfo");
   },
   mounted() {
@@ -334,7 +344,13 @@ export default {
         }
       });
     }
-  }
+  },
+  onShareAppMessage: function (res) {
+    return {
+      title: this.solicitDetails.title,
+      path: `/pages/consultDetails/main?soId=${this.solicitDetails.id}&isShareId=1`
+    };
+  },
 };
 </script>
 
@@ -489,14 +505,44 @@ export default {
       margin-right: 5px;
     }
     .btnContact {
-      width: 30%;
+      width: 25%;
       background-color: #fff;
       color: #000;
+    }
+    .share {
+      vertical-align: middle;
+      line-height: 50px;
+      background-color: transparent;
+      border-radius: 0;
+      width: 25%;
+      padding: 0;
+      &::after {
+        border: none;
+      }
+      &::before{
+        position: absolute;
+        content: '';
+        display: block;
+        width: 1px;
+        height: 20px;
+        border-left: 1px solid #e0e0e0;
+        top: 15px;
+      }
+      i {
+        display: inline-block;
+        font-size: 20px;
+        color: #707070;
+        vertical-align: middle;
+        margin-right: 4px;
+      }
+      span {
+        font-size: 14px;
+      }
     }
     .btnMe {
       background-color: #b1a1a3;
       color: #fff;
-      width: 70%;
+      width: 50%;
       &.is {
         background-color: #ddd;
       }

@@ -1,92 +1,75 @@
 <template>
   <div class="voteDetailsStyle">
-    <navigation-bar
-      :title="'投票详情'"
-      :navBackgroundColor="'#fff'"
-      :back-visible="true"
-    ></navigation-bar>
-      <div class="contentItem">
-    <div class="headName" v-if="headShow">
-          <div class="headImg" @click.stop="goPersonal(voteDetailsData.createId)">
-            <img v-if="voteDetailsData.avatar" :src="voteDetailsData.avatar" mode="aspectFill" />
-          </div>
-          <div class="nameTime" @click.stop="goPersonal(voteDetailsData.createId)">
-            <p class="name">{{voteDetailsData.nickName}}</p>
-          </div>
+    <navigation-bar :title="'投票详情'" :navBackgroundColor="'#fff'" :back-visible="true" :home-visible="homeVisible"></navigation-bar>
+    <div class="contentItem">
+      <div class="headName">
+        <div class="headImg" @click.stop="goPersonal(voteDetailsData.createId)">
+          <img v-if="voteDetailsData.avatar" :src="voteDetailsData.avatar" mode="aspectFill" />
         </div>
-        <div
-          class="content"
-          id="contentInfo"
-          :class="voteDetailsData.showEllip ? 'ellip' : ''"
-        >{{voteDetailsData.content}}</div>
-        <div v-if="voteDetailsData.showEllip" class="toggleBox">
-          <div class="more_txt" @click.stop="requireTxt(index)">
-            <span>{{voteDetailsData.showEllip ? '展开' : '收起'}}</span>
-          </div>
+        <div class="nameTime" @click.stop="goPersonal(voteDetailsData.createId)">
+          <p class="name">{{voteDetailsData.nickName}}</p>
         </div>
+      </div>
+      <div
+        class="content"
+        id="contentInfo"
+        :class="voteDetailsData.showEllip ? 'ellip' : ''"
+      >{{voteDetailsData.content}}</div>
+      <div v-if="voteDetailsData.showEllip" class="toggleBox">
+        <div class="more_txt" @click.stop="requireTxt(index)">
+          <span>{{voteDetailsData.showEllip ? '展开' : '收起'}}</span>
+        </div>
+      </div>
 
+      <div
+        class="imgsList"
+        v-if="voteDetailsData.images!== undefined && voteDetailsData.images!== null && voteDetailsData.images .length>0"
+      >
         <div
-          class="imgsList"
-          v-if="voteDetailsData.images!== undefined && voteDetailsData.images!== null && voteDetailsData.images .length>0"
+          class="imgsItem"
+          v-for="(picItem,picIndex) in voteDetailsData.images"
+          :key="picIndex"
+          @click.stop="showImg(index,picIndex)"
+        >
+          <img v-if="picItem" :src="picItem" mode="aspectFill" />
+        </div>
+      </div>
+      <div class="imgsList" v-else></div>
+      <div class="selectBox">
+        <div
+          class="selList"
+          v-for="(litem,lindex) in voteDetailsData.options"
+          :key="lindex"
+          color="#1097FF"
+          @click.stop="selectOne(voteDetailsData,litem,index)"
         >
           <div
-            class="imgsItem"
-            v-for="(picItem,picIndex) in voteDetailsData.images"
-            :key="picIndex"
-            @click.stop="showImg(index,picIndex)"
+            v-if="voteDetailsData.myAnswer && voteDetailsData.myAnswer.answer && (voteDetailsData.myAnswer.answer == litem.optionsContent)"
+            class="act"
           >
-            <img v-if="picItem" :src="picItem" mode="aspectFill" />
+            <i class="sel"></i>
+            <p class="miaosu">{{litem.optionsContent}}</p>
           </div>
-        </div>
-        <div class="imgsList" v-else></div>
-        <div class="selectBox">
-          <div
-            class="selList"
-            v-for="(litem,lindex) in voteDetailsData.options"
-            :key="lindex"
-            color="#1097FF"
-            @click.stop="selectOne(voteDetailsData,litem,index)"
-          >
-            <div
-              v-if="voteDetailsData.myAnswer && voteDetailsData.myAnswer.answer && (voteDetailsData.myAnswer.answer == litem.optionsContent)"
-              class="act"
-            >
-              <i class="sel"></i>
-              <p class="miaosu">{{litem.optionsContent}}</p>
-            </div>
-            <div v-else class="noAct">
-              <i class="sel"></i>
-              <p class="miaosu">{{litem.optionsContent}}</p>
-            </div>
-            <!-- <p class="bili">100%</p> -->
+          <div v-else class="noAct">
+            <i class="sel"></i>
+            <p class="miaosu">{{litem.optionsContent}}</p>
           </div>
+          <!-- <p class="bili">100%</p> -->
         </div>
+      </div>
 
-        <div class="timeHandle">
-          <div class="time">{{voteDetailsData.createTime}}</div>
-          <div class="joinNum">
-            <span>{{voteDetailsData.answerCount}}</span>人参与投票
-          </div>
+      <div class="timeHandle">
+        <div class="time">{{voteDetailsData.createTime}}</div>
+        <div class="joinNum">
+          <span>{{voteDetailsData.answerCount}}</span>人参与投票
         </div>
+      </div>
     </div>
     <div class="footerBox">
-      <div class="other">
-        <p @click.stop="likeFun(voteDetailsData.id)">
-          <i
-            class="iconfont"
-            :class="likeAct ? 'icon-aixin1' : 'icon-aixin0'"
-          ></i>
-          <span>关注</span>
-        </p>
-        <button class="share" open-type="share">
-          <i class="iconfont icon-fenxiang"></i>
-          <span>分享</span>
-        </button>
-        <p @click.stop="callPhone">
-          <i class="iconfont icon-kefu"></i>
-          <span>客服</span>
-        </p>
-      </div>
+      <button class="share" open-type="share">
+        <i class="iconfont icon-fenxiang"></i>
+        <span>分享</span>
+      </button>
     </div>
   </div>
 </template>
@@ -100,6 +83,7 @@ export default {
   },
   data() {
     return {
+      homeVisible: false,
       tel: "18570373920",
       voteDetailsData: {},
       likeAct: false,
@@ -110,9 +94,13 @@ export default {
     let pages = getCurrentPages();
     // 数组中索引最大的页面--当前页面
     let currentPage = pages[pages.length - 1];
-    let options = currentPage.options;
-    this.fetchVoteDetail(options.voteId);
-    // this.isLikeFun(options.voteId);
+    let getOptions = currentPage.options;
+    if(getOptions.isShareId == '1'){
+      this.homeVisible = true;
+    }else{
+      this.homeVisible = false;
+    }
+    this.fetchVoteDetail(getOptions.voteId);
   },
   methods: {
     fetchVoteDetail(aid) {
@@ -129,44 +117,6 @@ export default {
           this.voteDetailsData = resData;
         }
       });
-    },
-    isLikeFun(aid) {
-      isLikeActivity(aid).then((res) => {
-        if (res.status == 200) {
-          this.likeAct = res.result;
-        }
-      });
-    },
-    callPhone() {
-      wx.makePhoneCall({
-        phoneNumber: this.tel, //仅为示例，并非真实的电话号码
-      });
-    },
-    likeFun(id) {
-      var _this = this;
-      if (_this.likeAct) {
-        activitysFollowNo(id).then((res) => {
-          if (res.status == 200) {
-            _this.likeAct = false;
-            wx.showToast({
-              title: "取消关注",
-              icon: "none",
-              duration: 1500,
-            });
-          }
-        });
-      } else {
-        activitysFollow(id).then((res) => {
-          if (res.status == 200) {
-            _this.likeAct = true;
-            wx.showToast({
-              title: "关注成功",
-              icon: "none",
-              duration: 1500,
-            });
-          }
-        });
-      }
     },
     requireTxt(index) {
       let val = this.voteLists[index].showEllip;
@@ -296,9 +246,8 @@ export default {
   },
   onShareAppMessage: function (res) {
     return {
-      title: this.voteDetailsData.title,
-      path: `/pages/topicDetails/main?topic_id=${this.voteDetailsData.id}`,
-      imageUrl: this.voteDetailsData.coverImage,
+      title: this.voteDetailsData.content,
+      path: `/pages/voteDetails/main?voteId=${this.voteDetailsData.id}&isShareId=1`
     };
   },
 };
@@ -307,153 +256,148 @@ export default {
 <style lang="less" scoped>
 .voteDetailsStyle {
   padding-bottom: 30px;
-    // 内容列表
-    .contentItem {
-      padding: 20px 3%;
-      .headName {
-        display: flex;
-        margin-bottom: 10px;
-        .headImg {
-          width: 35px;
-          height: 35px;
-          margin-right: 10px;
-          border-radius: 100%;
-          overflow: hidden;
-          img {
-            width: 100%;
-            height: 100%;
-          }
-        }
-        .nameTime {
-          // flex: 1;
-          p {
-            &.name {
-              font-size: 16px;
-              line-height: 35px;
-              color: #403f3f;
-            }
-          }
+  // 内容列表
+  .contentItem {
+    padding: 20px 3%;
+    .headName {
+      display: flex;
+      margin-bottom: 10px;
+      .headImg {
+        width: 35px;
+        height: 35px;
+        margin-right: 10px;
+        border-radius: 100%;
+        overflow: hidden;
+        img {
+          width: 100%;
+          height: 100%;
         }
       }
-      .content {
-        line-height: 20px;
-        color: #6f6d6d;
-        font-size: 16px;
-        text-align: justify;
-        &.ellip {
-          overflow: hidden;
-          text-overflow: ellipsis;
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-          -webkit-line-clamp: 5;
-        }
-      }
-      .toggleBox {
-        font-size: 16px;
-        color: #6f6d6d;
-        .more_txt {
-          span {
-            border-bottom: 1px solid #6f6d6d;
-          }
-        }
-      }
-      .imgsList {
-        display: flex;
-        flex-wrap: wrap;
-        margin-top: 10px;
-        .imgsItem {
-          width: 32%;
-          margin-right: 1%;
-          height: 115px;
-          margin-bottom: 5px;
-          border-radius: 5px;
-          overflow: hidden;
-          img {
-            width: 100%;
-            height: 100%;
-          }
-        }
-      }
-      .timeHandle {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 15px;
-        align-items: center;
-        font-size: 14px;
-        .time {
-          color: #7e7e7e;
-          font-size: 12px;
-          span {
-            margin-left: 4px;
-          }
-        }
-        .joinNum {
-          color: #343434;
-          font-size: 12px;
-          span {
-            margin-left: 4px;
-          }
-        }
-      }
-      .selectBox {
-        .selList {
-          margin-bottom: 10px;
-          i {
-            width: 12px;
-            height: 12px;
-            border-radius: 20px;
-            border: 1px solid #1097ff;
-            margin-right: 10px;
-          }
-          .miaosu {
-            flex: 1;
-            font-size: 12px;
-            color: #b4b4b4;
-            line-height: 26px;
-            border-bottom: 1px solid #b4b4b4;
-          }
-          .bili {
-            width: 35px;
-            font-size: 12px;
-            color: #737373;
-          }
-          .noAct {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-          }
-          .act {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            i {
-              position: relative;
-              background-color: #1097ff;
-              &:after {
-                position: absolute;
-                top: 0px;
-                left: 3px;
-                content: "";
-                display: block;
-                width: 3px;
-                height: 8px;
-                border-right: 1px solid #fff;
-                border-bottom: 1px solid #fff;
-                transform: rotate(45deg);
-              }
-            }
-            .miaosu {
-              color: #000;
-              border-bottom: 1px solid #1097ff;
-            }
+      .nameTime {
+        // flex: 1;
+        p {
+          &.name {
+            font-size: 16px;
+            line-height: 35px;
+            color: #403f3f;
           }
         }
       }
     }
-  
-  .noDataStyle {
-    text-align: center;
-    color: #bbb;
+    .content {
+      line-height: 20px;
+      color: #6f6d6d;
+      font-size: 16px;
+      text-align: justify;
+      &.ellip {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 5;
+      }
+    }
+    .toggleBox {
+      font-size: 16px;
+      color: #6f6d6d;
+      .more_txt {
+        span {
+          border-bottom: 1px solid #6f6d6d;
+        }
+      }
+    }
+    .imgsList {
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      .imgsItem {
+        width: 32%;
+        margin-right: 1%;
+        height: 115px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+        overflow: hidden;
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+    .timeHandle {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+      align-items: center;
+      font-size: 14px;
+      .time {
+        color: #7e7e7e;
+        font-size: 12px;
+        span {
+          margin-left: 4px;
+        }
+      }
+      .joinNum {
+        color: #343434;
+        font-size: 12px;
+        span {
+          margin-left: 4px;
+        }
+      }
+    }
+    .selectBox {
+      .selList {
+        margin-bottom: 10px;
+        i {
+          width: 12px;
+          height: 12px;
+          border-radius: 20px;
+          border: 1px solid #1097ff;
+          margin-right: 10px;
+        }
+        .miaosu {
+          flex: 1;
+          font-size: 12px;
+          color: #b4b4b4;
+          line-height: 26px;
+          border-bottom: 1px solid #b4b4b4;
+        }
+        .bili {
+          width: 35px;
+          font-size: 12px;
+          color: #737373;
+        }
+        .noAct {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .act {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          i {
+            position: relative;
+            background-color: #1097ff;
+            &:after {
+              position: absolute;
+              top: 0px;
+              left: 3px;
+              content: "";
+              display: block;
+              width: 3px;
+              height: 8px;
+              border-right: 1px solid #fff;
+              border-bottom: 1px solid #fff;
+              transform: rotate(45deg);
+            }
+          }
+          .miaosu {
+            color: #000;
+            border-bottom: 1px solid #1097ff;
+          }
+        }
+      }
+    }
   }
   // 底部
   .footerBox {
@@ -462,52 +406,31 @@ export default {
     width: 100%;
     bottom: 0;
     background-color: #fff;
-    border-top: 1px solid #e0e0e0;
     line-height: 30px;
-    padding: 6px 0;
     display: flex;
     justify-content: space-between;
     text-align: center;
-    i {
-      display: inline-block;
-      font-size: 20px;
-      color: #707070;
+    .share {
       vertical-align: middle;
-      margin-right: 4px;
-    }
-    .join {
-      width: 25%;
-      vertical-align: middle;
-      border-left: 1px solid #e0e0e0;
+      line-height: 30px;
+      background-color: transparent;
+      border-top: 1px solid #e0e0e0;
+      padding: 6px 0;
+      border-radius: 0;
+      width: 100%;
+      margin: 0;
+      &::after {
+        border: none;
+      }
+      i {
+        display: inline-block;
+        font-size: 20px;
+        color: #707070;
+        vertical-align: middle;
+        margin-right: 4px;
+      }
       span {
         font-size: 14px;
-      }
-    }
-    .other {
-      width: 75%;
-      display: flex;
-      justify-content: space-around;
-      text-align: center;
-      p {
-        span {
-          font-size: 14px;
-          vertical-align: middle;
-          color: #393939;
-        }
-      }
-      .share {
-        vertical-align: middle;
-        line-height: 30px;
-        background-color: transparent;
-        border-radius: 0;
-        padding: 0;
-        margin: 0;
-        &::after {
-          border: none;
-        }
-        span {
-          font-size: 14px;
-        }
       }
     }
   }

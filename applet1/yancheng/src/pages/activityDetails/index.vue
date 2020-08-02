@@ -1,6 +1,6 @@
 <template>
   <div class="activityDetails">
-    <navigation-bar :title="'活动详情'" :navBackgroundColor="'#fff'" :back-visible="true"></navigation-bar>
+    <navigation-bar :title="'活动详情'" :navBackgroundColor="'#fff'" :back-visible="true" :home-visible="homeVisible"></navigation-bar>
     <div class="imgB">
       <img v-if="acDetails.coverImage" :src="acDetails.coverImage" mode="aspectFill" />
     </div>
@@ -97,6 +97,7 @@ export default {
   },
   data() {
     return {
+      homeVisible: false,
       tel: "18570373920",
       acDetails: {},
       likeAct: false,
@@ -105,14 +106,20 @@ export default {
       actContImg: `${this.$store.state.imgUrlHttp}/dc1.png`,
     };
   },
-  onShow() {
+  onShow(options) {
     // 获取当前小程序的页面栈
     let pages = getCurrentPages();
     // 数组中索引最大的页面--当前页面
     let currentPage = pages[pages.length - 1];
-    let options = currentPage.options;
-    this.fetchActDetail(options.activityId);
-    this.isLikeFun(options.activityId);
+    let getOptions = currentPage.options;
+    let getScene = wx.getLaunchOptionsSync().scene;
+    if(getOptions.isShareId == '1'){
+      this.homeVisible = true;
+    }else{
+      this.homeVisible = false;
+    }
+    this.fetchActDetail(getOptions.activityId);
+    this.isLikeFun(getOptions.activityId);
   },
   methods: {
     fetchActDetail(aid) {
@@ -203,7 +210,7 @@ export default {
   onShareAppMessage: function (res) {
     return {
       title: this.acDetails.title,
-      path: `/pages/topicDetails/main?topic_id=${this.acDetails.id}`,
+      path: `/pages/activityDetails/main?activityId=${this.acDetails.id}&isShareId=1`,
       imageUrl: this.acDetails.coverImage,
     };
   },

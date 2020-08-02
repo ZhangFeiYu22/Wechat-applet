@@ -336,7 +336,7 @@ export default {
       let inIdx = imgIndex;
       let imgArr = this.communityFriendsList[outIdx].images;
       wx.previewImage({
-        current: imgArr[inIdx].url, // 当前显示图片的http链接
+        current: imgArr[inIdx], // 当前显示图片的http链接
         urls: imgArr // 需要预览的图片http链接列表
       });
     },
