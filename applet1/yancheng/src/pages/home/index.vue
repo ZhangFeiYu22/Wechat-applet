@@ -81,7 +81,22 @@
     <!-- 弹窗广告 -->
     <div class="adPop" v-show="adPopShow">
       <div class="popBox">
-        <img v-if="popUrl" :src="popUrl" alt />
+        <image
+          class="imgType2"
+          v-if="popUrl.imgUrl && popUrl.type == 2"
+          :src="popUrl.imgUrl"
+          alt
+        >
+          <h5 class="adTitle">{{ popUrl.title }}</h5>
+          <div class="adCont">{{ popUrl.content }}</div>
+        </image>
+        <img
+          class="imgType3"
+          v-else-if="popUrl.imgUrl && popUrl.type == 3"
+          :src="popUrl.imgUrl"
+          alt
+        />
+
         <i class="iconfont icon-close" @click="closeAdPop"></i>
       </div>
     </div>
@@ -201,20 +216,19 @@ export default {
           item.createTime = time2;
           return item;
         });
-        console.log('adres_result_time---',adres_result_time)
-        let diaImgArr_2 = adres_result_time.filter((item) => item.type == 2 || item.type == 3);
-        console.log('diaImgArr_2----',diaImgArr_2)
+        console.log("adres_result_time---", adres_result_time);
+        let diaImgArr_2 = adres_result_time.filter(
+          (item) => item.type == 2 || item.type == 3
+        );
+        console.log("diaImgArr_2----", diaImgArr_2);
         const maxTime = Math.max.apply(
           Math,
           diaImgArr_2.map((item) => item.createTime)
         );
-        let maxResult = diaImgArr_2.find(
-          (item) => maxTime == item.createTime
-        );
-        console.log('maxResult--图片弹窗显示-',maxResult)
-        this.popUrl = maxResult.imgUrl;
-        }
-      
+        let maxResult = diaImgArr_2.find((item) => maxTime == item.createTime);
+        console.log("maxResult--图片弹窗显示-", maxResult);
+        this.popUrl = maxResult;
+      }
     },
     // 轮播切换时控制指示点切换
     swiperChange: function (e) {
@@ -601,6 +615,29 @@ export default {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
+      .imgType2 {
+        width: 274px;
+        height: 334px;
+        position: relative;
+        .adTitle {
+          position: absolute;
+          top: 99px;
+          left: 89px;
+          letter-spacing: 4px;
+        }
+        .adCont {
+          position: absolute;
+          width: 200px;
+          top: 180px;
+          left: 50%;
+          transform: translateX(-50%);
+          text-align: center;
+        }
+      }
+      .imgType3{
+        width: 310px;
+        height: 320px;
+      }
       .icon-close {
         display: inline-block;
         border: 1px solid #fff;

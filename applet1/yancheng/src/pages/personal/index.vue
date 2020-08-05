@@ -282,10 +282,8 @@ export default {
       let memRes = await getMember(id);
       if (memRes.status == 200) {
         this.memberInfo = memRes.result;
-        this.$nextTick(() => {
-          this.memberInfo["constellation"] =
-            constellation(this.memberInfo.birthday) + "座";
-        });
+        this.memberInfo["constellation"] =
+          constellation(this.memberInfo.birthday) + "座";
       }
     },
     // 获取话题列表

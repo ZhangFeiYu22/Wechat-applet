@@ -512,7 +512,7 @@ export default {
     .share {
       vertical-align: middle;
       line-height: 50px;
-      background-color: transparent;
+      background-color: #fff;
       border-radius: 0;
       width: 25%;
       padding: 0;

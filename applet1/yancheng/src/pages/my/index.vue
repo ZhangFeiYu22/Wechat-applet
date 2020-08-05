@@ -64,7 +64,9 @@
     </div>-->
     <div class="wallet2">
       <p class="p1">我的砖头</p>
-      <p class="p2"><i class="iconfont icon-zhuan3"></i>100.00</p>
+      <p class="p2">
+        <i class="iconfont icon-zhuan3"></i>{{ userInfo.points }}
+      </p>
       <p class="p3" @click="rechargeHandle">
         充值<i class="iconfont icon-right iconRight"></i>
       </p>
@@ -120,6 +122,7 @@
 import { constellation } from "@/utils/constellation";
 import navigationBar from "@/components/navigationBar";
 import vueTabBar from "@/components/vueTabBar";
+import { userInfoGet } from "@/api/my";
 export default {
   components: {
     navigationBar,
@@ -156,12 +159,15 @@ export default {
       });
     }
   },
-  onShow() {
-    this.userInfo = wx.getStorageSync("authInfo");
-    this.$nextTick(() => {
-      this.userInfo["constellation"] =
-        constellation(this.userInfo.birthday) + "座";
-    });
+  async onShow() {
+    let inRes = await userInfoGet();
+    if (inRes.status == 200) {
+      this.userInfo = inRes.result;
+    } else {
+      this.userInfo = wx.getStorageSync("authInfo");
+    }
+    this.userInfo["constellation"] =
+      constellation(this.userInfo.birthday) + "座";
   },
   methods: {
     rechargeHandle() {
