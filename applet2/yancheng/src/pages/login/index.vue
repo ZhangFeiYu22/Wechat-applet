@@ -8,9 +8,17 @@
       </div>
       <div class="info">开启你不一样的城市社交生活</div>
       <div class="btnBox">
-        <button class="btn" open-type="getUserInfo" @getuserinfo="bindGetUserInfo">
+        <button
+          class="btn"
+          open-type="getUserInfo"
+          @getuserinfo="bindGetUserInfo"
+        >
           <i class="iconfont icon-weixin"></i>
           <span>微信一键登录</span>
+        </button>
+        <button class="btn mt20" @click="noLoginHanle">
+          <!-- <i class="iconfont icon-weixin"></i> -->
+          <span>暂不登录</span>
         </button>
       </div>
     </div>
@@ -24,7 +32,7 @@ export default {
   data() {
     return {
       loginBg: `${this.$store.state.commonImgHttp}/loginbg.png`,
-      logo: require("../../../static/images/logo_w.png")
+      logo: require("../../../static/images/logo_w.png"),
     };
   },
   mounted() {
@@ -37,12 +45,12 @@ export default {
         success(res) {
           if (res.code) {
             //获取sessionInfo
-            getSessionInfo(res.code).then(res => {
+            getSessionInfo(res.code).then((res) => {
               globalStore.commit("changeSessionKey", res.result.sessionKey);
               globalStore.commit("changeOpenId", res.result.openid);
             });
           }
-        }
+        },
       });
     },
     // 获取用户信息
@@ -56,23 +64,23 @@ export default {
           signature: loRes.signature,
           rawData: loRes.rawData,
           encryptedData: loRes.encryptedData,
-          iv: loRes.iv
+          iv: loRes.iv,
         };
         // 获取token
-        getUserInfo(data).then(res => {
+        getUserInfo(data).then((res) => {
           if (res.status == 200) {
             wx.showToast({
               title: "授权成功", //提示文字
               duration: 2000, //显示时长
               mask: true, //是否显示透明蒙层，防止触摸穿透，默认：false
               icon: "success", //图标，支持"success"、"loading"
-              success: function() {
+              success: function () {
                 // 存储token   和  用户信息
                 wx.setStorageSync("authToken", res.result);
                 // wx.setStorageSync("userInfoAll", loRes); //用户所有信息
                 wx.setStorageSync("isLogin", true); // 存储本地  用于判断是否登录
 
-                userInfoGet().then(aures => {
+                userInfoGet().then((aures) => {
                   if (aures.status == 200) {
                     wx.setStorageSync("authInfo", aures.result);
                     wx.setStorageSync("authId", aures.result.id); //  存储本地 用于判断是否显示删除
@@ -82,13 +90,13 @@ export default {
                     var beforePage = pages[pages.length - 2];
                     beforePage.onLoad();
                     wx.navigateBack({
-                      delta: 1
+                      delta: 1,
                     });
                   }
                 });
               }, //接口调用成功
-              fail: function() {}, //接口调用失败的回调函数
-              complete: function() {} //接口调用结束的回调函数
+              fail: function () {}, //接口调用失败的回调函数
+              complete: function () {}, //接口调用结束的回调函数
             });
           }
         });
@@ -100,18 +108,22 @@ export default {
             "您点击了拒绝授权，部分功能将无法使用,请授权登录享受更多权益!",
           showCancel: false,
           confirmText: "返回授权",
-          success: function(res) {
+          success: function (res) {
             if (res.confirm) {
               console.log("用户点击了“返回授权”");
             }
-          }
+          },
         });
       }
-    }
-  }
+    },
+    noLoginHanle() {
+      wx.navigateBack({
+        delta: 1,
+      });
+    },
+  },
 };
 </script>
-
 
 <style lang="less" scoped>
 .login {
@@ -149,7 +161,7 @@ export default {
     }
     .info {
       position: absolute;
-      top: 55%;
+      top: 52%;
       width: 100%;
       text-align: center;
       font-size: 15px;
@@ -158,7 +170,7 @@ export default {
     .btnBox {
       position: absolute;
       width: 80%;
-      top: 80%;
+      top: 75%;
       left: 50%;
       transform: translateX(-50%);
       .btn {
@@ -170,6 +182,9 @@ export default {
         color: #fff;
         border-radius: 20px;
         text-align: center;
+        &.mt20 {
+          margin-top: 20px;
+        }
         i {
           display: inline-block;
           vertical-align: middle;
