@@ -1,24 +1,30 @@
 <template>
   <div class="comp-navbar">
     <!-- 占位栏 -->
-    <div class="placeholder-bar" :style="{height: navBarHeight + 'px'}"></div>
+    <div class="placeholder-bar" :style="{ height: navBarHeight + 'px' }"></div>
     <!-- 导航栏主体 -->
     <div
       class="navbar"
-      :style="{height: navBarHeight + 'px',backgroundColor:navBackgroundColor}"
+      :style="{
+        height: navBarHeight + 'px',
+        backgroundColor: navBackgroundColor,
+      }"
     >
       <!-- 状态栏 -->
-      <div class="nav-statusbar" :style="{height: statusBarHeight + 'px'}"></div>
+      <div
+        class="nav-statusbar"
+        :style="{ height: statusBarHeight + 'px' }"
+      ></div>
       <!-- 标题栏 -->
-      <div class="nav-titlebar" :style="{height: titleBarHeight + 'px' }">
+      <div class="nav-titlebar" :style="{ height: titleBarHeight + 'px' }">
         <!-- 按键显示情况 -->
         <!-- 显示发布 -->
         <div v-if="publishVisible" class="bar-optionsBox">
           <div class="onlyBack">
             <div class="opt opt-add" @click="publishClick()">
               <!-- <span  v-if="publishVisible == 1">发布</span> -->
-              <span  v-if="publishVisible == 1"></span>
-               <i v-else  class="iconfont icon-publish1"></i>
+              <span v-if="publishVisible == 1"></span>
+              <i v-else class="iconfont icon-publish1"></i>
             </div>
           </div>
         </div>
@@ -46,10 +52,13 @@
           </div>
         </div>
         <!-- 都不显示 -->
-        <div v-if="!backVisible && !homeVisible && !publishVisible" class="bar-optionsBox"></div>
+        <div
+          v-if="!backVisible && !homeVisible && !publishVisible"
+          class="bar-optionsBox"
+        ></div>
         <!-- 标题 -->
         <div class="bar-title">
-          {{title}}
+          {{ title }}
           <!-- <image class="imgS" src="../../static/images/titlebg.png"></image> -->
         </div>
       </div>
@@ -62,33 +71,33 @@ export default {
   props: {
     // 导航栏背景色
     navBackgroundColor: {
-      default: "#ffffff"
+      default: "#ffffff",
     },
     //标题文字
     title: {
       required: false,
-      default: "城谜"
+      default: "城谜",
     },
     // 是否显示后退按钮
     backVisible: {
       required: false,
-      default: false
+      default: false,
     },
     // 是否显示Home按钮
     homeVisible: {
       required: false,
-      default: false
+      default: false,
     },
     // 是否显示发布按钮
     publishVisible: {
       required: false,
-      default: 0
+      default: 0,
     },
     // home按钮的路径
     homePath: {
       required: false,
-      default: "/pages/home/main"
-    }
+      default: "/pages/home/main",
+    },
   },
   data() {
     return {
@@ -99,7 +108,7 @@ export default {
       model: "",
       brand: "",
       system: "",
-      currentPage: ""
+      currentPage: "",
     };
   },
   beforeMount() {
@@ -119,7 +128,7 @@ export default {
         }
         self.navBarHeight = self.statusBarHeight + self.titleBarHeight;
         wx.setStorageSync("navBar_Height", self.navBarHeight);
-      }
+      },
     });
   },
   methods: {
@@ -127,32 +136,47 @@ export default {
       if (getCurrentPages().length == 1) {
         // 打开分享卡片无法回退
         wx.switchTab({
-          url: this.homePath
+          url: this.homePath,
         });
       } else {
         wx.navigateBack({
-          delta: 1
+          delta: 1,
         });
       }
     },
     homeClick() {
       wx.switchTab({
-        url: this.homePath
+        url: this.homePath,
       });
     },
     publishClick() {
-      console.log("0000--",this.title);
-      if(this.title == '社区'){
-        wx.navigateTo({
-          url: "/pages/releaseRealy/main?publishType=2"
-        });
-      }else{
-        wx.navigateTo({
-          url: "/pages/releaseRealy/main?publishType=1"
+      console.log("0000--", this.title);
+      if (wx.getStorageSync("isLogin")) {
+        if (this.title == "社区") {
+          wx.navigateTo({
+            url: "/pages/releaseRealy/main?publishType=2",
+          });
+        } else {
+          wx.navigateTo({
+            url: "/pages/releaseRealy/main?publishType=1",
+          });
+        }
+      } else {
+        wx.showToast({
+          title: "您还未登录，请先登录",
+          icon: "none",
+          duration: 1500,
+          success(data) {
+            setTimeout(function () {
+              wx.navigateTo({
+                url: "/pages/login/main",
+              });
+            }, 1500);
+          },
         });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -182,14 +206,14 @@ export default {
           font-weight: 600;
           position: absolute;
           left: 7px;
-          .opt-add{
-            span{
+          .opt-add {
+            span {
               font-size: 16px;
             }
-            .iconfont{
+            .iconfont {
               font-size: 22px;
-              &.icon-publish1{
-                color: #5B8E52;
+              &.icon-publish1 {
+                color: #5b8e52;
               }
             }
           }
@@ -209,7 +233,7 @@ export default {
           border-radius: 27px;
           border: 1px solid #ddd;
           padding-right: 5rpx;
-          &.back_home2{
+          &.back_home2 {
             width: 46px;
             padding-right: 0;
           }

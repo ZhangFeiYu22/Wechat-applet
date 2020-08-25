@@ -1,7 +1,11 @@
 <template>
   <scroll-view class="scrollView" scroll-y="true">
-    <navigation-bar :title="'发布'" :navBackgroundColor="'#fff'" :back-visible="true"></navigation-bar>
-    <div class="release" :style="{'top': navBar_Height}">
+    <navigation-bar
+      :title="'发布'"
+      :navBackgroundColor="'#fff'"
+      :back-visible="true"
+    ></navigation-bar>
+    <div class="release" :style="{ top: navBar_Height }">
       <div class="edit-main">
         <textarea
           v-if="textStatus"
@@ -13,13 +17,18 @@
         <div
           v-else
           class="edit-text edit-textNo"
-          :style="{color: textNoColor}"
+          :style="{ color: textNoColor }"
           @click="changeTextStatus"
-        >{{realTextValue}}</div>
+        >
+          {{ realTextValue }}
+        </div>
         <div class="edit-img">
-          <div class="imgbox" v-for="(item,index) in imgArr" :key="index">
+          <div class="imgbox" v-for="(item, index) in imgArr" :key="index">
             <image :src="item" mode="aspectFill" />
-            <i class="close iconfont icon-iconless" @click.stop="closeFun(item,index)"></i>
+            <i
+              class="close iconfont icon-iconless"
+              @click.stop="closeFun(item, index)"
+            ></i>
           </div>
           <div class="iconfont icon-jiahao" @click.stop="chooseImage"></div>
         </div>
@@ -35,13 +44,13 @@ import store from "@/store";
 import {
   getOssParamsGet,
   communityFriendsPost,
-  forumContentPost
+  forumContentPost,
 } from "@/api/release";
 import navigationBar from "@/components/navigationBar";
 import { imgsUpload } from "@/utils/imgsUpload";
 export default {
   components: {
-    navigationBar
+    navigationBar,
   },
   data() {
     return {
@@ -56,8 +65,8 @@ export default {
       location: null,
       cfpData: {
         content: "",
-        images: ""
-      }
+        images: "",
+      },
     };
   },
   onLoad(options) {
@@ -95,11 +104,11 @@ export default {
         sourceType: ["album", "camera"],
         success(res) {
           for (var i = 0; i < res.tempFilePaths.length; i++) {
-            imgsUpload(res.tempFilePaths[i]).then(rere => {
+            imgsUpload(res.tempFilePaths[i]).then((rere) => {
               self.imgArr.push(rere);
             });
           }
-        }
+        },
       });
     },
     postData() {
@@ -108,72 +117,78 @@ export default {
         wx.showToast({
           title: "请先填写内容",
           icon: "none",
-          duration: 2000
+          duration: 2000,
         });
       } else {
         _this.cfpData.images = _this.imgArr.join(";");
         wx.showModal({
           content: "确定发布？",
           showCancel: true, //是否显示取消按钮
-          success: function(res) {
+          success: function (res) {
             if (res.cancel) {
               return;
             } else {
               _this.publishTypeFun(_this.publishType);
             }
-          }
+          },
         });
       }
     },
     publishTypeFun(type) {
       var _this = this;
       if (type == 2) {
-        communityFriendsPost(_this.cfpData).then(res => {
+        communityFriendsPost(_this.cfpData).then((res) => {
           if (res.status == 200) {
             wx.showToast({
               title: "发布成功",
               icon: "success",
               duration: 1000,
-              success: function() {
-                setTimeout(function() {
+              success: function () {
+                setTimeout(function () {
                   wx.switchTab({
                     url: "/pages/community/main",
-                    success: function(e) {
+                    success: function (e) {
                       var page = getCurrentPages().pop();
                       if (page == undefined || page == null) return;
                       page.onLoad();
-                    }
+                    },
                   });
                 }, 1000);
-              }
+              },
             });
+          }else if(res.status == 403){
+            wx.showToast({
+              title: res.message,
+              icon: 'none',
+              duration: 2000
+            })
           }
         });
       } else {
-        forumContentPost(_this.cfpData).then(res => {
+        forumContentPost(_this.cfpData).then((res) => {
           if (res.status == 200) {
             wx.showToast({
               title: "发布成功",
               icon: "success",
               duration: 1000,
-              success: function() {
-                setTimeout(function() {
+              success: function () {
+                setTimeout(function () {
                   wx.switchTab({
                     url: "/pages/community/main",
-                    success: function(e) {
+                    success: function (e) {
                       var page = getCurrentPages().pop();
                       if (page == undefined || page == null) return;
                       page.onLoad();
-                    }
+                    },
                   });
                 }, 1000);
-              }
+              },
             });
           }
         });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -211,7 +226,7 @@ export default {
     }
     .edit-textNo {
       color: #dcdcdc;
-      padding: 6px 5px 0;
+      // padding: 6px 5px 0;
     }
     .edit-img {
       display: flex;
