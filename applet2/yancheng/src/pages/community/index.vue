@@ -69,14 +69,14 @@
           >
             <p
               class="line line1"
-              @longpress="backPinLunFun(comComItem,index)"
+              @click.stop="backPinLunFun(comComItem,index)"
               v-if="comComItem.replyName"
             >
               <span class="s1">{{comComItem.memberName}}</span>回复
               <span>{{comComItem.replyName}}</span>：
               <span>{{comComItem.comment}}</span>
             </p>
-            <p class="line line0" @longpress="backPinLunFun(comComItem,index)" v-else>
+            <p class="line line0" @click.stop="backPinLunFun(comComItem,index)" v-else>
               <span class="s0">{{comComItem.memberName}}</span>：
               <span class="s0c">{{comComItem.comment}}</span>
             </p>
@@ -380,8 +380,13 @@ export default {
         };
       }
       communityCommentPost(pingD).then(res => {
-        console.log(res);
-        if (res.status == 200) {
+        if(res.status == 403){
+          wx.showToast({
+            title: `评论失败,${res.message}`,
+            icon: "none",
+            duration: 2000
+          });
+        }else if (res.status == 200) {
           wx.showToast({
             title: "评论成功",
             icon: "none"
