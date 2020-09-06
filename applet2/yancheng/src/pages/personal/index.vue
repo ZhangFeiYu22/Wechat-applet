@@ -75,29 +75,29 @@
     <div class="navBox" v-if="memberInfo.id == delId">
       <div
         class="navItem"
-        :class="navType == '0' ? 'active' : ''"
-        @click="itemToggle('0')"
-      >
-        <p>状态</p>
-      </div>
-      <div
-        class="navItem"
         :class="navType == '1' ? 'active' : ''"
         @click="itemToggle('1')"
       >
-        <p>关注</p>
+        <p>状态</p>
       </div>
       <div
         class="navItem"
         :class="navType == '2' ? 'active' : ''"
         @click="itemToggle('2')"
       >
-        <p>认证</p>
+        <p>关注</p>
       </div>
       <div
         class="navItem"
         :class="navType == '3' ? 'active' : ''"
         @click="itemToggle('3')"
+      >
+        <p>认证</p>
+      </div>
+      <div
+        class="navItem"
+        :class="navType == '4' ? 'active' : ''"
+        @click="itemToggle('4')"
       >
         <p>勋章</p>
       </div>
@@ -234,8 +234,7 @@
           v-if="item.properties.communityCommentList.length > 0"
         >
           <div
-            v-for="(comComItem, comComIndex) in item.properties
-              .communityCommentList"
+            v-for="(comComItem, comComIndex) in item.properties.communityCommentList"
             :key="comComIndex"
           >
             <p
@@ -266,11 +265,14 @@
       <view class="liuyan">
         <input
           class="input"
-          auto-focus
+          type="text"
+          focus="true"
           cursor-spacing="32rpx"
           :value="commentValue"
           @input="getcomment"
           :placeholder="placeholderPL"
+          confirm-type="send"
+          @confirm="iphoneCompleteBtn"
         />
         <button class="btnPut" @click="submitComment">发送</button>
       </view>
@@ -339,7 +341,7 @@ export default {
       mid: "", // 用户ID
       sixinValue: "",
       maskVal: false, //私信显示判断
-      navType: 0, //话题，状态判断
+      navType: 1, //话题，状态判断
       likeAct: false, //喜欢判断
       memberInfo: {},
       forumList: [],
@@ -386,7 +388,8 @@ export default {
     let getOptions = currentPage.options;
     this.mid = getOptions.createrId;
     this.fetchMember(getOptions.createrId);
-    this.fetchMemberForum(getOptions.createrId);
+    // this.fetchMemberForum(getOptions.createrId);
+    this.fetchMemberComm(getOptions.createrId);
   },
   methods: {
     goMessage() {
@@ -550,17 +553,17 @@ export default {
     },
     // 动态，社区切换
     itemToggle(num) {
-      if (num == "0") {
+      if (num == "1") {
         this.navType = num;
-      } else if (num == "1") {
+      } else if (num == "2") {
         wx.navigateTo({
           url: "/pages/myAttention/main",
         });
-      } else if (num == "2") {
+      } else if (num == "3") {
         wx.navigateTo({
           url: "/pages/myAttestation/main",
         });
-      } else if (num == "3") {
+      } else if (num == "4") {
         wx.navigateTo({
           url: "/pages/myMedal/main",
         });
@@ -767,6 +770,9 @@ export default {
     getcomment(e) {
       this.commentValue = e.target.value;
     },
+    iphoneCompleteBtn(){
+      console.log('点击了手机完成搜搜索按钮')
+    },
     // 动态的评论
     submitComment(e) {
       var _this = this;
@@ -823,8 +829,8 @@ export default {
     let getOptions = currentPage.options;
     this.mid = getOptions.createrId;
     this.fetchMember(getOptions.createrId);
-    this.fetchMemberForum(getOptions.createrId);
-
+    // this.fetchMemberForum(getOptions.createrId);
+    this.fetchMemberComm(getOptions.createrId);
     console.log("下拉刷新");
   },
   onReachBottom: function () {
