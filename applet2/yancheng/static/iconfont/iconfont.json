@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "12670045",
+      "name": "等级1",
+      "font_class": "dengji-copy-copy-copy",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "12779572",
+      "name": "会员等级",
+      "font_class": "huiyuandengji",
+      "unicode": "e615",
+      "unicode_decimal": 58901
+    },
+    {
+      "icon_id": "16512010",
+      "name": "等级4",
+      "font_class": "dengji4",
+      "unicode": "e64e",
+      "unicode_decimal": 58958
+    },
+    {
       "icon_id": "646356",
       "name": "金砖",
       "font_class": "zhuan1",

@@ -20,7 +20,10 @@
               <i class="iconfont" v-else></i>
             </p>
           </div>
-          <p class="lv">LV{{ memberInfo.grade }}</p>
+          <p class="lv">
+            <i class="iconfont icon-dengji4"></i
+            ><span>{{ memberInfo.grade }}</span>
+          </p>
         </div>
       </div>
       <div class="rightIcon" v-if="memberInfo.id == delId">
@@ -167,7 +170,7 @@
           {{ item.content }}
         </div>
         <div v-if="item.showEllip" class="toggleBox">
-          <div class="more_txt" @click="requireTxt(index)">
+          <div class="more_txt" @click="requireTxt2(index)">
             <span>{{ item.showEllip ? "展开" : "收起" }}</span>
           </div>
         </div>
@@ -216,7 +219,7 @@
             class="imgLi"
             v-for="(comLikeItem, comLikeIndex) in item.properties
               .communityLikeList"
-            :key="comLikeItem.id"
+            :key="comLikeIndex"
           >
             <img
               v-if="comLikeItem.avatar && comLikeIndex < 3"
@@ -578,6 +581,14 @@ export default {
         this.forumList[index].showEllip = true;
       }
     },
+    requireTxt2(index) {
+      let val = this.communityFriendsList[index].showEllip;
+      if (val) {
+        this.communityFriendsList[index].showEllip = false;
+      } else {
+        this.communityFriendsList[index].showEllip = true;
+      }
+    },
     // 社区的动态详情
     goTopic(id) {
       wx.navigateTo({
@@ -770,8 +781,8 @@ export default {
     getcomment(e) {
       this.commentValue = e.target.value;
     },
-    iphoneCompleteBtn(){
-      console.log('点击了手机完成搜搜索按钮')
+    iphoneCompleteBtn() {
+      console.log("点击了手机完成搜搜索按钮");
     },
     // 动态的评论
     submitComment(e) {
@@ -885,10 +896,25 @@ export default {
         text-align: center;
         .lv {
           width: 50px;
-          background: linear-gradient(to bottom, #ffefae, #eba351);
-          color: #fff;
-          font-size: 13px;
-          letter-spacing: 2px;
+          position: relative;
+          i {
+            background-image: linear-gradient(to bottom, #ffefae, #eba351);
+            -webkit-background-clip:text;
+            color: transparent;
+            font-size: 22px;
+            letter-spacing: 2px;
+            position: absolute;
+            top: 0;
+            left: 0;
+          }
+          span{
+            position: absolute;
+            left:60%;
+            top: 2px;
+            color: #fff;
+            font-weight: 600;
+            font-size: 14px;
+          }
         }
         .nameSex {
           margin-bottom: 10px;
